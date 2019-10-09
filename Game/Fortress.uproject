@@ -2,5 +2,15 @@
 	"FileVersion": 3,
 	"EngineAssociation": "{BE43B7D2-49A5-2507-3861-95A99CF8D12B}",
 	"Category": "",
-	"Description": ""
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "Fortress",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		}
+	]
 }
