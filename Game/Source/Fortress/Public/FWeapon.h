@@ -33,7 +33,23 @@ class FORTRESS_API AFWeapon : public AFInventoryItem
 public:
 	AFWeapon();
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 	/** Weapon mesh: 1st person view */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Mesh)
 	USkeletalMeshComponent* Mesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	int32 MaxAmmo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	int32 MaxMagazineSize;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	int32 InitialMagazines;
+	UPROPERTY(BlueprintReadWrite, Replicated, Category = Weapon)
+	int32 Ammo;
+	UPROPERTY(BlueprintReadWrite, Replicated, Category = Weapon)
+	int32 MagazineSize;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	EAmmoType AmmoType;
 };

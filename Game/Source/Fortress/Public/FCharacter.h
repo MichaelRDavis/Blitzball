@@ -3,21 +3,25 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "FCharacterBase.h"
 #include "FCharacter.generated.h"
 
 class UCameraComponent;
+class UFCharacterMovement;
+class AFInventoryItem;
+class AFWeapon;
 
-UCLASS()
-class FORTRESS_API AFCharacter : public ACharacter
+UCLASS(config=Game)
+class FORTRESS_API AFCharacter : public AFCharacterBase
 {
 	GENERATED_BODY()
 
 public:
 	AFCharacter();
 
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	/** Character mesh: 1st person view(arms; seen only by self) */
+	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Pawn)
 	USkeletalMeshComponent* FirstPersonMesh;
 
@@ -25,12 +29,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera)
 	UCameraComponent* FirstPersonCameraComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Character)
+	UFCharacterMovement* FCharacterMovement;
+
 protected:
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
-	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	/** Handles moving forward/backward */
 	virtual void MoveForward(float Value);
@@ -38,44 +44,18 @@ public:
 	/** Handles strafing movement left/right */
 	virtual void MoveRight(float Value);
 
-	/** Called when we die */
-	UFUNCTION(BlueprintCallable, Category = Pawn, meta = (DisplayName = Die))
-	bool K2_Die(AController* EventInstigator, TSubclassOf<UDamageType> DamageType);
-	virtual bool Die(AController* EvnetInstigator, const FDamageEvent& DamageEvent, AActor* DamageCauser = nullptr);
-
-	UFUNCTION(BlueprintCallable, Category = Pawn)
-	virtual void Death();
-
 protected:
-	/** Identifies if player is in its dying state */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pawn)
-	bool bIsDead;
-
-	/** Current health of the player */
+	/** Items in inventory */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
-	int32 Health;
+	TArray<AFInventoryItem*> Inventory;
 
-	/** Max health of the player */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
-	int32 MaxHealth;
-
-	/** Current shield amount */
+	/** Currently equipped weapon */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
-	int32 Shield;
-
-	/** Max shield amount */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
-	int32 MaxShield;
+	AFWeapon* Weapon;
+	UPROPERTY(BlueprintReadOnly, Category = Pawn)
+	AFWeapon* SecondaryWeapon;
 
 	/** Sound played on jump */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	USoundBase* JumpSound;
-
-	/** Sound played on death */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
-	USoundBase* DeathSound;
-
-	/** Sound played on hit */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
-	USoundBase* HitSound;
 };

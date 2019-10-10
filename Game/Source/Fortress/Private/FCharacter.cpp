@@ -4,7 +4,6 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Net/UnrealNetwork.h"
 
 AFCharacter::AFCharacter()
 {
@@ -36,9 +35,6 @@ AFCharacter::AFCharacter()
 void AFCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME_CONDITION(AFCharacter, Health, COND_None);
-	DOREPLIFETIME_CONDITION(AFCharacter, Shield, COND_None);
 }
 
 void AFCharacter::BeginPlay()
@@ -54,30 +50,6 @@ void AFCharacter::BeginPlay()
 void AFCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-float AFCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-	if (Health <= 0.0f)
-	{
-		return 0.0f;
-	}
-
-	int32 ResultDamage = FMath::TruncToInt(Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser));
-	if (ResultDamage > 0)
-	{
-		Health -= ResultDamage;
-		if (Health <= 0)
-		{
-			Die(EventInstigator, DamageEvent, DamageCauser);
-		}
-		else
-		{
-
-		}
-	}
-
-	return (float)ResultDamage;
 }
 
 void AFCharacter::MoveForward(float Value)
@@ -108,30 +80,3 @@ void AFCharacter::MoveRight(float Value)
 	}
 }
 
-bool AFCharacter::K2_Die(AController* EventInstigator, TSubclassOf<UDamageType> DamageType)
-{
-	return Die(EventInstigator, FPointDamageEvent(Health + 1, FHitResult(), FVector(0.0f, 0.0f, -1.0f), DamageType));
-}
-
-bool AFCharacter::Die(AController* EvnetInstigator, const FDamageEvent& DamageEvent, AActor* DamageCauser /*= nullptr*/)
-{
-	if (bIsDead)
-	{
-		return false;
-	}
-
-	Health = FMath::Min<int32>(0.0f, Health);
-
-	Death();
-	return true;
-}
-
-void AFCharacter::Death()
-{
-	if (bIsDead)
-	{
-		return;
-	}
-
-	bIsDead = false;
-}
