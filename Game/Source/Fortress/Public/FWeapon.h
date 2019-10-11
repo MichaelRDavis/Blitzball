@@ -52,4 +52,23 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	EAmmoType AmmoType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	FName HandsAttachSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float FireRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float Spread;
+
+	UFUNCTION(BlueprintCallable, Category = Firing)
+	virtual void StartFire();
+	UFUNCTION(BlueprintCallable, Category = Firing)
+	virtual void StopFire();
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void AttachToOwner();
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void DetachFromOwner();
 };

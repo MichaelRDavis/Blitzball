@@ -12,3 +12,23 @@ void AFWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
+
+void AFWeapon::StartFire()
+{
+
+}
+
+void AFWeapon::StopFire()
+{
+
+}
+
+void AFWeapon::AttachToOwner()
+{
+
+}
+
+void AFWeapon::DetachFromOwner()
+{
+
+}

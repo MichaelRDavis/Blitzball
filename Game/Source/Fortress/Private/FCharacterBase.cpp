@@ -3,7 +3,8 @@
 #include "FCharacterBase.h"
 #include "Net/UnrealNetwork.h"
 
-AFCharacterBase::AFCharacterBase()
+AFCharacterBase::AFCharacterBase(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 }

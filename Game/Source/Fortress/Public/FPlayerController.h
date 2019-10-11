@@ -35,4 +35,16 @@ protected:
 
 	/** Handles strafing movement left */
 	virtual void MoveLeft(float Value);
+
+	virtual void Jump();
+	virtual void StopJumping();
+
+	virtual void Sprint();
+	virtual void StopSprinting();
+
+	virtual void Crouch();
+	virtual void UnCrouch();
+	virtual void ToggleCrouch();
+
+	virtual void Use();
 };

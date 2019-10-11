@@ -5,7 +5,13 @@
 
 UFCharacterMovement::UFCharacterMovement()
 {
-
+	SprintSpeedMultiplier = 1.5f;
+	SprintAccelMultiplier = 1.5f;
+	bWantsToSprint = false;
+	TargetingSpeedMultiplier = 0.5f;
+	TargetingAccelMultiplier = 0.5f;
+	bIsTargeting = false;
+	NavAgentProps.bCanCrouch = true;
 }
 
 void UFCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
@@ -25,6 +31,48 @@ FNetworkPredictionData_Client* UFCharacterMovement::GetPredictionData_Client() c
 	}
 
 	return ClientPredictionData;
+}
+
+void UFCharacterMovement::SetSprinting(bool bNewSprinting)
+{
+	bWantsToSprint = bNewSprinting;
+}
+
+void UFCharacterMovement::SetTargeting(bool bNewTargeting)
+{
+	bIsTargeting = bNewTargeting;
+}
+
+float UFCharacterMovement::GetMaxSpeed() const
+{
+	float MaxSpeed = Super::GetMaxSpeed();
+
+	if (bWantsToSprint)
+	{
+		MaxSpeed *= SprintSpeedMultiplier;
+	}
+	else if (bIsTargeting)
+	{
+		MaxSpeed *= TargetingSpeedMultiplier;
+	}
+
+	return MaxSpeed;
+}
+
+float UFCharacterMovement::GetMaxAcceleration() const
+{
+	float MaxAccel = Super::GetMaxAcceleration();
+
+	if (bWantsToSprint)
+	{
+		MaxAccel *= SprintAccelMultiplier;
+	}
+	else if (bIsTargeting)
+	{
+		MaxAccel *= TargetingSpeedMultiplier;
+	}
+
+	return MaxAccel;
 }
 
 void FSavedMove_FCharacter::Clear()

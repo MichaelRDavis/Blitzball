@@ -12,7 +12,7 @@ class FORTRESS_API AFCharacterBase : public ACharacter
 	GENERATED_BODY()
 
 public:
-	AFCharacterBase();
+	AFCharacterBase(const FObjectInitializer& ObjectInitializer);
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 

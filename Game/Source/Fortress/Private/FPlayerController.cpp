@@ -24,24 +24,103 @@ void AFPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("MoveLeft", this, &AFPlayerController::MoveLeft);
 	InputComponent->BindAxis("Turn", this, &AFPlayerController::AddYawInput);
 	InputComponent->BindAxis("LookUp", this, &AFPlayerController::AddPitchInput);
+	InputComponent->BindAction("Jump", IE_Pressed, this, &AFPlayerController::Jump);
+	InputComponent->BindAction("Jump", IE_Released, this, &AFPlayerController::StopJumping);
+	InputComponent->BindAction("Sprint", IE_Pressed, this, &AFPlayerController::Sprint);
+	InputComponent->BindAction("Sprint", IE_Released, this, &AFPlayerController::StopSprinting);
+	InputComponent->BindAction("Crouch", IE_Pressed, this, &AFPlayerController::Crouch);
+	InputComponent->BindAction("Crouch", IE_Released, this, &AFPlayerController::UnCrouch);
+	InputComponent->BindAction("ToggleCrouch", IE_Pressed, this, &AFPlayerController::ToggleCrouch);
+
+	InputComponent->BindAction("Use", IE_Pressed, this, &AFPlayerController::Use);
 }
 
 void AFPlayerController::MoveForward(float Value)
 {
-
+	if (FCharacter != nullptr && Value != 0.0f)
+	{
+		FCharacter->MoveForward(Value);
+	}
 }
 
 void AFPlayerController::MoveBackward(float Value)
 {
-
+	MoveForward(Value * -1);
 }
 
 void AFPlayerController::MoveRight(float Value)
 {
-
+	if (FCharacter != nullptr && Value != 0.0f)
+	{
+		FCharacter->MoveRight(Value);
+	}
 }
 
 void AFPlayerController::MoveLeft(float Value)
 {
+	MoveRight(Value * -1);
+}
 
+void AFPlayerController::Jump()
+{
+	if (FCharacter)
+	{
+		FCharacter->Jump();
+	}
+}
+
+void AFPlayerController::StopJumping()
+{
+	if (FCharacter)
+	{
+		FCharacter->StopJumping();
+	}
+}
+
+void AFPlayerController::Sprint()
+{
+	if (FCharacter)
+	{
+		FCharacter->Sprint();
+	}
+}
+
+void AFPlayerController::StopSprinting()
+{
+	if (FCharacter)
+	{
+		FCharacter->StopSprinting();
+	}
+}
+
+void AFPlayerController::Crouch()
+{
+	if (FCharacter)
+	{
+		FCharacter->Crouch();
+	}
+}
+
+void AFPlayerController::UnCrouch()
+{
+	if (FCharacter)
+	{
+		FCharacter->UnCrouch();
+	}
+}
+
+void AFPlayerController::ToggleCrouch()
+{
+	if (GetCharacter())
+	{
+		GetCharacter()->bIsCrouched ? UnCrouch() : Crouch();
+	}
+}
+
+void AFPlayerController::Use()
+{
+	if (FCharacter)
+	{
+		FCharacter->Use();
+	}
 }

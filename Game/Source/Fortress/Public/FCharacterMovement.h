@@ -25,7 +25,11 @@ public:
 	float SprintAccelMultiplier;
 
 	/**  */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Sprint)
 	bool bWantsToSprint;
+
+	/**  */
+	void SetSprinting(bool bNewSprinting);
 
 	/** Multiplier for targeting movement speed */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Targeting)
@@ -36,7 +40,14 @@ public:
 	float TargetingAccelMultiplier;
 
 	/**  */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Targeting)
 	bool bIsTargeting;
+
+	/**  */
+	void SetTargeting(bool bNewTargeting);
+
+	virtual float GetMaxSpeed() const override;
+	virtual float GetMaxAcceleration() const override;
 };
 
 class FSavedMove_FCharacter : public FSavedMove_Character

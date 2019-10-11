@@ -1,11 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "FCharacter.h"
+#include "FCharacterMovement.h"
+#include "FUsable.h"
+#include "FInventoryItem.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 
-AFCharacter::AFCharacter()
+#define COLLISION_USABLE ECC_GameTraceChannel1
+
+AFCharacter::AFCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UFCharacterMovement>(ACharacter::CharacterMovementComponentName))
 {
 	// Create a CameraCompoent
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
@@ -22,6 +28,8 @@ AFCharacter::AFCharacter()
 	FirstPersonMesh->CastShadow = false;
 	FirstPersonMesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
 
+	FCharacterMovement = Cast<UFCharacterMovement>(GetCharacterMovement());
+
 	GetMesh()->SetOwnerNoSee(true);
 	GetMesh()->bReceivesDecals = false;
 
@@ -29,6 +37,8 @@ AFCharacter::AFCharacter()
 	MaxHealth = 100;
 	Shield = 0;
 	MaxShield = 100;
+	UseDistance = 400.0f;
+	bIsUsableInFocus = false;
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -47,9 +57,88 @@ void AFCharacter::BeginPlay()
 	}
 }
 
+AFUsable* AFCharacter::GetUsableInView()
+{
+	FVector CamLoc;
+	FRotator CamRot;
+
+	if (Controller == nullptr)
+	{
+		return nullptr;
+	}
+
+	Controller->GetPlayerViewPoint(CamLoc, CamRot);
+	const FVector StartTrace = CamLoc;
+	const FVector Direction = CamRot.Vector();
+	const FVector EndTrace = StartTrace + (Direction * UseDistance);
+
+	FCollisionQueryParams TraceParams(FName(TEXT("")), true, this);
+	TraceParams.bTraceComplex = true;
+
+	FHitResult Hit(ForceInit);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_USABLE, TraceParams);
+
+	return Cast<AFUsable>(Hit.GetActor());
+}
+
 void AFCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (Controller)
+	{
+		AFUsable* Usable = GetUsableInView();
+		if (UsableInFocus != Usable)
+		{
+			if (UsableInFocus)
+			{
+				UsableInFocus->OnEndFocus();
+			}
+
+			bIsUsableInFocus = false;
+		}
+
+		UsableInFocus = Usable;
+		if (Usable)
+		{
+			if (!bIsUsableInFocus)
+			{
+				Usable->OnBeginFocus();
+				bIsUsableInFocus = true;
+			}
+		}
+	}
+}
+
+void AFCharacter::AddItem(AFInventoryItem* Item)
+{
+	if (Item)
+	{
+		Item->GivenTo(this);
+		Inventory.AddUnique(Item);
+	}
+}
+
+void AFCharacter::RemoveItem(AFInventoryItem* Item)
+{
+	if (Item)
+	{
+		Item->Removed();
+		Inventory.RemoveSingle(Item);
+	}
+}
+
+AFInventoryItem* AFCharacter::FindItem(TSubclassOf<AFInventoryItem> ItemClass)
+{
+	for (int32 i = 0; i < Inventory.Num(); i++)
+	{
+		if (Inventory[i] && Inventory[i]->IsA(ItemClass))
+		{
+			return Inventory[i];
+		}
+	}
+
+	return nullptr;
 }
 
 void AFCharacter::MoveForward(float Value)
@@ -78,5 +167,40 @@ void AFCharacter::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetScaledAxis(EAxis::Y);
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AFCharacter::Sprint()
+{
+	if (FCharacterMovement)
+	{
+		FCharacterMovement->SetSprinting(true);
+	}
+}
+
+void AFCharacter::StopSprinting()
+{
+	if (FCharacterMovement)
+	{
+		FCharacterMovement->SetSprinting(false);
+	}
+}
+
+void AFCharacter::Use()
+{
+	ServerUse();
+}
+
+void AFCharacter::ServerUse_Implementation()
+{
+	AFUsable* Usable = GetUsableInView();
+	if (Usable)
+	{
+		Usable->OnUsed(this);
+	}
+}
+
+bool AFCharacter::ServerUse_Validate()
+{
+	return true;
 }
 

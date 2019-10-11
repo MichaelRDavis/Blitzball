@@ -29,6 +29,8 @@ struct FItemData : public FTableRowBase
 	FText Description;
 };
 
+class AFCharacter;
+
 UCLASS()
 class FORTRESS_API AFInventoryItem : public AActor
 {
@@ -41,4 +43,11 @@ public:
 	FItemData ItemData;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
 	EItemRarity ItemRarity;
+
+	void GivenTo(AFCharacter* NewOwner);
+	void Removed();
+
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = Inventory)
+	AFCharacter* FOwner;
 };
