@@ -82,6 +82,11 @@ public:
 	virtual void ServerUse_Implementation();
 	virtual bool ServerUse_Validate();
 
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void StartFire();
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void StopFire();
+
 protected:
 	/** Items in inventory */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)

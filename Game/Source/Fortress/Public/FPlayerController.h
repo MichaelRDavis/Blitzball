@@ -47,4 +47,7 @@ protected:
 	virtual void ToggleCrouch();
 
 	virtual void Use();
+
+	virtual void StartFire();
+	virtual void StopFire();
 };
