@@ -33,6 +33,9 @@ void AFPlayerController::SetupInputComponent()
 	InputComponent->BindAction("ToggleCrouch", IE_Pressed, this, &AFPlayerController::ToggleCrouch);
 
 	InputComponent->BindAction("Use", IE_Pressed, this, &AFPlayerController::Use);
+
+	InputComponent->BindAction("Fire", IE_Pressed, this, &AFPlayerController::StartFire);
+	InputComponent->BindAction("Fire", IE_Released, this, &AFPlayerController::StopFire);
 }
 
 void AFPlayerController::MoveForward(float Value)
@@ -122,5 +125,21 @@ void AFPlayerController::Use()
 	if (FCharacter)
 	{
 		FCharacter->Use();
+	}
+}
+
+void AFPlayerController::StartFire()
+{
+	if (FCharacter)
+	{
+		FCharacter->StartFire();
+	}
+}
+
+void AFPlayerController::StopFire()
+{
+	if (FCharacter)
+	{
+		FCharacter->StopFire();
 	}
 }

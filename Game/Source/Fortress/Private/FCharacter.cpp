@@ -214,3 +214,19 @@ bool AFCharacter::ServerUse_Validate()
 	return true;
 }
 
+void AFCharacter::StartFire()
+{
+	if (Weapon)
+	{
+		Weapon->StartFire();
+	}
+}
+
+void AFCharacter::StopFire()
+{
+	if (Weapon)
+	{
+		Weapon->StopFire();
+	}
+}
+
