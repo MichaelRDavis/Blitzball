@@ -62,10 +62,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	float Spread;
 
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	virtual void OnEquip();
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	virtual void UnEquip();
+
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	virtual void StartFire();
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	virtual void StopFire();
+
+	UFUNCTION(BlueprintCallable, Category = Firing)
+	virtual void FireInstantHit();
+
+	UFUNCTION(BlueprintCallable, Category = Firing)
+	virtual void FireProjectile();
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void AttachToOwner();

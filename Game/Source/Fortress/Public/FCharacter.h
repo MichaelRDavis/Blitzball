@@ -60,6 +60,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual AFInventoryItem* FindItem(TSubclassOf<AFInventoryItem> ItemClass);
 
+	/** Equips weapon from inventory */
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void EquipWeapon(AFWeapon* Weap);
+
 	/** Handles moving forward/backward */
 	virtual void MoveForward(float Value);
 

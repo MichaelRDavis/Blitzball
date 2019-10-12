@@ -4,6 +4,7 @@
 #include "FCharacterMovement.h"
 #include "FUsable.h"
 #include "FInventoryItem.h"
+#include "FWeapon.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -139,6 +140,15 @@ AFInventoryItem* AFCharacter::FindItem(TSubclassOf<AFInventoryItem> ItemClass)
 	}
 
 	return nullptr;
+}
+
+void AFCharacter::EquipWeapon(AFWeapon* Weap)
+{
+	if (Weap)
+	{
+		Weapon = Weap;
+		Weapon->OnEquip();
+	}
 }
 
 void AFCharacter::MoveForward(float Value)
