@@ -50,4 +50,12 @@ protected:
 
 	virtual void StartFire();
 	virtual void StopFire();
+
+	void ShowCharacterMenu();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
+	TSubclassOf<UUserWidget> CharacterMenuClass;
+
+	UPROPERTY()
+	UUserWidget* CurrentWidget;
 };

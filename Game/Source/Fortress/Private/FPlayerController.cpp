@@ -2,6 +2,8 @@
 
 #include "FPlayerController.h"
 #include "FCharacter.h"
+#include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 AFPlayerController::AFPlayerController()
 {
@@ -33,6 +35,7 @@ void AFPlayerController::SetupInputComponent()
 	InputComponent->BindAction("ToggleCrouch", IE_Pressed, this, &AFPlayerController::ToggleCrouch);
 
 	InputComponent->BindAction("Use", IE_Pressed, this, &AFPlayerController::Use);
+	InputComponent->BindAction("ShowMenu", IE_Pressed, this, &AFPlayerController::ShowCharacterMenu);
 
 	InputComponent->BindAction("Fire", IE_Pressed, this, &AFPlayerController::StartFire);
 	InputComponent->BindAction("Fire", IE_Released, this, &AFPlayerController::StopFire);
@@ -141,5 +144,19 @@ void AFPlayerController::StopFire()
 	if (FCharacter)
 	{
 		FCharacter->StopFire();
+	}
+}
+
+void AFPlayerController::ShowCharacterMenu()
+{
+	if (CharacterMenuClass)
+	{
+		CurrentWidget = CreateWidget<UUserWidget>(this, CharacterMenuClass);
+		if (CurrentWidget)
+		{
+			CurrentWidget->AddToViewport();
+			UWidgetBlueprintLibrary::SetInputMode_UIOnly(this, CurrentWidget);
+			bShowMouseCursor = true;
+		}
 	}
 }
