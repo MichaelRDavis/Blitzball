@@ -5,6 +5,7 @@
 #include "FMonster.h"
 #include "FCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 void UBTService_Sight::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
@@ -20,7 +21,7 @@ void UBTService_Sight::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 			const float VisionCone = FMath::Acos(Distance);
 			if (Distance < 55.0f)
 			{
-				OwnerComp.GetBlackboardComponent->SetValueAsEnum("State", EAIState::ECombat);
+				
 			}
 		}
 	}

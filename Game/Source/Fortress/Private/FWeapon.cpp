@@ -6,6 +6,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "DrawDebugHelpers.h"
+#include "TimerManager.h"
 
 #define COLLISION_WEAPON ECC_GameTraceChannel2
 
@@ -25,13 +26,28 @@ AFWeapon::AFWeapon()
 	MaxAmmo = 100;
 	MaxMagazineSize = 20;
 	InitialMagazines = 4;
+	CurrentState = EWeaponState::EIdle;
 	FireRate = 0.2f;
 	Spread = 5.0f;
 	MaxTracerRange = 10000.0f;
+	bIsEquipped = false;
+	bIsFiring = false;
+	LastFireTime = 0.0f;
 
 	SetReplicates(true);
 	bNetUseOwnerRelevancy = true;
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AFWeapon::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (InitialMagazines > 0)
+	{
+		MagazineSize = MaxMagazineSize;
+		Ammo = MaxMagazineSize * InitialMagazines;
+	}
 }
 
 void AFWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -39,29 +55,80 @@ void AFWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
+void AFWeapon::AddAmmo(int32 AddAmount)
+{
+	const int32 AmmoDelta = FMath::Max(0, MaxAmmo - Ammo);
+	AddAmount = FMath::Min(AddAmount, AmmoDelta);
+	Ammo += AddAmount;
+}
+
+void AFWeapon::ConsumeAmmo()
+{
+	MagazineSize--;
+}
+
+bool AFWeapon::CanFire() const
+{
+	return CurrentState == EWeaponState::EIdle || CurrentState == EWeaponState::EFiring;
+}
+
+bool AFWeapon::CanReload() const
+{
+	return MagazineSize < MaxMagazineSize && Ammo - MagazineSize > 0;
+}
+
 void AFWeapon::OnEquip()
 {
 	AttachToOwner();
+	bIsEquipped = true;
 }
 
 void AFWeapon::UnEquip()
 {
 	DetachFromOwner();
+	bIsEquipped = false;
 }
 
-void AFWeapon::Fire()
+void AFWeapon::K2_Fire_Implementation()
 {
-	FireInstantHit();
+	
+}
+
+void AFWeapon::FireShot()
+{
+	if (MagazineSize > 0 && CanFire())
+	{
+		Fire();
+		ConsumeAmmo();
+	}
 }
 
 void AFWeapon::StartFire()
 {
-	Fire();
+	if (Role < ROLE_Authority)
+	{
+		ServerStartFire();
+	}
+
+	if (!bIsFiring)
+	{
+		bIsFiring = true;
+		UpdateWeaponState();
+	}
 }
 
 void AFWeapon::StopFire()
 {
-	
+	if (Role < ROLE_Authority)
+	{
+		ServerStopFire();
+	}
+
+	if (bIsFiring)
+	{
+		bIsFiring = false;
+		UpdateWeaponState();
+	}
 }
 
 void AFWeapon::ServerStartFire_Implementation()
@@ -82,6 +149,65 @@ void AFWeapon::ServerStopFire_Implementation()
 bool AFWeapon::ServerStopFire_Validate()
 {
 	return true;
+}
+
+void AFWeapon::GoToWeaponState(EWeaponState NewWeaponState)
+{
+	const EWeaponState LocalCurrentState = CurrentState;
+
+	if (LocalCurrentState == EWeaponState::EFiring && NewWeaponState != EWeaponState::EFiring)
+	{
+		EndFiring();
+	}
+
+	CurrentState = NewWeaponState;
+
+	if (LocalCurrentState != EWeaponState::EFiring && NewWeaponState == EWeaponState::EFiring)
+	{
+		BeginFiring();
+	}
+}
+
+void AFWeapon::UpdateWeaponState()
+{
+	EWeaponState NewState = EWeaponState::EIdle;
+
+	if (bIsEquipped)
+	{
+		if (CanReload() == false)
+		{
+			NewState = CurrentState;
+		}
+		else
+		{
+			NewState = EWeaponState::EReloading;
+		}
+
+		if (bIsFiring == true && CanFire() == true)
+		{
+			NewState = EWeaponState::EFiring;
+		}
+	}
+
+	GoToWeaponState(NewState);
+}
+
+void AFWeapon::BeginFiring()
+{
+	const float GameTime = GetWorld()->GetTimeSeconds();
+	if (LastFireTime > 0.0f && FireRate > 0.0f && LastFireTime + FireRate > GameTime)
+	{
+		GetWorldTimerManager().SetTimer(FiringTimer, this, &AFWeapon::FireShot, LastFireTime + FireRate - GameTime, false);
+	}
+	else
+	{
+		FireShot();
+	}
+}
+
+void AFWeapon::EndFiring()
+{
+	GetWorldTimerManager().ClearTimer(FiringTimer);
 }
 
 void AFWeapon::FireInstantHit()

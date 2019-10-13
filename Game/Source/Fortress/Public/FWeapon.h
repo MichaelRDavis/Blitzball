@@ -46,27 +46,51 @@ class FORTRESS_API AFWeapon : public AFInventoryItem
 public:
 	AFWeapon();
 
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+	virtual void BeginPlay() override;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/** Weapon mesh: 1st person view */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Mesh)
 	USkeletalMeshComponent* Mesh;
 
+	/** Max ammo */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	int32 MaxAmmo;
+	/** Max magazine size */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	int32 MaxMagazineSize;
+	/** Initial magazines */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	int32 InitialMagazines;
+	/** Current total ammo */
 	UPROPERTY(BlueprintReadWrite, Replicated, Category = Weapon)
 	int32 Ammo;
+	/** Current ammo inside magazine */
 	UPROPERTY(BlueprintReadWrite, Replicated, Category = Weapon)
 	int32 MagazineSize;
+	/** Ammo cost for one shot */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	int32 AmmoCost;
 
+	/** Weapon ammo type */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	EAmmoType AmmoType;
+
+	/** Add ammo */
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = Weapon)
+	virtual void AddAmmo(int32 AddAmount);
+
+	/** Consume ammo */
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = Weapon)
+	virtual void ConsumeAmmo();
+
+	/** Query weapon ammo type */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category=Weapon)
+	virtual EAmmoType GetAmmoType() const
+	{
+		return AmmoType;
+	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	TSubclassOf<AFProjectile> ProjectileClass;
@@ -89,13 +113,36 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	float MaxTracerRange;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	bool bIsEquipped;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	bool bIsFiring;
+
+	UPROPERTY()
+	float LastFireTime;
+
+	FTimerHandle FiringTimer;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Weapon)
+	bool CanFire() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Weapon)
+	bool CanReload() const;
+
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void OnEquip();
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void UnEquip();
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, meta = (DisplayName = "Fire"))
+	void K2_Fire();
+	void K2_Fire_Implementation();
+
+	virtual void Fire() PURE_VIRTUAL(AFWeapon::Fire, );
+
 	UFUNCTION(BlueprintCallable, Category = Firing)
-	virtual void Fire();
+	virtual void FireShot();
 
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	virtual void StartFire();
@@ -111,6 +158,12 @@ public:
 	void ServerStopFire();
 	void ServerStopFire_Implementation();
 	bool ServerStopFire_Validate();
+
+	virtual void GoToWeaponState(EWeaponState NewWeaponState);
+	virtual void UpdateWeaponState();
+
+	virtual void BeginFiring();
+	virtual void EndFiring();
 
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	virtual void FireInstantHit();

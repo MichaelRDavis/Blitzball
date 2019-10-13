@@ -5,6 +5,9 @@
 #include "FCharacterBase.h"
 #include "FMonster.generated.h"
 
+class UBehaviorTree;
+class AFWeapon;
+
 UCLASS()
 class FORTRESS_API AFMonster : public AFCharacterBase
 {
@@ -12,4 +15,10 @@ class FORTRESS_API AFMonster : public AFCharacterBase
 	
 public:
 	AFMonster(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI)
+	UBehaviorTree* MonsterBehavior;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	TSubclassOf<AFWeapon> Weapon;
 };

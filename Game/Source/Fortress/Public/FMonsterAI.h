@@ -8,7 +8,7 @@
 class UBehaviorTreeComponent;
 
 UENUM()
-enum class EAIState
+enum class EAIState : uint8
 {
 	EIdle UMETA(DisplayName="Idle"),
 	ECombat UMETA(DisplayName="Combat")
