@@ -101,6 +101,17 @@ void AFWeapon::FireShot()
 		Fire();
 		ConsumeAmmo();
 	}
+
+	if (FOwner)
+	{
+		bool bRefiring = CurrentState == EWeaponState::EFiring && FireRate > 0.0f;
+		if (bRefiring)
+		{
+			GetWorldTimerManager().SetTimer(FiringTimer, this, &AFWeapon::FireShot, FireRate, false);
+		}
+	}
+
+	LastFireTime = GetWorld()->GetTimeSeconds();
 }
 
 void AFWeapon::StartFire()
@@ -174,14 +185,14 @@ void AFWeapon::UpdateWeaponState()
 
 	if (bIsEquipped)
 	{
-		if (CanReload() == false)
-		{
-			NewState = CurrentState;
-		}
-		else
-		{
-			NewState = EWeaponState::EReloading;
-		}
+		//if (CanReload() == false)
+		//{
+		//	NewState = CurrentState;
+		//}
+		//else
+		//{
+		//	NewState = EWeaponState::EReloading;
+		//}
 
 		if (bIsFiring == true && CanFire() == true)
 		{
