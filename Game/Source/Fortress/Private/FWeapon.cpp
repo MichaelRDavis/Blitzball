@@ -100,6 +100,7 @@ void AFWeapon::FireShot()
 	{
 		Fire();
 		ConsumeAmmo();
+		ApplyRecoil();
 	}
 
 	if (FOwner)
@@ -239,6 +240,19 @@ void AFWeapon::FireInstantHit()
 void AFWeapon::FireProjectile()
 {
 
+}
+
+void AFWeapon::ApplyRecoil()
+{
+	float Pitch = 0.0f;
+	Recoil = FMath::FInterpTo(Recoil, 0, GetWorld()->GetDeltaSeconds(), -10.0f);
+	RecoilRecovery = FMath::FInterpTo(RecoilRecovery, -Recoil, GetWorld()->GetDeltaSeconds(), 20.0f);
+	Pitch = Recoil + RecoilRecovery;
+
+	if (FOwner)
+	{
+		FOwner->AddControllerPitchInput(-Pitch);
+	}
 }
 
 void AFWeapon::AttachToOwner()

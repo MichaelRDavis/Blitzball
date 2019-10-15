@@ -8,8 +8,8 @@
 
 class AFProjectile;
 
-UENUM()
-enum class EWeaponState 
+UENUM(BlueprintType)
+enum class EWeaponState : uint8
 {
 	EIdle,
 	EFiring,
@@ -17,8 +17,8 @@ enum class EWeaponState
 	EEquiping
 };
 
-UENUM()
-enum class EAmmoType
+UENUM(BlueprintType)
+enum class EAmmoType : uint8
 {
 	EBullet UMETA(DisplayName = "Bullet"),
 	EEnergy UMETA(DisplayName = "Energy"),
@@ -113,6 +113,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	float MaxTracerRange;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float Recoil;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float RecoilRecovery;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	bool bIsEquipped;
 
@@ -170,6 +176,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	virtual void FireProjectile();
+
+	UFUNCTION(BlueprintCallable, Category = Firing)
+	virtual void ApplyRecoil();
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void AttachToOwner();
