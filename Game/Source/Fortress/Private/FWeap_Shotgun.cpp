@@ -7,3 +7,11 @@ AFWeap_Shotgun::AFWeap_Shotgun()
 {
 
 }
+
+void AFWeap_Shotgun::Fire()
+{
+	for (int32 i = 0; i < AmmoCost; i++)
+	{
+		FireInstantHit();
+	}
+}

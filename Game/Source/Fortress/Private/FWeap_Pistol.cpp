@@ -6,3 +6,8 @@ AFWeap_Pistol::AFWeap_Pistol()
 {
 
 }
+
+void AFWeap_Pistol::Fire()
+{
+	FireInstantHit();
+}

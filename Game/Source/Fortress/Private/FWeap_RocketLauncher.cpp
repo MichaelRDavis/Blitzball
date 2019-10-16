@@ -7,3 +7,8 @@ AFWeap_RocketLauncher::AFWeap_RocketLauncher()
 {
 
 }
+
+void AFWeap_RocketLauncher::Fire()
+{
+	FireProjectile();
+}

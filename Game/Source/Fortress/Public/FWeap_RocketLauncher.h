@@ -13,4 +13,6 @@ class FORTRESS_API AFWeap_RocketLauncher : public AFWeapon
 	
 public:
 	AFWeap_RocketLauncher();
+
+	void Fire();
 };

@@ -13,4 +13,6 @@ class FORTRESS_API AFWeap_Pistol : public AFWeapon
 	
 public:
 	AFWeap_Pistol();
+
+	void Fire();
 };

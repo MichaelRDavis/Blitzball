@@ -66,6 +66,7 @@ void AFWeapon::AddAmmo(int32 AddAmount)
 void AFWeapon::ConsumeAmmo()
 {
 	MagazineSize--;
+	Ammo--;
 }
 
 bool AFWeapon::CanFire() const
