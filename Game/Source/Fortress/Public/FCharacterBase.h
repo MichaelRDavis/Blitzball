@@ -40,6 +40,14 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
 	int32 GetHealth() const;
 
+	/** Get the max health of the pawn */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	int32 GetMaxHealth() const;
+
+	/** Check if pawn is dead */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	bool IsDead() const;
+
 protected:
 	/** Identifies if pawn is in its dying state */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pawn)

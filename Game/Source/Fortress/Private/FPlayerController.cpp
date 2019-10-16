@@ -39,6 +39,7 @@ void AFPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("Fire", IE_Pressed, this, &AFPlayerController::StartFire);
 	InputComponent->BindAction("Fire", IE_Released, this, &AFPlayerController::StopFire);
+	InputComponent->BindAction("Reload", IE_Pressed, this, &AFPlayerController::OnReload);
 }
 
 void AFPlayerController::MoveForward(float Value)
@@ -144,6 +145,14 @@ void AFPlayerController::StopFire()
 	if (FCharacter)
 	{
 		FCharacter->StopFire();
+	}
+}
+
+void AFPlayerController::OnReload()
+{
+	if (FCharacter)
+	{
+		FCharacter->Reload();
 	}
 }
 

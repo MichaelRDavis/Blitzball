@@ -230,3 +230,21 @@ void AFCharacter::StopFire()
 	}
 }
 
+void AFCharacter::Reload()
+{
+	if (Weapon)
+	{
+		Weapon->StartReload();
+	}
+}
+
+bool AFCharacter::CanFire() const
+{
+	return !IsDead();
+}
+
+bool AFCharacter::CanReload()
+{
+	return !IsDead();
+}
+

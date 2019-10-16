@@ -76,7 +76,7 @@ void AFCharacterBase::Death()
 		return;
 	}
 
-	bIsDead = false;
+	bIsDead = true;
 }
 
 void AFCharacterBase::StartRagdoll()
@@ -87,5 +87,15 @@ void AFCharacterBase::StartRagdoll()
 int32 AFCharacterBase::GetHealth() const
 {
 	return Health;
+}
+
+int32 AFCharacterBase::GetMaxHealth() const
+{
+	return MaxHealth;
+}
+
+bool AFCharacterBase::IsDead() const
+{
+	return Health < 0 || bIsDead;
 }
 

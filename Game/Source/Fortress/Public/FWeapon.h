@@ -125,6 +125,9 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	bool bIsFiring;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	bool bIsReloading;
+
 	UPROPERTY()
 	float LastFireTime;
 
@@ -164,6 +167,24 @@ public:
 	void ServerStopFire();
 	void ServerStopFire_Implementation();
 	bool ServerStopFire_Validate();
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	virtual void Reload();
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	virtual void StartReload();
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	virtual void StopReload();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerStartReload();
+	void ServerStartReload_Implementation();
+	bool ServerStartReload_Validate();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerStopReload();
+	void ServerStopReload_Implementation();
+	bool ServerStopReload_Validate();
 
 	virtual void GoToWeaponState(EWeaponState NewWeaponState);
 	virtual void UpdateWeaponState();

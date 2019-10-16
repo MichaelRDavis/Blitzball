@@ -32,6 +32,7 @@ AFWeapon::AFWeapon()
 	MaxTracerRange = 10000.0f;
 	bIsEquipped = false;
 	bIsFiring = false;
+	bIsReloading = false;
 	LastFireTime = 0.0f;
 
 	SetReplicates(true);
@@ -159,6 +160,61 @@ void AFWeapon::ServerStopFire_Implementation()
 }
 
 bool AFWeapon::ServerStopFire_Validate()
+{
+	return true;
+}
+
+void AFWeapon::Reload()
+{
+	int32 ClipDelta = FMath::Min(MaxMagazineSize - MagazineSize, Ammo - MagazineSize);
+	if (ClipDelta > 0)
+	{
+		MagazineSize += ClipDelta;
+	}
+}
+
+void AFWeapon::StartReload()
+{
+	if (Role < ROLE_Authority)
+	{
+		ServerStartReload();
+	}
+
+	if (CanReload())
+	{
+		bIsReloading = true;
+		Reload();
+	}
+
+	// TODO: Play reload animation
+	// TODO: Play reload sound
+	// TODO: Notify player HUD of reload
+}
+
+void AFWeapon::StopReload()
+{
+	if (CurrentState == EWeaponState::EReloading)
+	{
+		bIsReloading = false;
+	}
+}
+
+void AFWeapon::ServerStartReload_Implementation()
+{
+	StartReload();
+}
+
+bool AFWeapon::ServerStartReload_Validate()
+{
+	return true;
+}
+
+void AFWeapon::ServerStopReload_Implementation()
+{
+	StopReload();
+}
+
+bool AFWeapon::ServerStopReload_Validate()
 {
 	return true;
 }

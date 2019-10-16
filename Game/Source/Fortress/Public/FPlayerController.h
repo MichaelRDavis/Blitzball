@@ -51,6 +51,8 @@ protected:
 	virtual void StartFire();
 	virtual void StopFire();
 
+	virtual void OnReload();
+
 	void ShowCharacterMenu();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)

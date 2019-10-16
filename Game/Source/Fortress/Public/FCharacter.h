@@ -87,6 +87,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void StopFire();
 
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void Reload();
+
+	/** Check if pawn can fire primary weapon */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	virtual bool CanFire() const;
+
+	/** Check if pawn can reload primary weapon */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	virtual bool CanReload();
+
 protected:
 	/** Items in inventory */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
