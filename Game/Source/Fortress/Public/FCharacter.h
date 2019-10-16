@@ -3,17 +3,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
 #include "FCharacterBase.h"
 #include "FCharacter.generated.h"
 
 class UCameraComponent;
+class UAbilitySystemComponent;
 class UFCharacterMovement;
 class AFInventoryItem;
 class AFWeapon;
 class AFUsable;
 
 UCLASS(config=Game)
-class FORTRESS_API AFCharacter : public AFCharacterBase
+class FORTRESS_API AFCharacter : public AFCharacterBase, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -21,6 +23,11 @@ public:
 	AFCharacter(const FObjectInitializer& ObjectInitializer);
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UAbilitySystemComponent* GetAbilitySystemComponent() const override
+	{
+		return AbilitySystem;
+	}
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Pawn)
@@ -32,6 +39,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Character)
 	UFCharacterMovement* FCharacterMovement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
+	UAbilitySystemComponent* AbilitySystem;
 
 protected:
 	virtual void BeginPlay() override;

@@ -54,6 +54,9 @@ void AFWeapon::BeginPlay()
 void AFWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AFWeapon, Ammo, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(AFWeapon, MagazineSize, COND_OwnerOnly);
 }
 
 void AFWeapon::AddAmmo(int32 AddAmount)
@@ -292,6 +295,8 @@ void AFWeapon::FireInstantHit()
 	const FVector EndTrace = StartTrace + ShootDir * MaxTracerRange;
 
 	const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
+
+	OnHitDamage(Impact, ShootDir);
 }
 
 void AFWeapon::FireProjectile()
@@ -309,6 +314,20 @@ void AFWeapon::ApplyRecoil()
 	if (FOwner)
 	{
 		FOwner->AddControllerPitchInput(-Pitch);
+	}
+}
+
+void AFWeapon::OnHitDamage(FHitResult Hit, const FVector& FireDir)
+{
+	if (Hit.Actor != nullptr)
+	{
+		FPointDamageEvent PointDamage;
+		PointDamage.DamageTypeClass = InstantHitInfo.DamageType;
+		PointDamage.HitInfo = Hit;
+		PointDamage.ShotDirection = FireDir;
+		PointDamage.Damage = InstantHitInfo.Damage;
+
+		Hit.Actor->TakeDamage(InstantHitInfo.Damage, PointDamage, FOwner->GetController(), this);
 	}
 }
 

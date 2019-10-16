@@ -17,6 +17,8 @@ public class Fortress : ModuleRules
                 "OnlineSubsystem",
                 "UMG",
                 "AIModule",
+                "GameplayAbilities",
+                "GameplayTags",
                 "GameplayTasks"
             }
         );

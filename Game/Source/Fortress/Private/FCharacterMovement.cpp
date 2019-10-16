@@ -17,6 +17,9 @@ UFCharacterMovement::UFCharacterMovement()
 void UFCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
 {
 	Super::UpdateFromCompressedFlags(Flags);
+
+	bWantsToSprint = (Flags&FSavedMove_FCharacter::FLAG_Custom_0) != 0;
+	bIsTargeting = (Flags & FSavedMove_FCharacter::FLAG_Custom_1) != 0;
 }
 
 FNetworkPredictionData_Client* UFCharacterMovement::GetPredictionData_Client() const
@@ -78,6 +81,9 @@ float UFCharacterMovement::GetMaxAcceleration() const
 void FSavedMove_FCharacter::Clear()
 {
 	Super::Clear();
+
+	bSavedWantsToSprint = false;
+	bSavedIsTargeting = false;
 }
 
 void FSavedMove_FCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData)
@@ -87,7 +93,8 @@ void FSavedMove_FCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime,
 	UFCharacterMovement* CharMov = Cast<UFCharacterMovement>(Character->GetCharacterMovement());
 	if (CharMov)
 	{
-
+		bSavedWantsToSprint = CharMov->bWantsToSprint;
+		bSavedIsTargeting = CharMov->bIsTargeting;
 	}
 }
 
@@ -95,11 +102,31 @@ uint8 FSavedMove_FCharacter::GetCompressedFlags() const
 {
 	uint8 Result = Super::GetCompressedFlags();
 
+	if (bSavedWantsToSprint)
+	{
+		Result |= FLAG_Custom_0;
+	}
+
+	if (bSavedIsTargeting)
+	{
+		Result |= FLAG_Custom_1;
+	}
+
 	return Result;
 }
 
 bool FSavedMove_FCharacter::CanCombineWith(const FSavedMovePtr& NewMove, ACharacter* InCharacter, float MaxDelta) const
 {
+	if (bSavedWantsToSprint != ((FSavedMove_FCharacter*)& NewMove)->bSavedWantsToSprint)
+	{
+		return false;
+	}
+
+	if (bSavedIsTargeting != ((FSavedMove_FCharacter*)& NewMove)->bSavedIsTargeting)
+	{
+		return false;
+	}
+
 	return Super::CanCombineWith(NewMove, InCharacter, MaxDelta);
 }
 

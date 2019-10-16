@@ -55,6 +55,9 @@ class FSavedMove_FCharacter : public FSavedMove_Character
 public:
 	typedef FSavedMove_Character Super;
 
+	bool bSavedWantsToSprint;
+	bool bSavedIsTargeting;
+
 	virtual void Clear() override;
 	virtual void SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData) override;
 	virtual uint8 GetCompressedFlags() const override;

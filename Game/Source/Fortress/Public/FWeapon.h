@@ -202,6 +202,9 @@ public:
 	virtual void ApplyRecoil();
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void OnHitDamage(FHitResult Hit, const FVector& FireDir);
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void AttachToOwner();
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void DetachFromOwner();

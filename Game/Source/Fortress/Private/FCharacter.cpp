@@ -5,6 +5,7 @@
 #include "FUsable.h"
 #include "FInventoryItem.h"
 #include "FWeapon.h"
+#include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -31,12 +32,14 @@ AFCharacter::AFCharacter(const FObjectInitializer& ObjectInitializer)
 
 	FCharacterMovement = Cast<UFCharacterMovement>(GetCharacterMovement());
 
+	AbilitySystem = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
+
 	GetMesh()->SetOwnerNoSee(true);
 	GetMesh()->bReceivesDecals = false;
 
 	Health = 0;
 	MaxHealth = 100;
-	Shield = 0;
+	Shield = 50;
 	MaxShield = 100;
 	UseDistance = 400.0f;
 	bIsUsableInFocus = false;

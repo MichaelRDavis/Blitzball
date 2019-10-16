@@ -1,11 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "FCharacterBase.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
 AFCharacterBase::AFCharacterBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	GetMesh()->SetCollisionObjectType(ECC_Pawn);
+	GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
+
+	Health = 0;
+	MaxHealth = 50;
+	Shield = 0;
+	MaxShield = 0;
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -20,6 +29,11 @@ void AFCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 void AFCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (Health == 0)
+	{
+		Health = MaxHealth;
+	}
 }
 
 void AFCharacterBase::Tick(float DeltaTime)
@@ -37,6 +51,7 @@ float AFCharacterBase::TakeDamage(float Damage, struct FDamageEvent const& Damag
 	int32 ResultDamage = FMath::TruncToInt(Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser));
 	if (ResultDamage > 0)
 	{
+		ModifyDamageTaken(ResultDamage);
 		Health -= ResultDamage;
 		if (Health <= 0)
 		{
@@ -69,6 +84,16 @@ bool AFCharacterBase::Die(AController* EvnetInstigator, const FDamageEvent& Dama
 	return true;
 }
 
+void AFCharacterBase::ModifyDamageTaken(int32& Damage)
+{
+	if (Damage > 0 && Shield > 0)
+	{
+		int32 AbsorbDamage = FMath::Min(Shield, FMath::Max<int32>(1, Damage * 0.5f));
+		Damage -= AbsorbDamage;
+		Shield = FMath::Max(0, Shield - AbsorbDamage);
+	}
+}
+
 void AFCharacterBase::Death()
 {
 	if (bIsDead)
@@ -76,12 +101,22 @@ void AFCharacterBase::Death()
 		return;
 	}
 
+	bReplicateMovement = false;
+	TearOff();
 	bIsDead = true;
+
+	StartRagdoll();
 }
 
 void AFCharacterBase::StartRagdoll()
 {
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->WakeAllRigidBodies();
+	GetMesh()->bBlendPhysics = true;
 
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+	GetCharacterMovement()->SetComponentTickEnabled(false);
 }
 
 int32 AFCharacterBase::GetHealth() const

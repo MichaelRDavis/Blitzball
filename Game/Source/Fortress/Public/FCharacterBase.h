@@ -28,6 +28,10 @@ public:
 	bool K2_Die(AController* EventInstigator, TSubclassOf<UDamageType> DamageType);
 	virtual bool Die(AController* EvnetInstigator, const FDamageEvent& DamageEvent, AActor* DamageCauser = nullptr);
 
+	/** Modify damage taken by this pawn */
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void ModifyDamageTaken(int32& Damage);
+
 	/** Called on pawn death, notifies server and client of death */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void Death();
