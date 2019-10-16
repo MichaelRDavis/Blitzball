@@ -241,6 +241,11 @@ void AFCharacter::Reload()
 	}
 }
 
+void AFCharacter::OnMelee()
+{
+
+}
+
 bool AFCharacter::CanFire() const
 {
 	return !IsDead();
@@ -249,5 +254,15 @@ bool AFCharacter::CanFire() const
 bool AFCharacter::CanReload()
 {
 	return !IsDead();
+}
+
+FHitResult AFCharacter::RayTrace(const FVector& StartTrace, const FVector& EndTrace) const
+{
+	FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(RayTrace), true, Instigator);
+
+	FHitResult Hit(ForceInit);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECC_GameTraceChannel3, TraceParams);
+
+	return Hit;
 }
 

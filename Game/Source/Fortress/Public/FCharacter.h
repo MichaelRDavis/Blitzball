@@ -100,6 +100,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void Reload();
 
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void OnMelee();
+
 	/** Check if pawn can fire primary weapon */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
 	virtual bool CanFire() const;
@@ -126,4 +129,11 @@ protected:
 	/** Sound played on sprint */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	USoundBase* SprintSound;
+
+	/** Sound played on melee */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	USoundBase* MeleeSound;
+
+private:
+	FHitResult RayTrace(const FVector& StartTrace, const FVector& EndTrace) const;
 };
