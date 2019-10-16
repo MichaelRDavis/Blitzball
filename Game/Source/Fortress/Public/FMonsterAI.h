@@ -7,13 +7,6 @@
 
 class UBehaviorTreeComponent;
 
-UENUM()
-enum class EAIState : uint8
-{
-	EIdle UMETA(DisplayName="Idle"),
-	ECombat UMETA(DisplayName="Combat")
-};
-
 UCLASS()
 class FORTRESS_API AFMonsterAI : public AAIController
 {
@@ -23,12 +16,7 @@ public:
 	AFMonsterAI();
 
 	virtual void OnPossess(APawn* InPawn) override;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category=AI)
-	EAIState AIState;
-
-	UFUNCTION()
-	void SetAIState(EAIState NewAIState);
+	virtual void OnUnPossess() override;
 
 private:
 	UPROPERTY()
@@ -36,6 +24,9 @@ private:
 
 	UPROPERTY()
 	UBehaviorTreeComponent* BehaviorTreeComp;
+
+protected:
+	int32 EnemyKeyID;
 
 public:
 	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }

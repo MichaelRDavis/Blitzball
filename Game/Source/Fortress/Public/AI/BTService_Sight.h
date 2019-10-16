@@ -14,6 +14,6 @@ class FORTRESS_API UBTService_Sight : public UBTService
 public:
 	void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FBlackboardKeySelector AIStateKey;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI)
+	FBlackboardKeySelector EnemyKey;
 };

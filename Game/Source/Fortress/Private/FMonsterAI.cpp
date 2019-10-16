@@ -3,6 +3,7 @@
 #include "FMonsterAI.h"
 #include "FMonster.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 
 AFMonsterAI::AFMonsterAI()
@@ -10,8 +11,6 @@ AFMonsterAI::AFMonsterAI()
 	BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComp"));
 	BehaviorTreeComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComp"));
 	BrainComponent = BehaviorTreeComp;
-
-	AIState = EAIState::EIdle;
 }
 
 void AFMonsterAI::OnPossess(APawn* InPawn)
@@ -21,11 +20,20 @@ void AFMonsterAI::OnPossess(APawn* InPawn)
 	AFMonster* Monster = Cast<AFMonster>(InPawn);
 	if (Monster && Monster->MonsterBehavior)
 	{
+		if (Monster->MonsterBehavior->BlackboardAsset)
+		{
+			BlackboardComp->InitializeBlackboard(*Monster->MonsterBehavior->BlackboardAsset);
+		}
 
+		EnemyKeyID = BlackboardComp->GetKeyID("Enemy");
+
+		BehaviorTreeComp->StartTree(*(Monster->MonsterBehavior));
 	}
 }
 
-void AFMonsterAI::SetAIState(EAIState NewAIState)
+void AFMonsterAI::OnUnPossess()
 {
-	AIState = NewAIState;
+	Super::OnUnPossess();
+
+	BehaviorTreeComp->StopTree();
 }
