@@ -105,7 +105,6 @@ void AFWeapon::FireShot()
 	{
 		Fire();
 		ConsumeAmmo();
-		ApplyRecoil();
 	}
 
 	if (FOwner)
@@ -114,6 +113,7 @@ void AFWeapon::FireShot()
 		if (bRefiring)
 		{
 			GetWorldTimerManager().SetTimer(FiringTimer, this, &AFWeapon::FireShot, FireRate, false);
+			ApplyRecoil();
 		}
 	}
 
@@ -301,7 +301,8 @@ void AFWeapon::FireInstantHit()
 
 void AFWeapon::FireProjectile()
 {
-
+	FVector ShootDir = GetAdjustedAim();
+	FVector Origin = GetMuzzleLocation();
 }
 
 void AFWeapon::ApplyRecoil()
@@ -374,6 +375,16 @@ FVector AFWeapon::GetFireStartLocation(const FVector& AimDir) const
 	}
 
 	return OutStartTrace;
+}
+
+FVector AFWeapon::GetMuzzleLocation() const
+{
+	return Mesh->GetSocketLocation(MuzzleSocket);
+}
+
+FVector AFWeapon::GetMuzzleDirection() const
+{
+	return Mesh->GetSocketRotation(MuzzleSocket).Vector();
 }
 
 FHitResult AFWeapon::WeaponTrace(const FVector& TraceFrom, const FVector TraceTo) const

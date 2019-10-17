@@ -105,6 +105,9 @@ public:
 	FName HandsAttachSocket;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	FName MuzzleSocket;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	float FireRate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
@@ -213,6 +216,11 @@ public:
 	FVector GetAdjustedAim() const;
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Weapon)
 	FVector GetFireStartLocation(const FVector& AimDir) const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Weapon)
+	FVector GetMuzzleLocation() const;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Weapon)
+	FVector GetMuzzleDirection() const;
 
 	FHitResult WeaponTrace(const FVector& TraceFrom, const FVector TraceTo) const;
 };

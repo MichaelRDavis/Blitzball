@@ -36,12 +36,34 @@ AFProjectile::AFProjectile()
 
 void AFProjectile::ProcessHit_Implementation(AActor* OtherActor, UPrimitiveComponent* OtherComp, const FVector& HitLocation, const FVector& HitNormal)
 {
-
+	if (OtherActor != this)
+	{
+		if (OtherActor != nullptr)
+		{
+			ApplyDamage(OtherActor, OtherComp, HitLocation, HitNormal);
+		}
+	}
 }
 
 void AFProjectile::ApplyDamage_Implementation(AActor* OtherActor, UPrimitiveComponent* OtherComp, const FVector HitLocation, const FVector& HitNormal)
 {
-
+	if (DamageParams.OuterRadius > 0.0f)
+	{
+		FRadialDamageEvent Event;
+		Event.Params = DamageParams;
+		Event.Params.MinimumDamage = DamageParams.BaseDamage;
+		Event.DamageTypeClass = DamageType;
+		Event.Origin = HitLocation;
+		OtherActor->TakeDamage(Event.Params.BaseDamage, Event, InstigatorController, this);
+	}
+	else
+	{
+		FPointDamageEvent Event;
+		Event.Damage = DamageParams.BaseDamage;
+		Event.DamageTypeClass = DamageType;
+		Event.ShotDirection = GetVelocity().GetSafeNormal();
+		OtherActor->TakeDamage(Event.Damage, Event, InstigatorController, this);
+	}
 }
 
 void AFProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
