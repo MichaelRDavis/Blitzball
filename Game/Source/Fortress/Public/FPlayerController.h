@@ -51,6 +51,9 @@ protected:
 	virtual void StartFire();
 	virtual void StopFire();
 
+	virtual void OnStartTargeting();
+	virtual void OnStopTargeting();
+
 	virtual void OnReload();
 
 	void ShowCharacterMenu();

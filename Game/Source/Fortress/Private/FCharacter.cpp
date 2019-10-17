@@ -198,6 +198,32 @@ void AFCharacter::StopSprinting()
 	}
 }
 
+bool AFCharacter::IsSprinting() const
+{
+	return FCharacterMovement->bWantsToSprint;
+}
+
+void AFCharacter::StartTargeting()
+{
+	if (FCharacterMovement && Weapon != nullptr)
+	{
+		FCharacterMovement->SetTargeting(true);
+	}
+}
+
+void AFCharacter::StopTargeting()
+{
+	if (FCharacterMovement)
+	{
+		FCharacterMovement->SetTargeting(false);
+	}
+}
+
+bool AFCharacter::IsTargeting() const
+{
+	return FCharacterMovement->bIsTargeting;
+}
+
 void AFCharacter::Use()
 {
 	ServerUse();

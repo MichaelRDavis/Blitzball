@@ -85,6 +85,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void StopSprinting();
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	virtual bool IsSprinting() const;
+
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void StartTargeting();
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void StopTargeting();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	virtual bool IsTargeting() const;
+
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void Use();
 	UFUNCTION(Server, Reliable, WithValidation)

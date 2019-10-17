@@ -2,12 +2,13 @@
 
 #include "FPlayerController.h"
 #include "FCharacter.h"
+#include "FPlayerCameraManager.h"
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
 AFPlayerController::AFPlayerController()
 {
-
+	PlayerCameraManagerClass = AFPlayerCameraManager::StaticClass();
 }
 
 void AFPlayerController::SetPawn(APawn* InPawn)
@@ -39,6 +40,8 @@ void AFPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("Fire", IE_Pressed, this, &AFPlayerController::StartFire);
 	InputComponent->BindAction("Fire", IE_Released, this, &AFPlayerController::StopFire);
+	InputComponent->BindAction("Targeting", IE_Pressed, this, &AFPlayerController::OnStartTargeting);
+	InputComponent->BindAction("Targeting", IE_Released, this, &AFPlayerController::OnStopTargeting);
 	InputComponent->BindAction("Reload", IE_Pressed, this, &AFPlayerController::OnReload);
 }
 
@@ -145,6 +148,22 @@ void AFPlayerController::StopFire()
 	if (FCharacter)
 	{
 		FCharacter->StopFire();
+	}
+}
+
+void AFPlayerController::OnStartTargeting()
+{
+	if (FCharacter)
+	{
+		FCharacter->StartTargeting();
+	}
+}
+
+void AFPlayerController::OnStopTargeting()
+{
+	if (FCharacter)
+	{
+		FCharacter->StopTargeting();
 	}
 }
 

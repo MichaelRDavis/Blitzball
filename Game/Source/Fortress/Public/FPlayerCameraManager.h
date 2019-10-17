@@ -12,4 +12,10 @@ class FORTRESS_API AFPlayerCameraManager : public APlayerCameraManager
 	
 public:
 	AFPlayerCameraManager();
+
+	virtual void UpdateCamera(float DeltaTime) override;
+
+private:
+	float NormalFOV;
+	float TargetingFOV;
 };

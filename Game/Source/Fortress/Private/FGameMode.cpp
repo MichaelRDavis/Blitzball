@@ -2,11 +2,13 @@
 
 #include "FGameMode.h"
 #include "FPlayerController.h"
+#include "FPlayerState.h"
 #include "FCharacter.h"
 
 AFGameMode::AFGameMode()
 {
 	PlayerControllerClass = AFPlayerController::StaticClass();
+	PlayerStateClass = AFPlayerState::StaticClass();
 }
 
 UClass* AFGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
