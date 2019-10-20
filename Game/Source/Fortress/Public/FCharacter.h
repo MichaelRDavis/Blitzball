@@ -74,6 +74,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void EquipWeapon(AFWeapon* Weap);
 
+	/** Swaps current weapon for a new weapon */
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void SwapWeapon(AFWeapon* Weap);
+
 	/** Handles moving forward/backward */
 	virtual void MoveForward(float Value);
 
@@ -127,9 +131,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
 	TArray<AFInventoryItem*> Inventory;
 
+	/** Max inventory size */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	int32 MaxInventorySize;
+
 	/** Currently equipped weapon */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
 	AFWeapon* Weapon;
+
+	/** Characters secondary weapon */
 	UPROPERTY(BlueprintReadOnly, Category = Pawn)
 	AFWeapon* SecondaryWeapon;
 

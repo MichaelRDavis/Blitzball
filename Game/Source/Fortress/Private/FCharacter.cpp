@@ -154,6 +154,14 @@ void AFCharacter::EquipWeapon(AFWeapon* Weap)
 	}
 }
 
+void AFCharacter::SwapWeapon(AFWeapon* Weap)
+{
+	if (Weap)
+	{
+		// TODO: Check if we can swap weapon
+	}
+}
+
 void AFCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
