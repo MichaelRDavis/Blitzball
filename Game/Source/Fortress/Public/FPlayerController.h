@@ -46,21 +46,13 @@ protected:
 	virtual void UnCrouch();
 	virtual void ToggleCrouch();
 
-	virtual void Use();
+	virtual void OnUse();
 
-	virtual void StartFire();
-	virtual void StopFire();
+	virtual void OnStartFire();
+	virtual void OnStopFire();
 
 	virtual void OnStartTargeting();
 	virtual void OnStopTargeting();
 
 	virtual void OnReload();
-
-	void ShowCharacterMenu();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
-	TSubclassOf<UUserWidget> CharacterMenuClass;
-
-	UPROPERTY()
-	UUserWidget* CurrentWidget;
 };

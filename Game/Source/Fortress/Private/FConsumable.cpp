@@ -17,7 +17,7 @@ void AFConsumable::Destroyed()
 
 void AFConsumable::Use_Implementation()
 {
-	StartUseTimer();
+	
 }
 
 void AFConsumable::StartUseTimer()

@@ -35,11 +35,10 @@ void AFPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Crouch", IE_Released, this, &AFPlayerController::UnCrouch);
 	InputComponent->BindAction("ToggleCrouch", IE_Pressed, this, &AFPlayerController::ToggleCrouch);
 
-	InputComponent->BindAction("Use", IE_Pressed, this, &AFPlayerController::Use);
-	InputComponent->BindAction("ShowMenu", IE_Pressed, this, &AFPlayerController::ShowCharacterMenu);
+	InputComponent->BindAction("Use", IE_Pressed, this, &AFPlayerController::OnUse);
 
-	InputComponent->BindAction("Fire", IE_Pressed, this, &AFPlayerController::StartFire);
-	InputComponent->BindAction("Fire", IE_Released, this, &AFPlayerController::StopFire);
+	InputComponent->BindAction("Fire", IE_Pressed, this, &AFPlayerController::OnStartFire);
+	InputComponent->BindAction("Fire", IE_Released, this, &AFPlayerController::OnStopFire);
 	InputComponent->BindAction("Targeting", IE_Pressed, this, &AFPlayerController::OnStartTargeting);
 	InputComponent->BindAction("Targeting", IE_Released, this, &AFPlayerController::OnStopTargeting);
 	InputComponent->BindAction("Reload", IE_Pressed, this, &AFPlayerController::OnReload);
@@ -127,7 +126,7 @@ void AFPlayerController::ToggleCrouch()
 	}
 }
 
-void AFPlayerController::Use()
+void AFPlayerController::OnUse()
 {
 	if (FCharacter)
 	{
@@ -135,7 +134,7 @@ void AFPlayerController::Use()
 	}
 }
 
-void AFPlayerController::StartFire()
+void AFPlayerController::OnStartFire()
 {
 	if (FCharacter)
 	{
@@ -143,7 +142,7 @@ void AFPlayerController::StartFire()
 	}
 }
 
-void AFPlayerController::StopFire()
+void AFPlayerController::OnStopFire()
 {
 	if (FCharacter)
 	{
@@ -172,19 +171,5 @@ void AFPlayerController::OnReload()
 	if (FCharacter)
 	{
 		FCharacter->Reload();
-	}
-}
-
-void AFPlayerController::ShowCharacterMenu()
-{
-	if (CharacterMenuClass)
-	{
-		CurrentWidget = CreateWidget<UUserWidget>(this, CharacterMenuClass);
-		if (CurrentWidget)
-		{
-			CurrentWidget->AddToViewport();
-			UWidgetBlueprintLibrary::SetInputMode_UIOnly(this, CurrentWidget);
-			bShowMouseCursor = true;
-		}
 	}
 }

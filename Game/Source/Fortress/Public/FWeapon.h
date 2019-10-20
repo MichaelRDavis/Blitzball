@@ -78,9 +78,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	EAmmoType AmmoType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-	TSubclassOf<AFAmmo> AmmoClass;
-
 	/** Add ammo */
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = Weapon)
 	virtual void AddAmmo(int32 AddAmount);
