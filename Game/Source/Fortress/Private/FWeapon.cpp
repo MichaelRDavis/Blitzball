@@ -35,6 +35,9 @@ AFWeapon::AFWeapon()
 	bIsReloading = false;
 	LastFireTime = 0.0f;
 
+	ItemData.MaxStackCount = 1;
+	ItemData.bIsStackable = false;
+
 	SetReplicates(true);
 	bNetUseOwnerRelevancy = true;
 	PrimaryActorTick.bCanEverTick = true;
@@ -303,6 +306,17 @@ void AFWeapon::FireProjectile()
 {
 	FVector ShootDir = GetAdjustedAim();
 	FVector Origin = GetMuzzleLocation();
+
+	const float ProjectileAdjustedRange = 10000.0f;
+	const FVector StartTrace = GetFireStartLocation(ShootDir);
+	const FVector EndTrace = StartTrace + ShootDir * ProjectileAdjustedRange;
+	FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
+
+	if (Impact.bBlockingHit)
+	{
+		const FVector AdjustedDir = (Impact.ImpactPoint - Origin).GetSafeNormal();
+
+	}
 }
 
 void AFWeapon::ApplyRecoil()

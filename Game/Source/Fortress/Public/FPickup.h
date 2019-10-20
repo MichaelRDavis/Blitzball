@@ -6,6 +6,8 @@
 #include "FUsable.h"
 #include "FPickup.generated.h"
 
+class AFInventoryItem;
+
 UCLASS(Abstract, Blueprintable)
 class FORTRESS_API AFPickup : public AFUsable
 {
@@ -16,6 +18,9 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pickup)
 	UStaticMeshComponent* PickupMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pickup)
+	TSubclassOf<AFInventoryItem> ItemClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pickup)
 	USoundBase* PickupSound;

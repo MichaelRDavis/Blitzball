@@ -7,6 +7,7 @@
 #include "FWeapon.generated.h"
 
 class AFProjectile;
+class AFAmmo;
 
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
@@ -76,6 +77,9 @@ public:
 	/** Weapon ammo type */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	EAmmoType AmmoType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	TSubclassOf<AFAmmo> AmmoClass;
 
 	/** Add ammo */
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = Weapon)

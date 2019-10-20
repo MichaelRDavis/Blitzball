@@ -1,9 +1,8 @@
 **/StarterContent/**
-**/AnimStarterPack/**
+**/ShellingSystem/**
 **/DerivedDataCache/**
 **/Intermediate/**
 **/Saved/**
-**/ShellingSystem/**
 **/Binaries/**
 *.vs
 *.sln

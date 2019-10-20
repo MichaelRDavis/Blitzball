@@ -11,6 +11,16 @@ AFGameMode::AFGameMode()
 	PlayerStateClass = AFPlayerState::StaticClass();
 }
 
+void AFGameMode::StartPlay()
+{
+	Super::StartPlay();
+}
+
+void AFGameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+}
+
 UClass* AFGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
 	AFPlayerController* PlayerController = Cast<AFPlayerController>(InController);
@@ -20,4 +30,9 @@ UClass* AFGameMode::GetDefaultPawnClassForController_Implementation(AController*
 	}
 
 	return DefaultPawnClass;
+}
+
+void AFGameMode::SpawnMonster()
+{
+
 }

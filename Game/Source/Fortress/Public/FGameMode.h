@@ -16,8 +16,25 @@ class FORTRESS_API AFGameMode : public AGameMode
 public:
 	AFGameMode();
 
+	virtual void StartPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, NoClear, Category = Classes)
 	TSubclassOf<AFCharacter> CharacterClass;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = GameMode)
+	int32 MonsterCount;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = GameMode)
+	int32 CurrentWave;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
+	float WaveCooldownTime;
+
+	UFUNCTION(BlueprintCallable, Category = GameMode)
+	void SpawnMonster();
+
+	FTimerHandle SpawnTimer;
+	FTimerHandle WaveTimer;
 };

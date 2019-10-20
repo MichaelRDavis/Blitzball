@@ -27,6 +27,19 @@ struct FItemData : public FTableRowBase
 	UTexture2D* Image;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText Description;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 StackCount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxStackCount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsStackable;
+
+	FItemData()
+	{
+		StackCount = 0;
+		MaxStackCount = 10;
+		bIsStackable = true;
+	}
 };
 
 class AFCharacter;
@@ -46,6 +59,15 @@ public:
 
 	void GivenTo(AFCharacter* NewOwner);
 	void Removed();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Inventory)
+	bool CanItemStack();
+
+	UFUNCTION(BlueprintCallable, Category = Inventory)
+	void CheckForStack();
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Inventory)
+	int32 ItemCount;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = Inventory)

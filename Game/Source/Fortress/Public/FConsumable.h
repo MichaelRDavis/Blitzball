@@ -15,10 +15,20 @@ class FORTRESS_API AFConsumable : public AFInventoryItem
 public:
 	AFConsumable();
 
+	virtual void Destroyed() override;
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = Inventory)
-	void Use(AFCharacter* Character);
-	void Use_Implementation(AFCharacter* Character);
+	void Use();
+	void Use_Implementation();
+
+	UFUNCTION(BlueprintCallable, Category = Iventory)
+	void StartUseTimer();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
 	USoundCue* UseSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
+	float UseTime;
+
+	FTimerHandle UseTimer;
 };
