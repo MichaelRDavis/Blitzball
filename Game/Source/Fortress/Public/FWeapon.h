@@ -208,6 +208,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void OnHitDamage(FHitResult Hit, const FVector& FireDir);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void SpawnProjectile(FVector Origin, FVector_NetQuantizeNormal ShootDir);
+	void SpawnProjectile_Implementation(FVector Origin, FVector_NetQuantizeNormal ShootDir);
+	bool SpawnProjectile_Validate(FVector Origin, FVector_NetQuantizeNormal ShootDir);
+
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void AttachToOwner();
 	UFUNCTION(BlueprintCallable, Category = Weapon)

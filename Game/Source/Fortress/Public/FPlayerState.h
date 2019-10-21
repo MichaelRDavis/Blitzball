@@ -13,6 +13,8 @@ class FORTRESS_API AFPlayerState : public APlayerState
 public:
 	AFPlayerState();
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	UFUNCTION(BlueprintCallable, Category = Player)
 	void LevelUp(int32 AddXP);
 
@@ -31,4 +33,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
 	int32 LevelMultiplier;
+
+	/** Number of kills */
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int32 Kills;
+
+	/** Number of deaths */
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int32 Deaths;
 };

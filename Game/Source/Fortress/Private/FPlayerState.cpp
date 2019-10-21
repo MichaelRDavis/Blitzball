@@ -11,6 +11,11 @@ AFPlayerState::AFPlayerState()
 	LevelMultiplier = 2;
 }
 
+void AFPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
 void AFPlayerState::LevelUp(int32 AddXP)
 {
 	if (CurrentXP > LevelUpXP)
