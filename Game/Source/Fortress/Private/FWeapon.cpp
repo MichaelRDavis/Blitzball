@@ -35,9 +35,6 @@ AFWeapon::AFWeapon()
 	bIsReloading = false;
 	LastFireTime = 0.0f;
 
-	ItemData.MaxStackCount = 1;
-	ItemData.bIsStackable = false;
-
 	SetReplicates(true);
 	bNetUseOwnerRelevancy = true;
 	PrimaryActorTick.bCanEverTick = true;

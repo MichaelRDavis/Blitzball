@@ -15,25 +15,7 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UFUNCTION(BlueprintCallable, Category = Player)
-	void LevelUp(int32 AddXP);
-
 protected:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Player)
-	int32 PlayerLevel;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
-	int32 MaxPlayerLevel;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Player)
-	int32 CurrentXP;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
-	int32 LevelUpXP;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
-	int32 LevelMultiplier;
-
 	/** Number of kills */
 	UPROPERTY(BlueprintReadOnly, Replicated)
 	int32 Kills;
@@ -41,4 +23,12 @@ protected:
 	/** Number of deaths */
 	UPROPERTY(BlueprintReadOnly, Replicated)
 	int32 Deaths;
+
+	/** Max number of lives */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerState)
+	int32 MaxLives;
+
+	/** Current number of lives */
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = PlayerState)
+	int32 Lives;
 };

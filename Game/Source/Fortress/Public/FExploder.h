@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "FPickup.generated.h"
+#include "FExploder.generated.h"
 
 UCLASS()
-class FORTRESS_API AFPickup : public AActor
+class FORTRESS_API AFExploder : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AFPickup();
+	AFExploder();
 
 protected:
 	// Called when the game starts or when spawned

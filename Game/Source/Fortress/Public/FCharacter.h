@@ -58,6 +58,9 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void CreateInventory();
+
 	/** Add item to inventory */
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = Pawn)
 	virtual void AddItem(AFInventoryItem* Item);
@@ -73,10 +76,6 @@ public:
 	/** Equips weapon from inventory */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void EquipWeapon(AFWeapon* Weap);
-
-	/** Swaps current weapon for a new weapon */
-	UFUNCTION(BlueprintCallable, Category = Pawn)
-	virtual void SwapWeapon(AFWeapon* Weap);
 
 	/** Handles moving forward/backward */
 	virtual void MoveForward(float Value);
@@ -127,21 +126,17 @@ public:
 	virtual bool CanReload();
 
 protected:
+	/** Characters default inventory */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	TArray<TSubclassOf<AFInventoryItem>> DefaultInventoryClasses;
+
 	/** Items in inventory */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
 	TArray<AFInventoryItem*> Inventory;
 
-	/** Max inventory size */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
-	int32 MaxInventorySize;
-
 	/** Currently equipped weapon */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
 	AFWeapon* Weapon;
-
-	/** Characters secondary weapon */
-	UPROPERTY(BlueprintReadOnly, Category = Pawn)
-	AFWeapon* SecondaryWeapon;
 
 	/** Sound played on jump */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)

@@ -4,25 +4,10 @@
 
 AFPlayerState::AFPlayerState()
 {
-	PlayerLevel = 0;
-	MaxPlayerLevel = 20;
-	CurrentXP = 0;
-	LevelUpXP = 500;
-	LevelMultiplier = 2;
+
 }
 
 void AFPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-}
-
-void AFPlayerState::LevelUp(int32 AddXP)
-{
-	if (CurrentXP > LevelUpXP)
-	{
-		if (PlayerLevel < MaxPlayerLevel)
-		{
-			PlayerLevel++;
-		}
-	}
 }

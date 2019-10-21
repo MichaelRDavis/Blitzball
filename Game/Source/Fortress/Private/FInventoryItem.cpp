@@ -23,23 +23,3 @@ void AFInventoryItem::Removed()
 	SetOwner(nullptr);
 	FOwner = nullptr;
 }
-
-bool AFInventoryItem::CanItemStack()
-{
-	return ItemData.bIsStackable;
-}
-
-void AFInventoryItem::CheckForStack()
-{
-	bool bStackSize = ItemData.StackCount < ItemData.MaxStackCount;
-	bool bItemName = ItemData.Name.EqualTo(ItemData.Name);
-	bool bIsStacked = false;
-	if (bStackSize && bItemName)
-	{
-		bIsStacked = true;
-		if (bIsStacked)
-		{
-			ItemData.StackCount++;
-		}
-	}
-}

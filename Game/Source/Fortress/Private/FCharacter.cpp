@@ -114,6 +114,14 @@ void AFCharacter::Tick(float DeltaTime)
 	}
 }
 
+void AFCharacter::CreateInventory()
+{
+	for (int32 i = 0; i < Inventory.Num(); i++)
+	{
+
+	}
+}
+
 void AFCharacter::AddItem(AFInventoryItem* Item)
 {
 	if (Item)
@@ -151,14 +159,6 @@ void AFCharacter::EquipWeapon(AFWeapon* Weap)
 	{
 		Weapon = Weap;
 		Weapon->OnEquip();
-	}
-}
-
-void AFCharacter::SwapWeapon(AFWeapon* Weap)
-{
-	if (Weap)
-	{
-		// TODO: Check if we can swap weapon
 	}
 }
 
