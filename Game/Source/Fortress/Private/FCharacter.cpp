@@ -208,7 +208,13 @@ void AFCharacter::SwitchWeapon(AFWeapon* NewWeapon, AFWeapon* LastWeapon)
 
 bool AFCharacter::CanJumpInternal_Implementation() const
 {
-	return Super::CanJumpInternal_Implementation();
+	bool bCanJump = Super::CanJumpInternal_Implementation();
+	if (FCharacterMovement)
+	{
+		bCanJump = FCharacterMovement->CanJump();
+	}
+
+	return bCanJump;
 }
 
 void AFCharacter::MoveForward(float Value)
@@ -257,7 +263,12 @@ void AFCharacter::StopSprinting()
 
 bool AFCharacter::IsSprinting() const
 {
-	return FCharacterMovement->bWantsToSprint;
+	if (FCharacterMovement)
+	{
+		return FCharacterMovement->bWantsToSprint;
+	}
+
+	return false;
 }
 
 void AFCharacter::StartTargeting()
@@ -278,7 +289,12 @@ void AFCharacter::StopTargeting()
 
 bool AFCharacter::IsTargeting() const
 {
-	return FCharacterMovement->bIsTargeting;
+	if (FCharacterMovement)
+	{
+		return FCharacterMovement->bIsTargeting;
+	}
+
+	return false;
 }
 
 void AFCharacter::Use()

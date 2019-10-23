@@ -48,12 +48,28 @@ public:
 
 	virtual float GetMaxSpeed() const override;
 	virtual float GetMaxAcceleration() const override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Multijump)
+	int32 MaxJumpCount;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Multijump)
+	int32 CurrentJumpCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Multijump)
+	float GravJumpImpulse;
+
+	bool CanJump();
+
+	virtual void ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations) override;
+	virtual bool DoJump(bool bReplayingMoves) override;
 };
 
 class FSavedMove_FCharacter : public FSavedMove_Character
 {
 public:
 	typedef FSavedMove_Character Super;
+
+	int32 SavedJumpCount;
 
 	bool bSavedWantsToSprint;
 	bool bSavedIsTargeting;

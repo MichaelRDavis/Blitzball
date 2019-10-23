@@ -13,6 +13,9 @@ UFCharacterMovement::UFCharacterMovement()
 	TargetingSpeedMultiplier = 0.5f;
 	TargetingAccelMultiplier = 0.5f;
 	bIsTargeting = false;
+	CurrentJumpCount = 0;
+	MaxJumpCount = 1;
+	GravJumpImpulse = 600.0f;
 	NavAgentProps.bCanCrouch = true;
 }
 
@@ -80,12 +83,41 @@ float UFCharacterMovement::GetMaxAcceleration() const
 	return MaxAccel;
 }
 
+bool UFCharacterMovement::CanJump()
+{
+	return (IsMovingOnGround() || CurrentJumpCount < MaxJumpCount) && CanEverJump();
+}
+
+void UFCharacterMovement::ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations)
+{
+	CurrentJumpCount = 0;
+	
+	Super::ProcessLanded(Hit, remainingTime, Iterations);
+}
+
+bool UFCharacterMovement::DoJump(bool bReplayingMoves)
+{
+	if (Super::DoJump(bReplayingMoves))
+	{
+		CurrentJumpCount++;
+		if (CurrentJumpCount > 1)
+		{
+			Velocity.Z = GravJumpImpulse;
+		}
+		return true;
+	}
+
+	return false;
+}
+
 void FSavedMove_FCharacter::Clear()
 {
 	Super::Clear();
 
 	bSavedWantsToSprint = false;
 	bSavedIsTargeting = false;
+
+	SavedJumpCount = 0;
 }
 
 void FSavedMove_FCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData)
@@ -95,6 +127,8 @@ void FSavedMove_FCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime,
 	UFCharacterMovement* CharMov = Cast<UFCharacterMovement>(Character->GetCharacterMovement());
 	if (CharMov)
 	{
+		SavedJumpCount = CharMov->CurrentJumpCount;
+
 		bSavedWantsToSprint = CharMov->bWantsToSprint;
 		bSavedIsTargeting = CharMov->bIsTargeting;
 	}
@@ -129,6 +163,11 @@ bool FSavedMove_FCharacter::CanCombineWith(const FSavedMovePtr& NewMove, ACharac
 		return false;
 	}
 
+	if (SavedJumpCount != ((FSavedMove_FCharacter*)& NewMove)->SavedJumpCount)
+	{
+		return false;
+	}
+
 	return Super::CanCombineWith(NewMove, InCharacter, MaxDelta);
 }
 
@@ -149,7 +188,10 @@ void FSavedMove_FCharacter::PrepMoveFor(ACharacter* Character)
 	UFCharacterMovement* CharMov = Cast<UFCharacterMovement>(Character->GetCharacterMovement());
 	if (CharMov)
 	{
+		CharMov->CurrentJumpCount = SavedJumpCount;
 
+		CharMov->bIsTargeting = bSavedIsTargeting;
+		CharMov->bWantsToSprint = bSavedWantsToSprint;
 	}
 }
 
