@@ -1,15 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FProjectile.h"
-#include "FProj_PlasmaBall.generated.h"
+#include "FPickup.h"
+#include "FPickup_Ammo.generated.h"
 
 UCLASS()
-class FORTRESS_API AFProj_PlasmaBall : public AFProjectile
+class FORTRESS_API AFPickup_Ammo : public AFPickup
 {
 	GENERATED_BODY()
-	
+
 public:
-	AFProj_PlasmaBall();
+	AFPickup_Ammo();
 };

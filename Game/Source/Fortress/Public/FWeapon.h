@@ -78,6 +78,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	EAmmoType AmmoType;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	bool bInfiniteAmmo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	bool bInfiniteMagazine;
+
 	/** Add ammo */
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = Weapon)
 	virtual void AddAmmo(int32 AddAmount);
@@ -131,6 +136,9 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
 	bool bIsReloading;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	UTexture2D* WeaponCrosshair;
 
 	UPROPERTY()
 	float LastFireTime;

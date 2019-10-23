@@ -3,7 +3,9 @@
 #include "FWeapon.h"
 #include "FCharacter.h"
 #include "FPlayerController.h"
+#include "FProjectile.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "DrawDebugHelpers.h"
 #include "TimerManager.h"
@@ -26,6 +28,8 @@ AFWeapon::AFWeapon()
 	MaxAmmo = 100;
 	MaxMagazineSize = 20;
 	InitialMagazines = 4;
+	bInfiniteAmmo = false;
+	bInfiniteMagazine = false;
 	CurrentState = EWeaponState::EIdle;
 	FireRate = 0.2f;
 	Spread = 5.0f;
@@ -373,7 +377,13 @@ void AFWeapon::OnHitDamage(FHitResult Hit, const FVector& FireDir)
 
 void AFWeapon::SpawnProjectile_Implementation(FVector Origin, FVector_NetQuantizeNormal ShootDir)
 {
-
+	FTransform SpawnTransform(ShootDir.Rotation(), Origin);
+	AFProjectile* Proj = Cast<AFProjectile>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, ProjectileClass, SpawnTransform));
+	if (Proj)
+	{
+		Proj->Instigator = Instigator;
+		Proj->SetOwner(this);
+	}
 }
 
 bool AFWeapon::SpawnProjectile_Validate(FVector Origin, FVector_NetQuantizeNormal ShootDir)

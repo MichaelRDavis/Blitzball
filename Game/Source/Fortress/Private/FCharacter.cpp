@@ -55,6 +55,8 @@ void AFCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CreateInventory();
+
 	if (Health == 0)
 	{
 		Health = MaxHealth;
@@ -116,9 +118,24 @@ void AFCharacter::Tick(float DeltaTime)
 
 void AFCharacter::CreateInventory()
 {
-	for (int32 i = 0; i < Inventory.Num(); i++)
+	for (int32 i = 0; i < DefaultInventoryClasses.Num(); i++)
 	{
+		if (DefaultInventoryClasses[i])
+		{
+			FActorSpawnParameters SpawnInfo;
+			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			AFInventoryItem* NewItem = GetWorld()->SpawnActor<AFInventoryItem>(DefaultInventoryClasses[i], SpawnInfo);
+			AddItem(NewItem);
+		}
+	}
 
+	if (Inventory.Num() > 0)
+	{
+		AFWeapon* Weap = Cast<AFWeapon>(FindItem(DefaultInventoryClasses[0]));
+		if (Weap)
+		{
+			EquipWeapon(Weap);
+		}
 	}
 }
 
@@ -160,6 +177,12 @@ void AFCharacter::EquipWeapon(AFWeapon* Weap)
 		Weapon = Weap;
 		Weapon->OnEquip();
 	}
+}
+
+void AFCharacter::SwitchWeapon(AFWeapon* NewWeapon)
+{
+	AFWeapon* LastWeapon = nullptr;
+
 }
 
 void AFCharacter::MoveForward(float Value)
