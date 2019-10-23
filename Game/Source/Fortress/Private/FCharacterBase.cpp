@@ -80,6 +80,9 @@ bool AFCharacterBase::Die(AController* EvnetInstigator, const FDamageEvent& Dama
 	}
 
 	Health = FMath::Min<int32>(0.0f, Health);
+	bReplicateMovement = false;
+	TearOff();
+	bIsDead = true;
 
 	Death();
 	return true;
@@ -97,16 +100,8 @@ void AFCharacterBase::ModifyDamageTaken(int32& Damage)
 
 void AFCharacterBase::Death()
 {
-	if (bIsDead)
-	{
-		return;
-	}
-
-	bReplicateMovement = false;
-	TearOff();
-	bIsDead = true;
-
 	StartRagdoll();
+	SetLifeSpan(30.0f);
 }
 
 void AFCharacterBase::StartRagdoll()
