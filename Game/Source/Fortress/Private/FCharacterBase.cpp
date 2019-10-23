@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "FCharacterBase.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -110,13 +111,24 @@ void AFCharacterBase::Death()
 
 void AFCharacterBase::StartRagdoll()
 {
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetAllBodiesNotifyRigidBodyCollision(true);
+	GetMesh()->UpdateKinematicBonesToAnim(GetMesh()->GetComponentSpaceTransforms(), ETeleportType::TeleportPhysics, true);
 	GetMesh()->SetSimulatePhysics(true);
-	GetMesh()->WakeAllRigidBodies();
-	GetMesh()->bBlendPhysics = true;
+	GetMesh()->RefreshBoneTransforms();
+	GetMesh()->SetAllBodiesPhysicsBlendWeight(1.0f);
+	GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+	RootComponent = GetMesh();
 
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	GetCapsuleComponent()->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+
+	GetCharacterMovement()->StopActiveMovement();
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
 	GetCharacterMovement()->SetComponentTickEnabled(false);
+	GetCharacterMovement()->Velocity = FVector::ZeroVector;
 }
 
 int32 AFCharacterBase::GetHealth() const

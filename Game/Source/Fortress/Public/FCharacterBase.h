@@ -57,6 +57,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pawn)
 	bool bIsDead;
 
+	/**  */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pawn)
+	bool bInRagdoll;
+
 	/** Current health of the pawn */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
 	int32 Health;

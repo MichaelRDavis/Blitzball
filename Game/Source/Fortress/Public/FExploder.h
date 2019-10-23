@@ -12,15 +12,14 @@ class FORTRESS_API AFExploder : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AFExploder();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
+	UStaticMeshComponent* Mesh;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Actor)
+	int32 Health;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Actor)
+	bool bExploded;
 };

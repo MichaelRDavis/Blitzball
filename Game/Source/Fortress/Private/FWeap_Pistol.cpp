@@ -4,7 +4,7 @@
 
 AFWeap_Pistol::AFWeap_Pistol()
 {
-
+	InstantHitInfo.Damage = 20;
 }
 
 void AFWeap_Pistol::Fire()
