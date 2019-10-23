@@ -383,6 +383,9 @@ void AFWeapon::SpawnProjectile_Implementation(FVector Origin, FVector_NetQuantiz
 	{
 		Proj->Instigator = Instigator;
 		Proj->SetOwner(this);
+		Proj->InitVelocity(ShootDir);
+
+		UGameplayStatics::FinishSpawningActor(Proj, SpawnTransform);
 	}
 }
 

@@ -77,3 +77,11 @@ void AFProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 	ProcessHit(OtherActor, OtherComp, Hit.Location, Hit.Normal);
 }
 
+void AFProjectile::InitVelocity(FVector& ShootDir)
+{
+	if (ProjectileMovement)
+	{
+		ProjectileMovement->Velocity = ShootDir * ProjectileMovement->InitialSpeed;
+	}
+}
+

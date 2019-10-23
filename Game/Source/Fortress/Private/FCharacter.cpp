@@ -179,10 +179,31 @@ void AFCharacter::EquipWeapon(AFWeapon* Weap)
 	}
 }
 
-void AFCharacter::SwitchWeapon(AFWeapon* NewWeapon)
+void AFCharacter::SwitchWeapon(AFWeapon* NewWeapon, AFWeapon* LastWeapon)
 {
-	AFWeapon* LastWeapon = nullptr;
+	AFWeapon* LocalLastWeapon = nullptr;
 
+	if (LastWeapon != nullptr)
+	{
+		LocalLastWeapon = LastWeapon;
+	}
+	else if (NewWeapon != Weapon)
+	{
+		LocalLastWeapon = Weapon;
+	}
+
+	if (LocalLastWeapon)
+	{
+		LocalLastWeapon->UnEquip();
+	}
+
+	Weapon = NewWeapon;
+
+	if (NewWeapon)
+	{
+		NewWeapon->GivenTo(this);
+		NewWeapon->OnEquip();
+	}
 }
 
 void AFCharacter::MoveForward(float Value)

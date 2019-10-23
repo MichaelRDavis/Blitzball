@@ -78,7 +78,7 @@ public:
 	virtual void EquipWeapon(AFWeapon* Weap);
 
 	UFUNCTION(BlueprintCallable, Category = Pawn)
-	virtual void SwitchWeapon(AFWeapon* NewWeapon);
+	virtual void SwitchWeapon(AFWeapon* NewWeapon, AFWeapon* LastWeapon);
 
 	/** Handles moving forward/backward */
 	virtual void MoveForward(float Value);
