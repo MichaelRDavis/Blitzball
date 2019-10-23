@@ -6,6 +6,7 @@
 #include "FPickup.generated.h"
 
 class USphereComponent;
+class AFCharacter;
 
 UCLASS(Abstract, Blueprintable)
 class FORTRESS_API AFPickup : public AActor
@@ -25,6 +26,12 @@ protected:
 
 	UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherCOmp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void PickupOnOverlap(AFCharacter* Pawn);
+
+	UFUNCTION()
+	virtual void GiveTo(AFCharacter* Pawn);
 
 	/** Sound played on pick up */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effects)

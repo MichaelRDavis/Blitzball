@@ -206,6 +206,11 @@ void AFCharacter::SwitchWeapon(AFWeapon* NewWeapon, AFWeapon* LastWeapon)
 	}
 }
 
+bool AFCharacter::CanJumpInternal_Implementation() const
+{
+	return Super::CanJumpInternal_Implementation();
+}
+
 void AFCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)

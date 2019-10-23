@@ -16,4 +16,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pickup)
 	int32 HealthAmount;
+
+	void GiveTo(AFCharacter* Pawn) override;
 };

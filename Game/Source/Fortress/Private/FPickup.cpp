@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+
 #include "FPickup.h"
+#include "FCharacter.h"
 #include "Components/SphereComponent.h"
 
 AFPickup::AFPickup()
@@ -26,6 +28,27 @@ void AFPickup::BeginPlay()
 }
 
 void AFPickup::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherCOmp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor != nullptr)
+	{
+		AFCharacter* Pawn = Cast<AFCharacter>(OtherActor);
+		if (Pawn)
+		{
+			PickupOnOverlap(Pawn);
+		}
+	}
+}
+
+void AFPickup::PickupOnOverlap(AFCharacter* Pawn)
+{
+	if (!Pawn->IsDead() && !IsPendingKill())
+	{
+		GiveTo(Pawn);
+		Destroy();
+	}
+}
+
+void AFPickup::GiveTo(AFCharacter* Pawn)
 {
 
 }

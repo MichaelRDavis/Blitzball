@@ -16,4 +16,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pickup)
 	int32 ShieldAmount;
+
+	void GiveTo(AFCharacter* Pawn) override;
 };

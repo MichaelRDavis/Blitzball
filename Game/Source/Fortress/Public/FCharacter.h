@@ -80,6 +80,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void SwitchWeapon(AFWeapon* NewWeapon, AFWeapon* LastWeapon);
 
+	virtual bool CanJumpInternal_Implementation() const override;
+
 	/** Handles moving forward/backward */
 	virtual void MoveForward(float Value);
 

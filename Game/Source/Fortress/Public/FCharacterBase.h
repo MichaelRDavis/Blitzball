@@ -52,7 +52,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
 	bool IsDead() const;
 
-protected:
 	/** Identifies if pawn is in its dying state */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pawn)
 	bool bIsDead;
