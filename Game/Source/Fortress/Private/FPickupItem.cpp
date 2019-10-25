@@ -8,6 +8,7 @@ AFPickupItem::AFPickupItem()
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	PickupMesh->SetupAttachment(RootComponent);
 	PickupMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	PickupMesh->SetSimulatePhysics(true);
 
 	SetReplicates(true);
 	bAlwaysRelevant = true;

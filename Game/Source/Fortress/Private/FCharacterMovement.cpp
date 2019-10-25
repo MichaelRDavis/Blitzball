@@ -14,7 +14,7 @@ UFCharacterMovement::UFCharacterMovement()
 	TargetingAccelMultiplier = 0.5f;
 	bIsTargeting = false;
 	CurrentJumpCount = 0;
-	MaxJumpCount = 1;
+	MaxJumpCount = 2;
 	GravJumpImpulse = 600.0f;
 	NavAgentProps.bCanCrouch = true;
 }

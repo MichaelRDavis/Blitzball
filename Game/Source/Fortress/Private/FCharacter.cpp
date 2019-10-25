@@ -180,7 +180,7 @@ void AFCharacter::DropItem(AFInventoryItem* Item)
 
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	GetWorld()->SpawnActor<AFInventoryItem>(Item->PickupClass, SpawnLoc, SpawnLoc.Rotation(), SpawnInfo);
+	GetWorld()->SpawnActor<AFPickupItem>(Item->PickupClass, SpawnLoc, SpawnLoc.Rotation(), SpawnInfo);
 	RemoveItem(Item);
 }
 
