@@ -6,6 +6,8 @@
 #include "Engine/DataTable.h"
 #include "FInventoryItem.generated.h"
 
+class AFPickupItem;
+
 USTRUCT(BlueprintType)
 struct FItemData
 {
@@ -17,6 +19,8 @@ struct FItemData
 	UTexture2D* Image;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText Description;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SlotIndex;
 };
 
 class AFCharacter;
@@ -31,6 +35,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
 	FItemData ItemData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
+	TSubclassOf<AFPickupItem> PickupClass;
 
 	void GivenTo(AFCharacter* NewOwner);
 	void Removed();

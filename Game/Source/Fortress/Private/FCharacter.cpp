@@ -5,6 +5,7 @@
 #include "FUsable.h"
 #include "FInventoryItem.h"
 #include "FWeapon.h"
+#include "FPickupItem.h"
 #include "AbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -39,7 +40,7 @@ AFCharacter::AFCharacter(const FObjectInitializer& ObjectInitializer)
 
 	Health = 0;
 	MaxHealth = 100;
-	Shield = 50;
+	Shield = 0;
 	MaxShield = 100;
 	UseDistance = 400.0f;
 	bIsUsableInFocus = false;
@@ -57,9 +58,10 @@ void AFCharacter::BeginPlay()
 
 	CreateInventory();
 
-	if (Health == 0)
+	if (Health == 0 && Shield == 0)
 	{
 		Health = MaxHealth;
+		Shield = MaxShield;
 	}
 }
 
@@ -170,13 +172,46 @@ AFInventoryItem* AFCharacter::FindItem(TSubclassOf<AFInventoryItem> ItemClass)
 	return nullptr;
 }
 
+void AFCharacter::DropItem(AFInventoryItem* Item)
+{
+	const FVector EyeLoc = GetActorLocation() + BaseEyeHeight;
+	const FVector Dist = GetControlRotation().RotateVector(FVector(100.0f, 0.0f, 0.0f));
+	const FVector SpawnLoc = EyeLoc + Dist;
+
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	GetWorld()->SpawnActor<AFInventoryItem>(Item->PickupClass, SpawnLoc, SpawnLoc.Rotation(), SpawnInfo);
+	RemoveItem(Item);
+}
+
+void AFCharacter::DropInventory()
+{
+
+}
+
 void AFCharacter::EquipWeapon(AFWeapon* Weap)
 {
 	if (Weap)
 	{
-		Weapon = Weap;
-		Weapon->OnEquip();
+		if (Role == ROLE_Authority)
+		{
+			SwitchWeapon(Weap, Weapon);
+		}
+		else
+		{
+			ServerEquipWeapon(Weap);
+		}
 	}
+}
+
+void AFCharacter::ServerEquipWeapon_Implementation(AFWeapon* Weap)
+{
+	EquipWeapon(Weap);
+}
+
+bool AFCharacter::ServerEquipWeapon_Validate(AFWeapon* Weap)
+{
+	return true;
 }
 
 void AFCharacter::SwitchWeapon(AFWeapon* NewWeapon, AFWeapon* LastWeapon)
@@ -340,6 +375,44 @@ void AFCharacter::Reload()
 	}
 }
 
+void AFCharacter::NextWeapon()
+{
+	if (Inventory.Num() >= 2 && (Weapon == nullptr || Weapon->CurrentState != EWeaponState::EEquiping))
+	{
+		const int32 WeaponIndex = Inventory.IndexOfByKey(Weapon);
+		AFWeapon* NexWeapon = Cast<AFWeapon>(Inventory[(WeaponIndex + 1) % Inventory.Num()]);
+		EquipWeapon(NexWeapon);
+	}
+}
+
+void AFCharacter::PrevWeapon()
+{
+	if (Inventory.Num() >= 2 && (Weapon == nullptr || Weapon->CurrentState != EWeaponState::EEquiping))
+	{
+		const int32 WeaponIndex = Inventory.IndexOfByKey(Weapon);
+		AFWeapon* PrevWeapon = Cast<AFWeapon>(Inventory[(WeaponIndex - 1 + Inventory.Num()) % Inventory.Num()]);
+		EquipWeapon(PrevWeapon);
+	}
+}
+
+void AFCharacter::EquipPrimaryWeapon()
+{
+	if (Weapon != nullptr)
+	{
+		AFWeapon* Weap = Cast<AFWeapon>(Inventory[0]);
+		EquipWeapon(Weap);
+	}
+}
+
+void AFCharacter::EquipSecondaryWeapon()
+{
+	if (Weapon != nullptr)
+	{
+		AFWeapon* Weap = Cast<AFWeapon>(Inventory[1]);
+		EquipWeapon(Weap);
+	}
+}
+
 void AFCharacter::OnMelee()
 {
 
@@ -353,6 +426,11 @@ bool AFCharacter::CanFire() const
 bool AFCharacter::CanReload()
 {
 	return !IsDead();
+}
+
+AFWeapon* AFCharacter::GetWeapon() const
+{
+	return Weapon;
 }
 
 FHitResult AFCharacter::RayTrace(const FVector& StartTrace, const FVector& EndTrace) const

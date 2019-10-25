@@ -73,9 +73,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual AFInventoryItem* FindItem(TSubclassOf<AFInventoryItem> ItemClass);
 
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void DropItem(AFInventoryItem* Item);
+
+	/**  */
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void DropInventory();
+
 	/** Equips weapon from inventory */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void EquipWeapon(AFWeapon* Weap);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	virtual void ServerEquipWeapon(AFWeapon* Weap);
+	virtual void ServerEquipWeapon_Implementation(AFWeapon* Weap);
+	virtual bool ServerEquipWeapon_Validate(AFWeapon* Weap);
 
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void SwitchWeapon(AFWeapon* NewWeapon, AFWeapon* LastWeapon);
@@ -120,6 +132,16 @@ public:
 	virtual void Reload();
 
 	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void NextWeapon();
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void PrevWeapon();
+
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void EquipPrimaryWeapon();
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	virtual void EquipSecondaryWeapon();
+
+	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void OnMelee();
 
 	/** Check if pawn can fire primary weapon */
@@ -130,7 +152,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
 	virtual bool CanReload();
 
-protected:
+	/** Get current weapon */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	AFWeapon* GetWeapon() const;
+
 	/** Characters default inventory */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	TArray<TSubclassOf<AFInventoryItem>> DefaultInventoryClasses;
@@ -139,6 +164,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
 	TArray<AFInventoryItem*> Inventory;
 
+protected:
 	/** Currently equipped weapon */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
 	AFWeapon* Weapon;
