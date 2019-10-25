@@ -397,7 +397,7 @@ void AFCharacter::PrevWeapon()
 
 void AFCharacter::EquipPrimaryWeapon()
 {
-	if (Weapon != nullptr)
+	if (Inventory.Num() >= 1)
 	{
 		AFWeapon* Weap = Cast<AFWeapon>(Inventory[0]);
 		EquipWeapon(Weap);
@@ -406,7 +406,7 @@ void AFCharacter::EquipPrimaryWeapon()
 
 void AFCharacter::EquipSecondaryWeapon()
 {
-	if (Weapon != nullptr)
+	if (Inventory.Num() >= 2)
 	{
 		AFWeapon* Weap = Cast<AFWeapon>(Inventory[1]);
 		EquipWeapon(Weap);
