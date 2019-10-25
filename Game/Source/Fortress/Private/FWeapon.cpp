@@ -44,6 +44,16 @@ AFWeapon::AFWeapon()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+void AFWeapon::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (bIsFiring)
+	{
+		ApplyRecoil(DeltaSeconds);
+	}
+}
+
 void AFWeapon::BeginPlay()
 {
 	Super::BeginPlay();
@@ -117,7 +127,6 @@ void AFWeapon::FireShot()
 		if (bRefiring)
 		{
 			GetWorldTimerManager().SetTimer(FiringTimer, this, &AFWeapon::FireShot, FireRate, false);
-			ApplyRecoil();
 		}
 	}
 
@@ -348,11 +357,11 @@ void AFWeapon::FireProjectile()
 	SpawnProjectile(Origin, ShootDir);
 }
 
-void AFWeapon::ApplyRecoil()
+void AFWeapon::ApplyRecoil(float DeltaTime)
 {
 	float Pitch = 0.0f;
-	Recoil = FMath::FInterpTo(Recoil, 0, GetWorld()->GetDeltaSeconds(), -10.0f);
-	RecoilRecovery = FMath::FInterpTo(RecoilRecovery, -Recoil, GetWorld()->GetDeltaSeconds(), 20.0f);
+	Recoil = FMath::FInterpTo(Recoil, 0, DeltaTime, -10.0f);
+	RecoilRecovery = FMath::FInterpTo(RecoilRecovery, -Recoil, DeltaTime, 20.0f);
 	Pitch = Recoil + RecoilRecovery;
 
 	if (FOwner)

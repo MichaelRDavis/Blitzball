@@ -47,6 +47,7 @@ class FORTRESS_API AFWeapon : public AFInventoryItem
 public:
 	AFWeapon();
 
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -211,7 +212,7 @@ public:
 	virtual void FireProjectile();
 
 	UFUNCTION(BlueprintCallable, Category = Firing)
-	virtual void ApplyRecoil();
+	virtual void ApplyRecoil(float DeltaTime);
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void OnHitDamage(FHitResult Hit, const FVector& FireDir);
