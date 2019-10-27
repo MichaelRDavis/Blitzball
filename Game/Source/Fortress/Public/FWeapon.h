@@ -141,6 +141,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	UTexture2D* WeaponCrosshair;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	USoundBase* FireSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	UAnimMontage* FireAnim;
+
 	UPROPERTY()
 	float LastFireTime;
 
@@ -221,6 +227,15 @@ public:
 	void SpawnProjectile(FVector Origin, FVector_NetQuantizeNormal ShootDir);
 	void SpawnProjectile_Implementation(FVector Origin, FVector_NetQuantizeNormal ShootDir);
 	bool SpawnProjectile_Validate(FVector Origin, FVector_NetQuantizeNormal ShootDir);
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	virtual void PlayFiringEffects();
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void PlayWeaponSound(USoundBase* Sound);
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void PlayWeaponAnim(UAnimMontage* Anim);
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void AttachToOwner();

@@ -119,6 +119,7 @@ void AFWeapon::FireShot()
 	{
 		Fire();
 		ConsumeAmmo();
+		PlayFiringEffects();
 	}
 
 	if (FOwner)
@@ -403,6 +404,39 @@ bool AFWeapon::SpawnProjectile_Validate(FVector Origin, FVector_NetQuantizeNorma
 	return true;
 }
 
+void AFWeapon::PlayFiringEffects()
+{
+	if (FireSound)
+	{
+		PlayWeaponSound(FireSound);
+	}
+
+	if (FireAnim)
+	{
+		PlayWeaponAnim(FireAnim);
+	}
+}
+
+void AFWeapon::PlayWeaponSound(USoundBase* Sound)
+{
+	UAudioComponent* AudioComp;
+	if (Sound && FOwner)
+	{
+		AudioComp = UGameplayStatics::SpawnSoundAttached(Sound, GetRootComponent());
+	}
+}
+
+void AFWeapon::PlayWeaponAnim(UAnimMontage* Anim)
+{
+	if (FOwner)
+	{
+		if (Anim)
+		{
+			FOwner->PlayAnimMontage(Anim);
+		}
+	}
+}
+
 void AFWeapon::AttachToOwner()
 {
 	if (FOwner)
@@ -465,7 +499,6 @@ FHitResult AFWeapon::WeaponTrace(const FVector& TraceFrom, const FVector TraceTo
 
 	FHitResult Hit(ForceInit);
 	GetWorld()->LineTraceSingleByChannel(Hit, TraceFrom, TraceTo, COLLISION_WEAPON, TraceParams);
-	DrawDebugLine(GetWorld(), TraceFrom, TraceTo, FColor::Red, false, 1, 0, 1);
-
+	//DrawDebugLine(GetWorld(), TraceFrom, TraceTo, FColor::Red, false, 1, 0, 1);
 	return Hit;
 }
