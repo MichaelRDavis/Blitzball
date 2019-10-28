@@ -8,5 +8,5 @@ AFWeap_GrenadeLauncher::AFWeap_GrenadeLauncher()
 
 void AFWeap_GrenadeLauncher::Fire()
 {
-
+	FireProjectile();
 }

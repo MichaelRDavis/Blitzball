@@ -9,5 +9,5 @@ AFWeap_PlasmaRifle::AFWeap_PlasmaRifle()
 
 void AFWeap_PlasmaRifle::Fire()
 {
-
+	FireProjectile();
 }
