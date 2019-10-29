@@ -4,6 +4,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 AFCharacterBase::AFCharacterBase(const FObjectInitializer& ObjectInitializer)
@@ -114,7 +115,13 @@ void AFCharacterBase::Death()
 
 void AFCharacterBase::PlayTakeHitEffects()
 {
-
+	if (GetNetMode() != NM_DedicatedServer)
+	{
+		if (HitSound)
+		{
+			UGameplayStatics::SpawnSoundAttached(HitSound, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, true);
+		}
+	}
 }
 
 void AFCharacterBase::NotifyTakeHit(AController* InstigatedBy, int32 Damage, const FDamageEvent& DamageEvent)
@@ -164,6 +171,6 @@ bool AFCharacterBase::IsDead() const
 
 void AFCharacterBase::OnRep_LastTakeHitInfo()
 {
-
+	
 }
 

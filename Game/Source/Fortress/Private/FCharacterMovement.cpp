@@ -23,7 +23,7 @@ void UFCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
 {
 	Super::UpdateFromCompressedFlags(Flags);
 
-	bWantsToSprint = (Flags&FSavedMove_FCharacter::FLAG_Custom_0) != 0;
+	bWantsToSprint = (Flags & FSavedMove_FCharacter::FLAG_Custom_0) != 0;
 	bIsTargeting = (Flags & FSavedMove_FCharacter::FLAG_Custom_1) != 0;
 }
 

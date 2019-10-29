@@ -11,6 +11,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Net/UnrealNetwork.h"
 
 #define COLLISION_USABLE ECC_GameTraceChannel1
 
@@ -45,6 +46,10 @@ AFCharacter::AFCharacter(const FObjectInitializer& ObjectInitializer)
 void AFCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AFCharacter, Weapon, COND_None);
+
+	DOREPLIFETIME_CONDITION(AFCharacter, Inventory, COND_OwnerOnly);
 }
 
 void AFCharacter::BeginPlay()
