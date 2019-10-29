@@ -5,8 +5,6 @@
 
 UFCharacterMovement::UFCharacterMovement()
 {
-	MaxWalkSpeed = 900.0f;
-	MaxWalkSpeedCrouched = 300.0f;
 	SprintSpeedMultiplier = 1.5f;
 	SprintAccelMultiplier = 1.5f;
 	bWantsToSprint = false;
