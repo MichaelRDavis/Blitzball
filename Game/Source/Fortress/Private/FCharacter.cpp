@@ -7,6 +7,7 @@
 #include "FWeapon.h"
 #include "FPickupItem.h"
 #include "AbilitySystemComponent.h"
+#include "GameFramework//SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -16,26 +17,20 @@
 AFCharacter::AFCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UFCharacterMovement>(ACharacter::CharacterMovementComponentName))
 {
-	// Create a CameraCompoent
-	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->RelativeLocation = FVector(0.0f, 0.0f, BaseEyeHeight);
-	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	// Create a camera boom
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(GetRootComponent());
 
-	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
-	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	FirstPersonMesh->SetupAttachment(FirstPersonCameraComponent);
-	FirstPersonMesh->SetOnlyOwnerSee(true);
-	FirstPersonMesh->bReceivesDecals = false;
-	FirstPersonMesh->bCastDynamicShadow = false;
-	FirstPersonMesh->CastShadow = false;
-	FirstPersonMesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
+	// Create a CameraCompoent
+	CharacterCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	CharacterCameraComponent->SetupAttachment(CameraBoom);
+	CharacterCameraComponent->RelativeLocation = FVector(0.0f, 0.0f, BaseEyeHeight);
+	CharacterCameraComponent->bUsePawnControlRotation = true;
 
 	FCharacterMovement = Cast<UFCharacterMovement>(GetCharacterMovement());
 
 	AbilitySystem = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 
-	GetMesh()->SetOwnerNoSee(true);
 	GetMesh()->bReceivesDecals = false;
 
 	Health = 0;

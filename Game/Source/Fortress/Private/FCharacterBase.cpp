@@ -25,6 +25,7 @@ void AFCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 	DOREPLIFETIME_CONDITION(AFCharacterBase, Health, COND_None);
 	DOREPLIFETIME_CONDITION(AFCharacterBase, Shield, COND_None);
+	DOREPLIFETIME_CONDITION(AFCharacterBase, LastTakeHitInfo, COND_None);
 }
 
 void AFCharacterBase::BeginPlay()
@@ -60,7 +61,7 @@ float AFCharacterBase::TakeDamage(float Damage, struct FDamageEvent const& Damag
 		}
 		else
 		{
-
+			NotifyTakeHit(EventInstigator, Damage, DamageEvent);
 		}
 	}
 
@@ -88,6 +89,13 @@ bool AFCharacterBase::Die(AController* EvnetInstigator, const FDamageEvent& Dama
 	return true;
 }
 
+void AFCharacterBase::SetTakeHitInfo(int32 Damage)
+{
+	const float TimeoutTIme = GetWorld()->GetTimeSeconds() + 0.5f;
+
+	LastTakeHitInfo.Damage = Damage;
+}
+
 void AFCharacterBase::ModifyDamageTaken(int32& Damage)
 {
 	if (Damage > 0 && Shield > 0)
@@ -102,6 +110,19 @@ void AFCharacterBase::Death()
 {
 	StartRagdoll();
 	SetLifeSpan(30.0f);
+}
+
+void AFCharacterBase::PlayTakeHitEffects()
+{
+
+}
+
+void AFCharacterBase::NotifyTakeHit(AController* InstigatedBy, int32 Damage, const FDamageEvent& DamageEvent)
+{
+	if (Role == ROLE_Authority)
+	{
+
+	}
 }
 
 void AFCharacterBase::StartRagdoll()
@@ -139,5 +160,10 @@ int32 AFCharacterBase::GetMaxHealth() const
 bool AFCharacterBase::IsDead() const
 {
 	return Health < 0 || bIsDead;
+}
+
+void AFCharacterBase::OnRep_LastTakeHitInfo()
+{
+
 }
 

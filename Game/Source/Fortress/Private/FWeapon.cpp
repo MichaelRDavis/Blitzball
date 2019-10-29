@@ -441,7 +441,7 @@ void AFWeapon::AttachToOwner()
 {
 	if (FOwner)
 	{
-		Mesh->AttachToComponent(FOwner->FirstPersonMesh, FAttachmentTransformRules::KeepRelativeTransform, HandsAttachSocket);
+		Mesh->AttachToComponent(FOwner->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, HandsAttachSocket);
 		Mesh->SetHiddenInGame(false);
 	}
 }

@@ -7,6 +7,7 @@
 #include "FCharacterBase.h"
 #include "FCharacter.generated.h"
 
+class USpringArmComponent;
 class UCameraComponent;
 class UAbilitySystemComponent;
 class UFCharacterMovement;
@@ -29,13 +30,13 @@ public:
 		return AbilitySystem;
 	}
 
-	/** Pawn mesh: 1st person view (arms; seen only by self) */
+	/** Camera boom */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Pawn)
-	USkeletalMeshComponent* FirstPersonMesh;
+	USpringArmComponent* CameraBoom;
 
-	/** First person camera */
+	/** Third person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera)
-	UCameraComponent* FirstPersonCameraComponent;
+	UCameraComponent* CharacterCameraComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Character)
 	UFCharacterMovement* FCharacterMovement;
