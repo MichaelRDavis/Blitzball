@@ -93,6 +93,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	float DeathCleanupTime;
 
+	/** Time of pawn death */
 	float TimeOfDeath;
 
 	/** Current health of the pawn */
