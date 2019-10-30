@@ -32,7 +32,7 @@ UClass* AFGameMode::GetDefaultPawnClassForController_Implementation(AController*
 	return DefaultPawnClass;
 }
 
-void AFGameMode::SpawnMonster()
+void AFGameMode::Killled(AController* Killer, AController KilledPlayer, APawn* KilledPawn, const UDamageType* DamageType)
 {
 
 }

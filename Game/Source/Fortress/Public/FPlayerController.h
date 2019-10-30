@@ -18,6 +18,7 @@ public:
 
 	virtual void SetPawn(APawn* InPawn) override;
 	virtual void SetupInputComponent() override;
+	virtual void UnFreeze() override;
 
 private:
 	UPROPERTY()

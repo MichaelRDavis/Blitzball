@@ -44,6 +44,13 @@ void AFPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Reload", IE_Pressed, this, &AFPlayerController::OnReload);
 }
 
+void AFPlayerController::UnFreeze()
+{
+	Super::UnFreeze();
+
+	ServerRestartPlayer();
+}
+
 void AFPlayerController::MoveForward(float Value)
 {
 	if (FCharacter != nullptr && Value != 0.0f)
