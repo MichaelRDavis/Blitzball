@@ -77,18 +77,20 @@ bool AFCharacterBase::K2_Die(AController* EventInstigator, TSubclassOf<UDamageTy
 
 bool AFCharacterBase::Die(AController* EvnetInstigator, const FDamageEvent& DamageEvent, AActor* DamageCauser /*= nullptr*/)
 {
-	if (bIsDead)
+	if (Role < ROLE_Authority || IsDead())
 	{
 		return false;
 	}
+	else
+	{
+		Health = FMath::Min<int32>(0.0f, Health);
+		bReplicateMovement = false;
+		TearOff();
+		bIsDead = true;
 
-	Health = FMath::Min<int32>(0.0f, Health);
-	bReplicateMovement = false;
-	TearOff();
-	bIsDead = true;
-
-	Death();
-	return true;
+		Death();
+		return true;
+	}
 }
 
 void AFCharacterBase::SetTakeHitInfo(int32 Damage)
@@ -110,8 +112,22 @@ void AFCharacterBase::ModifyDamageTaken(int32& Damage)
 
 void AFCharacterBase::Death()
 {
-	StartRagdoll();
-	SetLifeSpan(30.0f);
+	TimeOfDeath = GetWorld()->TimeSeconds;
+
+	if (GetNetMode() != NM_DedicatedServer && !IsPendingKillPending())
+	{
+		// Disabled ragdoll for performance 
+		//StartRagdoll();
+
+		if (!IsPendingKillPending())
+		{
+
+		}
+	}
+	else
+	{
+		SetLifeSpan(0.25f);
+	}
 }
 
 void AFCharacterBase::PlayTakeHitEffects()
@@ -129,7 +145,7 @@ void AFCharacterBase::NotifyTakeHit(AController* InstigatedBy, int32 Damage, con
 {
 	if (Role == ROLE_Authority)
 	{
-
+		SetTakeHitInfo(Damage);
 	}
 }
 
@@ -153,6 +169,11 @@ void AFCharacterBase::StartRagdoll()
 	GetCharacterMovement()->DisableMovement();
 	GetCharacterMovement()->SetComponentTickEnabled(false);
 	GetCharacterMovement()->Velocity = FVector::ZeroVector;
+}
+
+void AFCharacterBase::StopRagdoll()
+{
+
 }
 
 int32 AFCharacterBase::GetHealth() const

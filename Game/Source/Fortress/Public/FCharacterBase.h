@@ -55,9 +55,13 @@ public:
 	/**  */
 	virtual void NotifyTakeHit(AController* InstigatedBy, int32 Damage, const FDamageEvent& DamageEvent);
 
-	/** Switch to ragdoll on death */
+	/** Play ragdoll on death */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void StartRagdoll();
+
+	/** Stop playing ragdoll */
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	void StopRagdoll();
 
 	/** Get the current health of the pawn */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
@@ -88,6 +92,8 @@ public:
 	/** Death cleanup time */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	float DeathCleanupTime;
+
+	float TimeOfDeath;
 
 	/** Current health of the pawn */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
