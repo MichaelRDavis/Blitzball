@@ -13,6 +13,7 @@ AFCharacterBase::AFCharacterBase(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
 
+	DeathCleanupTime = 10.0f;
 	Health = 0;
 	MaxHealth = 50;
 	Shield = 0;

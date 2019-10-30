@@ -81,9 +81,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pawn)
 	bool bIsDead;
 
-	/**  */
+	/** True if currently in ragdoll state */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pawn)
 	bool bInRagdoll;
+
+	/** Death cleanup time */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	float DeathCleanupTime;
 
 	/** Current health of the pawn */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
