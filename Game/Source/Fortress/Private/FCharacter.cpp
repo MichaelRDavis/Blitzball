@@ -18,21 +18,26 @@
 AFCharacter::AFCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UFCharacterMovement>(ACharacter::CharacterMovementComponentName))
 {
-	// Create a camera boom
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(GetRootComponent());
-
 	// Create a CameraCompoent
 	CharacterCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	CharacterCameraComponent->SetupAttachment(CameraBoom);
+	CharacterCameraComponent->SetupAttachment(GetCapsuleComponent());
 	CharacterCameraComponent->RelativeLocation = FVector(0.0f, 0.0f, BaseEyeHeight);
 	CharacterCameraComponent->bUsePawnControlRotation = true;
+
+	// 
+	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
+	FirstPersonMesh->SetupAttachment(CharacterCameraComponent);
+	FirstPersonMesh->SetOnlyOwnerSee(true);
+	FirstPersonMesh->bCastDynamicShadow = false;
+	FirstPersonMesh->CastShadow = false;
+	FirstPersonMesh->bReceivesDecals = false;
 
 	FCharacterMovement = Cast<UFCharacterMovement>(GetCharacterMovement());
 
 	AbilitySystem = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 
 	GetMesh()->bReceivesDecals = false;
+	GetMesh()->SetOwnerNoSee(true);
 
 	Health = 0;
 	MaxHealth = 100;

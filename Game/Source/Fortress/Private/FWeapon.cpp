@@ -456,7 +456,7 @@ void AFWeapon::AttachToOwner()
 {
 	if (FOwner)
 	{
-		Mesh->AttachToComponent(FOwner->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, HandsAttachSocket);
+		Mesh->AttachToComponent(FOwner->FirstPersonMesh, FAttachmentTransformRules::KeepRelativeTransform, HandsAttachSocket);
 		Mesh->SetHiddenInGame(false);
 	}
 }
@@ -514,6 +514,6 @@ FHitResult AFWeapon::WeaponTrace(const FVector& TraceFrom, const FVector TraceTo
 
 	FHitResult Hit(ForceInit);
 	GetWorld()->LineTraceSingleByChannel(Hit, TraceFrom, TraceTo, COLLISION_WEAPON, TraceParams);
-	//DrawDebugLine(GetWorld(), TraceFrom, TraceTo, FColor::Red, false, 1, 0, 1);
+	DrawDebugLine(GetWorld(), TraceFrom, TraceTo, FColor::Red, false, 1, 0, 1);
 	return Hit;
 }
