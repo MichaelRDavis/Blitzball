@@ -5,7 +5,6 @@
 #include "FUsable.h"
 #include "FInventoryItem.h"
 #include "FWeapon.h"
-#include "FPickupItem.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework//SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -185,7 +184,6 @@ void AFCharacter::DropItem(AFInventoryItem* Item)
 
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	GetWorld()->SpawnActor<AFPickupItem>(Item->PickupClass, SpawnLoc, SpawnLoc.Rotation(), SpawnInfo);
 	RemoveItem(Item);
 }
 
