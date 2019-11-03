@@ -35,11 +35,6 @@ UClass* AFGameMode::GetDefaultPawnClassForController_Implementation(AController*
 	return DefaultPawnClass;
 }
 
-void AFGameMode::Killled(AController* Killer, AController KilledPlayer, APawn* KilledPawn, const UDamageType* DamageType)
-{
-
-}
-
 void AFGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	AFPlayerState* PlayerState = Cast<AFPlayerState>(NewPlayer->PlayerState);
@@ -47,6 +42,11 @@ void AFGameMode::PostLogin(APlayerController* NewPlayer)
 	PlayerState->SetTeamNumber(TeamNum);
 
 	Super::PostLogin(NewPlayer);
+}
+
+AActor* AFGameMode::ChoosePlayerStart_Implementation(AController* Player)
+{
+
 }
 
 int32 AFGameMode::ChooseTeam(AFPlayerState* PlayerState) const
@@ -65,4 +65,9 @@ int32 AFGameMode::ChooseTeam(AFPlayerState* PlayerState) const
 
 	const int32 RandomTeams = Teams[FMath::RandHelper(Teams.Num())];
 	return RandomTeams;
+}
+
+bool AFGameMode::CanSpawn(APlayerStart* SpawnPoint, AController* Player) const
+{
+
 }
