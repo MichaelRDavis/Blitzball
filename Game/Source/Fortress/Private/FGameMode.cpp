@@ -46,7 +46,7 @@ void AFGameMode::PostLogin(APlayerController* NewPlayer)
 
 AActor* AFGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
-
+	return Super::ChoosePlayerStart_Implementation(Player);
 }
 
 int32 AFGameMode::ChooseTeam(AFPlayerState* PlayerState) const
@@ -69,5 +69,5 @@ int32 AFGameMode::ChooseTeam(AFPlayerState* PlayerState) const
 
 bool AFGameMode::CanSpawn(APlayerStart* SpawnPoint, AController* Player) const
 {
-
+	return true;
 }
