@@ -124,6 +124,11 @@ void AFWeapon::FireShot()
 
 	if (FOwner)
 	{
+		if (Role < ROLE_Authority)
+		{
+			ServerFireShot();
+		}
+
 		bool bRefiring = CurrentState == EWeaponState::EFiring && FireRate > 0.0f;
 		if (bRefiring)
 		{
@@ -132,6 +137,16 @@ void AFWeapon::FireShot()
 	}
 
 	LastFireTime = GetWorld()->GetTimeSeconds();
+}
+
+void AFWeapon::ServerFireShot_Implementation()
+{
+	FireShot();
+}
+
+bool AFWeapon::ServerFireShot_Validate()
+{
+	return true;
 }
 
 void AFWeapon::StartFire()
@@ -499,6 +514,6 @@ FHitResult AFWeapon::WeaponTrace(const FVector& TraceFrom, const FVector TraceTo
 
 	FHitResult Hit(ForceInit);
 	GetWorld()->LineTraceSingleByChannel(Hit, TraceFrom, TraceTo, COLLISION_WEAPON, TraceParams);
-	//DrawDebugLine(GetWorld(), TraceFrom, TraceTo, FColor::Red, false, 1, 0, 1);
+	DrawDebugLine(GetWorld(), TraceFrom, TraceTo, FColor::Red, false, 1, 0, 1);
 	return Hit;
 }

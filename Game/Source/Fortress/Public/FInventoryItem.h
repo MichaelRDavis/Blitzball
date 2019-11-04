@@ -36,9 +36,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
 	FItemData ItemData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
-	TSubclassOf<AFPickupItem> PickupClass;
-
 	void GivenTo(AFCharacter* NewOwner);
 	void Removed();
 

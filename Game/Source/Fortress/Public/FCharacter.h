@@ -35,11 +35,13 @@ public:
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera)
-	UCameraComponent* FirstPersonCameraComponent;
+	UCameraComponent* CharacterCameraComponent;
 
+	/** Cached FCharacterMovement casted CharacterMovement */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Character)
 	UFCharacterMovement* FCharacterMovement;
 
+	/** Character ability system */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
 	UAbilitySystemComponent* AbilitySystem;
 

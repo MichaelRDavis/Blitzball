@@ -172,6 +172,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	virtual void FireShot();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerFireShot();
+	void ServerFireShot_Implementation();
+	bool ServerFireShot_Validate();
+
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	virtual void StartFire();
 	UFUNCTION(BlueprintCallable, Category = Firing)

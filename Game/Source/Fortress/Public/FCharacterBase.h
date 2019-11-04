@@ -6,6 +6,17 @@
 #include "GameFramework/Character.h"
 #include "FCharacterBase.generated.h"
 
+USTRUCT(BlueprintType)
+struct FTakeHitInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY()
+	int32 Damage;
+	UPROPERTY()
+	uint8 Count;
+};
+
 UCLASS(Abstract)
 class FORTRESS_API AFCharacterBase : public ACharacter
 {
@@ -28,6 +39,8 @@ public:
 	bool K2_Die(AController* EventInstigator, TSubclassOf<UDamageType> DamageType);
 	virtual bool Die(AController* EvnetInstigator, const FDamageEvent& DamageEvent, AActor* DamageCauser = nullptr);
 
+	virtual void SetTakeHitInfo(int32 Damage);
+
 	/** Modify damage taken by this pawn */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void ModifyDamageTaken(int32& Damage);
@@ -36,9 +49,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void Death();
 
-	/** Switch to ragdoll on death */
+	/**  */
+	virtual void PlayTakeHitEffects();
+
+	/**  */
+	virtual void NotifyTakeHit(AController* InstigatedBy, int32 Damage, const FDamageEvent& DamageEvent);
+
+	/** Play ragdoll on death */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void StartRagdoll();
+
+	/** Stop playing ragdoll */
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	void StopRagdoll();
 
 	/** Get the current health of the pawn */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
@@ -52,13 +75,26 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
 	bool IsDead() const;
 
+	UFUNCTION()
+	void OnRep_LastTakeHitInfo();
+
+	UPROPERTY(Transient, ReplicatedUsing = OnRep_LastTakeHitInfo)
+	FTakeHitInfo LastTakeHitInfo;
+
 	/** Identifies if pawn is in its dying state */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pawn)
 	bool bIsDead;
 
-	/**  */
+	/** True if currently in ragdoll state */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pawn)
 	bool bInRagdoll;
+
+	/** Death cleanup time */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	float DeathCleanupTime;
+
+	/** Time of pawn death */
+	float TimeOfDeath;
 
 	/** Current health of the pawn */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)

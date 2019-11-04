@@ -4,6 +4,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 AFCharacterBase::AFCharacterBase(const FObjectInitializer& ObjectInitializer)
@@ -12,6 +13,7 @@ AFCharacterBase::AFCharacterBase(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
 
+	DeathCleanupTime = 10.0f;
 	Health = 0;
 	MaxHealth = 50;
 	Shield = 0;
@@ -25,6 +27,7 @@ void AFCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 	DOREPLIFETIME_CONDITION(AFCharacterBase, Health, COND_None);
 	DOREPLIFETIME_CONDITION(AFCharacterBase, Shield, COND_None);
+	DOREPLIFETIME_CONDITION(AFCharacterBase, LastTakeHitInfo, COND_None);
 }
 
 void AFCharacterBase::BeginPlay()
@@ -60,7 +63,7 @@ float AFCharacterBase::TakeDamage(float Damage, struct FDamageEvent const& Damag
 		}
 		else
 		{
-
+			NotifyTakeHit(EventInstigator, Damage, DamageEvent);
 		}
 	}
 
@@ -74,18 +77,27 @@ bool AFCharacterBase::K2_Die(AController* EventInstigator, TSubclassOf<UDamageTy
 
 bool AFCharacterBase::Die(AController* EvnetInstigator, const FDamageEvent& DamageEvent, AActor* DamageCauser /*= nullptr*/)
 {
-	if (bIsDead)
+	if (Role < ROLE_Authority || IsDead())
 	{
 		return false;
 	}
+	else
+	{
+		Health = FMath::Min<int32>(0.0f, Health);
+		bReplicateMovement = false;
+		TearOff();
+		bIsDead = true;
 
-	Health = FMath::Min<int32>(0.0f, Health);
-	bReplicateMovement = false;
-	TearOff();
-	bIsDead = true;
+		Death();
+		return true;
+	}
+}
 
-	Death();
-	return true;
+void AFCharacterBase::SetTakeHitInfo(int32 Damage)
+{
+	const float TimeoutTIme = GetWorld()->GetTimeSeconds() + 0.5f;
+
+	LastTakeHitInfo.Damage = Damage;
 }
 
 void AFCharacterBase::ModifyDamageTaken(int32& Damage)
@@ -100,8 +112,41 @@ void AFCharacterBase::ModifyDamageTaken(int32& Damage)
 
 void AFCharacterBase::Death()
 {
-	StartRagdoll();
-	SetLifeSpan(30.0f);
+	TimeOfDeath = GetWorld()->TimeSeconds;
+
+	if (GetNetMode() != NM_DedicatedServer && !IsPendingKillPending())
+	{
+		// Disabled ragdoll for performance 
+		//StartRagdoll();
+
+		if (!IsPendingKillPending())
+		{
+
+		}
+	}
+	else
+	{
+		SetLifeSpan(0.25f);
+	}
+}
+
+void AFCharacterBase::PlayTakeHitEffects()
+{
+	if (GetNetMode() != NM_DedicatedServer)
+	{
+		if (HitSound)
+		{
+			UGameplayStatics::SpawnSoundAttached(HitSound, GetRootComponent(), NAME_None, FVector::ZeroVector, EAttachLocation::SnapToTarget, true);
+		}
+	}
+}
+
+void AFCharacterBase::NotifyTakeHit(AController* InstigatedBy, int32 Damage, const FDamageEvent& DamageEvent)
+{
+	if (Role == ROLE_Authority)
+	{
+		SetTakeHitInfo(Damage);
+	}
 }
 
 void AFCharacterBase::StartRagdoll()
@@ -126,6 +171,11 @@ void AFCharacterBase::StartRagdoll()
 	GetCharacterMovement()->Velocity = FVector::ZeroVector;
 }
 
+void AFCharacterBase::StopRagdoll()
+{
+
+}
+
 int32 AFCharacterBase::GetHealth() const
 {
 	return Health;
@@ -139,5 +189,10 @@ int32 AFCharacterBase::GetMaxHealth() const
 bool AFCharacterBase::IsDead() const
 {
 	return Health < 0 || bIsDead;
+}
+
+void AFCharacterBase::OnRep_LastTakeHitInfo()
+{
+	
 }
 

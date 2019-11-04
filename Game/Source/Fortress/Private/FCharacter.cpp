@@ -5,11 +5,12 @@
 #include "FUsable.h"
 #include "FInventoryItem.h"
 #include "FWeapon.h"
-#include "FPickupItem.h"
 #include "AbilitySystemComponent.h"
+#include "GameFramework//SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Net/UnrealNetwork.h"
 
 #define COLLISION_USABLE ECC_GameTraceChannel1
 
@@ -17,26 +18,25 @@ AFCharacter::AFCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UFCharacterMovement>(ACharacter::CharacterMovementComponentName))
 {
 	// Create a CameraCompoent
-	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->RelativeLocation = FVector(0.0f, 0.0f, BaseEyeHeight);
-	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	CharacterCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	CharacterCameraComponent->SetupAttachment(GetCapsuleComponent());
+	CharacterCameraComponent->RelativeLocation = FVector(0.0f, 0.0f, BaseEyeHeight);
+	CharacterCameraComponent->bUsePawnControlRotation = true;
 
-	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
-	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	FirstPersonMesh->SetupAttachment(FirstPersonCameraComponent);
+	// 
+	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
+	FirstPersonMesh->SetupAttachment(CharacterCameraComponent);
 	FirstPersonMesh->SetOnlyOwnerSee(true);
-	FirstPersonMesh->bReceivesDecals = false;
 	FirstPersonMesh->bCastDynamicShadow = false;
 	FirstPersonMesh->CastShadow = false;
-	FirstPersonMesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
+	FirstPersonMesh->bReceivesDecals = false;
 
 	FCharacterMovement = Cast<UFCharacterMovement>(GetCharacterMovement());
 
 	AbilitySystem = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystem"));
 
-	GetMesh()->SetOwnerNoSee(true);
 	GetMesh()->bReceivesDecals = false;
+	GetMesh()->SetOwnerNoSee(true);
 
 	Health = 0;
 	MaxHealth = 100;
@@ -50,6 +50,10 @@ AFCharacter::AFCharacter(const FObjectInitializer& ObjectInitializer)
 void AFCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AFCharacter, Weapon, COND_None);
+
+	DOREPLIFETIME_CONDITION(AFCharacter, Inventory, COND_OwnerOnly);
 }
 
 void AFCharacter::BeginPlay()
@@ -180,7 +184,6 @@ void AFCharacter::DropItem(AFInventoryItem* Item)
 
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	GetWorld()->SpawnActor<AFPickupItem>(Item->PickupClass, SpawnLoc, SpawnLoc.Rotation(), SpawnInfo);
 	RemoveItem(Item);
 }
 
