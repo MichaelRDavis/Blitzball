@@ -1,8 +1,8 @@
-# Fortress
-Welcome to Fortress! Fortress is being created using the Unreal Engine 4.
+# Blitzball
+Welcome to Blitzball! Blitzball is a team based online multiplayer sports-action game. Blitzball is being created using the Unreal Engine 4.
 
 ## Collaborators
-* Michael Davis - Project Lead / Programmer
-* Daniel Marsh - Project Manager / Designer
-* Kyle Bodin - 3D Artist / Designer
-* Jamie Owers - Level Designer / Designer
+* Michael Davis - Game Programmer
+* Daniel Marsh - Game Designer
+* Kyle Bodin -  Game Designer
+* Jamie Owers - Game Designer
