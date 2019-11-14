@@ -37,20 +37,30 @@ public:
 	/** Handles strafing movement left and right */
 	void MoveRight(float Value);
 
+	/** Update team outline colors for player mesh */
 	void UpdateTeamColors();
 
+	/** Starts weapon fire */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void StartFire();
 
+	/** Stops weapon fire */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void StopFire();
 
+	/** Check if pawn can fire weapon */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	bool CanFire() const;
+
+	/** Spawns weapon class */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void SpawnWeapon();
 
+	/** Removes weapon and destroys it */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void DestroyWeapon();
 
+	/** Equips weapon from weapon class */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void EquipWeapon(ABWeapon* Weap);
 

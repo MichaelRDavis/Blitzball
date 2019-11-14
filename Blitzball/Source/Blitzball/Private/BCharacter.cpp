@@ -101,6 +101,11 @@ void ABCharacter::StopFire()
 	}
 }
 
+bool ABCharacter::CanFire() const
+{
+	return true;
+}
+
 void ABCharacter::SpawnWeapon()
 {
 	FActorSpawnParameters SpawnInfo;
