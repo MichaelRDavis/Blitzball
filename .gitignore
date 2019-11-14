@@ -1,5 +1,6 @@
 # Ignore project files in the root
-/*.sln
+*.sln
+*.vs
 
 # Ignore local user Visual Studio files in any folder
 *.suo
