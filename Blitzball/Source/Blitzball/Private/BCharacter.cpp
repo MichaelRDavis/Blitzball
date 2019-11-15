@@ -131,8 +131,26 @@ void ABCharacter::EquipWeapon(ABWeapon* Weap)
 {
 	if (Weap)
 	{
-		Weap->GiveTo(this);
-		Weap->Equip();
+		if (Role == ROLE_Authority)
+		{
+			Weapon = Weap;
+			Weapon->GiveTo(this);
+			Weapon->Equip();
+		}
+		else
+		{
+			ServerEquipWeapon(Weap);
+		}
 	}
+}
+
+void ABCharacter::ServerEquipWeapon_Implementation(ABWeapon* Weap)
+{
+	EquipWeapon(Weap);
+}
+
+bool ABCharacter::ServerEquipWeapon_Validate(ABWeapon* Weap)
+{
+	return true;
 }
 

@@ -64,6 +64,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void EquipWeapon(ABWeapon* Weap);
 
+	/** Equip weapon */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerEquipWeapon(ABWeapon* Weap);
+	void ServerEquipWeapon_Implementation(ABWeapon* Weap);
+	bool ServerEquipWeapon_Validate(ABWeapon* Weap);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	TSubclassOf<ABWeapon> WeaponClass;
