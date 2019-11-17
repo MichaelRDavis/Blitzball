@@ -19,5 +19,8 @@ public:
 	int32 NumTeams;
 
 	UPROPERTY(BlueprintReadOnly, Replicated)
-	TArray<int32> TeamGoals;
+	int32 RedTeamGoals;
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int32 BlueTeamGoals;
 };

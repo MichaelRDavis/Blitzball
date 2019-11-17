@@ -11,5 +11,5 @@ class BLITZBALL_API UBCharacterMovement : public UCharacterMovementComponent
 	GENERATED_BODY()
 	
 public:
-
+	UBCharacterMovement();
 };

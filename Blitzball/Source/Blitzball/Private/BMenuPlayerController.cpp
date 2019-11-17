@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "BCharacterMovement.h"
+#include "BMenuPlayerController.h"
 
-UBCharacterMovement::UBCharacterMovement()
+ABMenuPlayerController::ABMenuPlayerController()
 {
 
 }

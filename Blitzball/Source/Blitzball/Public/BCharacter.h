@@ -8,7 +8,7 @@
 class UCameraComponent;
 class ABWeapon;
 
-UCLASS()
+UCLASS(Abstract, config=Game)
 class BLITZBALL_API ABCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -20,6 +20,7 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
+	virtual void PawnClientRestart() override;
 
 private:
 	/** Pawn mesh: 1st person (arms; seen only by self) */
@@ -71,9 +72,11 @@ public:
 	bool ServerEquipWeapon_Validate(ABWeapon* Weap);
 
 protected:
+	/** Weapon class */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	TSubclassOf<ABWeapon> WeaponClass;
 
+	/** Current weapon */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
 	ABWeapon* Weapon;
 

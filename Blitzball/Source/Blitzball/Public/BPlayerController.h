@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
+#include "BPlayerControllerBase.h"
 #include "BPlayerController.generated.h"
 
 class ABCharacter;
 
 UCLASS()
-class BLITZBALL_API ABPlayerController : public APlayerController
+class BLITZBALL_API ABPlayerController : public ABPlayerControllerBase
 {
 	GENERATED_BODY()
 	

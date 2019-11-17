@@ -2,6 +2,7 @@
 
 #include "BCharacter.h"
 #include "BWeapon.h"
+#include "BPlayerState.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -43,7 +44,6 @@ void ABCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnWeapon();
-	UpdateTeamColors();
 }
 
 void ABCharacter::Destroyed()
@@ -51,6 +51,13 @@ void ABCharacter::Destroyed()
 	Super::Destroyed();
 
 	DestroyWeapon();
+}
+
+void ABCharacter::PawnClientRestart()
+{
+	Super::PawnClientRestart();
+
+	UpdateTeamColors();
 }
 
 void ABCharacter::MoveForward(float Value)
@@ -81,8 +88,20 @@ void ABCharacter::MoveRight(float Value)
 
 void ABCharacter::UpdateTeamColors()
 {
-	GetMesh()->SetRenderCustomDepth(true);
-	GetMesh()->SetCustomDepthStencilValue(253);
+	ABPlayerState* Player = Cast<ABPlayerState>(GetPlayerState());
+	if (Player)
+	{
+		if (Player->GetTeamNumber() == 0)
+		{
+			GetMesh()->SetRenderCustomDepth(true);
+			GetMesh()->SetCustomDepthStencilValue(253);
+		}
+		else if (Player->GetTeamNumber() == 1)
+		{
+			GetMesh()->SetRenderCustomDepth(true);
+			GetMesh()->SetCustomDepthStencilValue(253);
+		}
+	}
 }
 
 void ABCharacter::StartFire()

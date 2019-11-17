@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "BWeap_SonicBlaster.h"
+#include "BGameModeBase.h"
 
-ABWeap_SonicBlaster::ABWeap_SonicBlaster()
+ABGameModeBase::ABGameModeBase()
 {
 
 }

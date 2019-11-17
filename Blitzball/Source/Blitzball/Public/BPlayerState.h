@@ -6,6 +6,14 @@
 #include "GameFramework/PlayerState.h"
 #include "BPlayerState.generated.h"
 
+UENUM(BlueprintType)
+enum class ETeam : uint8
+{
+	ENone,
+	ERed,
+	EBlue
+};
+
 UCLASS()
 class BLITZBALL_API ABPlayerState : public APlayerState
 {
