@@ -8,6 +8,16 @@
 class UCameraComponent;
 class ABWeapon;
 
+/** Replicated information on a hit we've taken */
+USTRUCT(BlueprintType)
+struct FTakeHitInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, Category = TakeHitInfo)
+	int32 Damage;
+};
+
 UCLASS(Abstract, config=Game)
 class BLITZBALL_API ABCharacter : public ACharacter
 {
@@ -41,6 +51,14 @@ public:
 	/** Update team outline colors for player mesh */
 	void UpdateTeamColors();
 
+	/** Get current player health */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	int32 GetHealth() const;
+
+	/** Get max player health */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	int32 GetMaxHealth() const;
+
 	/** Starts weapon fire */
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void StartFire();
@@ -49,7 +67,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void StopFire();
 
-	/** Check if pawn can fire weapon */
+	/** Check if player can fire weapon */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
 	bool CanFire() const;
 
@@ -71,7 +89,19 @@ public:
 	void ServerEquipWeapon_Implementation(ABWeapon* Weap);
 	bool ServerEquipWeapon_Validate(ABWeapon* Weap);
 
+	/** Perform quick melee attack */
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	void QuickMelee();
+
 protected:
+	/** Current health of the player */
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
+	int32 Health;
+
+	/** Max health of the player */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	int32 MaxHealth;
+
 	/** Weapon class */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	TSubclassOf<ABWeapon> WeaponClass;
@@ -79,6 +109,21 @@ protected:
 	/** Current weapon */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Pawn)
 	ABWeapon* Weapon;
+
+	/** Max distance of melee trace */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	float MeleeTraceDistance;
+	
+	/** Impulse velocity applied on melee hit */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	float MeleeForce;
+
+	/** Damage applied on melee hit */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	int32 MeleeDamage;
+
+	/** Perform a ray trace */
+	FHitResult RayTrace(const FVector& StartTrace, const FVector& EndTrace) const;
 
 public:
 	/** Returns FirstPersonMesh subobject */

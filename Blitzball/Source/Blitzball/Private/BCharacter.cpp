@@ -8,6 +8,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Net/UnrealNetwork.h"
 
+#define COLLISION_MELEE ECC_GameTraceChannel2
+
 ABCharacter::ABCharacter()
 {
 	// Create a CameraComponent
@@ -28,6 +30,10 @@ ABCharacter::ABCharacter()
 	GetMesh()->SetOwnerNoSee(true);
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->bReceivesDecals = false;
+
+	MeleeTraceDistance = 250.0f;
+	MeleeForce = 10000.0f;
+	MeleeDamage = 30;
 
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
@@ -104,6 +110,16 @@ void ABCharacter::UpdateTeamColors()
 	}
 }
 
+int32 ABCharacter::GetHealth() const
+{
+	return Health;
+}
+
+int32 ABCharacter::GetMaxHealth() const
+{
+	return MaxHealth;
+}
+
 void ABCharacter::StartFire()
 {
 	if (Weapon)
@@ -171,5 +187,26 @@ void ABCharacter::ServerEquipWeapon_Implementation(ABWeapon* Weap)
 bool ABCharacter::ServerEquipWeapon_Validate(ABWeapon* Weap)
 {
 	return true;
+}
+
+void ABCharacter::QuickMelee()
+{
+	ABPlayerController* PlayerController = Cast<ABPlayerController>(GetController());
+	if (PlayerController)
+	{
+
+	}
+}
+
+FHitResult ABCharacter::RayTrace(const FVector& StartTrace, const FVector& EndTrace) const
+{
+	// Perform trace to retrieve hit info
+	FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(RayTrace), true, Instigator);
+	TraceParams.bReturnPhysicalMaterial = true;
+
+	FHitResult Hit(ForceInit);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_MELEE, TraceParams);
+
+	return Hit;
 }
 

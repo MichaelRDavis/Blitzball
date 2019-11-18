@@ -28,8 +28,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void StopFire();
 
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	virtual void StartAltFire();
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	virtual void StopAltFire();
+
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	virtual void Fire();
+
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	virtual void AltFire();
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void FireInstantHit();
