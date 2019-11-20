@@ -7,6 +7,7 @@
 
 class UCameraComponent;
 class ABWeapon;
+class UBCharacterMovement;
 
 /** Replicated information on a hit we've taken */
 USTRUCT(BlueprintType)
@@ -24,7 +25,7 @@ class BLITZBALL_API ABCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	ABCharacter();
+	ABCharacter(const FObjectInitializer& ObjectInitializer);
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -41,12 +42,20 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	UBCharacterMovement* BCharacterMovement;
+
 public:
 	/** Handles moving forward */
 	void MoveForward(float Value);
 
 	/** Handles strafing movement left and right */
 	void MoveRight(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	void StartThrustBoosters();
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	void StopThrustBoosters();
 
 	/** Update team outline colors for player mesh */
 	void UpdateTeamColors();
@@ -121,6 +130,12 @@ protected:
 	/** Damage applied on melee hit */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	int32 MeleeDamage;
+
+	/** Cooldown time for quick melee attack */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+	float MeleeCooldownTime;
+
+	FTimerHandle QuickMeleeTimer;
 
 	/** Perform a ray trace */
 	FHitResult RayTrace(const FVector& StartTrace, const FVector& EndTrace) const;

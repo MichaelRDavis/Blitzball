@@ -5,6 +5,8 @@
 #include "BPlayerController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "DrawDebugHelpers.h"
 
 #define COLLISION_WEAPON ECC_GameTraceChannel1
 
@@ -14,8 +16,8 @@ ABWeapon::ABWeapon()
 	Mesh->SetupAttachment(GetRootComponent());
 	Mesh->bSelfShadowOnly = true;
 
-	TraceDistance = 500.0f;
-	ImpulseForce = 5000.0f;
+	TraceDistance = 1000.0f;
+	ImpulseForce = 500000.0f;
 
 	SetReplicates(true);
 	bNetUseOwnerRelevancy = true;
@@ -39,12 +41,17 @@ void ABWeapon::StopFire()
 
 }
 
-void ABWeapon::Fire()
+void ABWeapon::StartAltFire()
 {
-	FireInstantHit();
+
 }
 
-void ABWeapon::FireInstantHit()
+void ABWeapon::StopAltFire()
+{
+
+}
+
+void ABWeapon::Fire()
 {
 	FVector StartTrace;
 	FVector ShootDir = GetFireStartLocation(StartTrace);
@@ -59,6 +66,31 @@ void ABWeapon::FireInstantHit()
 	const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
 
 	ApplyImpulse(Impact, ShootDir);
+}
+
+void ABWeapon::AltFire()
+{
+
+}
+
+void ABWeapon::ServerStartFire_Implementation()
+{
+
+}
+
+bool ABWeapon::ServerStartFire_Validate()
+{
+	return true;
+}
+
+void ABWeapon::ServerStopFire_Implementation()
+{
+
+}
+
+bool ABWeapon::ServerStopFire_Validate()
+{
+	return true;
 }
 
 void ABWeapon::ApplyImpulse(const FHitResult& Hit, const FVector& ShootDir)
@@ -123,6 +155,7 @@ FHitResult ABWeapon::WeaponTrace(const FVector& StartTrace, const FVector& EndTr
 
 	FHitResult Hit(ForceInit);
 	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_WEAPON, TraceParams);
+	DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Green, false, 1.0f, 0, 5.0f);
 
 	return Hit;
 }

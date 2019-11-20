@@ -40,8 +40,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void AltFire();
 
-	UFUNCTION(BlueprintCallable, Category = Weapon)
-	virtual void FireInstantHit();
+	UFUNCTION(Server, Reliable, WithValidation)
+	virtual void ServerStartFire();
+	virtual void ServerStartFire_Implementation();
+	virtual bool ServerStartFire_Validate();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	virtual void ServerStopFire();
+	virtual void ServerStopFire_Implementation();
+	virtual bool ServerStopFire_Validate();
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	virtual void ApplyImpulse(const FHitResult& Hit, const FVector& ShootDir);

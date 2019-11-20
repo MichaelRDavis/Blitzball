@@ -19,6 +19,11 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	void SetLastPlayer(ABCharacter* NewPlayer);
+
+	UFUNCTION(BlueprintCallable, Category = GameObject)
+	void Score(ABCharacter* ScoringPawn, ABPlayerState* ScoringPlayer);
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
 	USphereComponent* CollisionComp;
@@ -34,4 +39,15 @@ public:
 	/** Reference to player that last hit this object */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = GameObject)
 	ABPlayerState* Player;
+
+	/** Reference to the last player that hit this object */
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = GameObject)
+	ABPlayerState* LastPlayer;
+
+	UPROPERTY(BlueprintReadOnly, Category = GameObject)
+	float HitTime;
+
+	/** Sound played on hit */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sounds)
+	USoundBase* HitSound;
 };

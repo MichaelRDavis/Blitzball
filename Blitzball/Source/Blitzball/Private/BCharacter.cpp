@@ -3,6 +3,8 @@
 #include "BCharacter.h"
 #include "BWeapon.h"
 #include "BPlayerState.h"
+#include "BPlayerController.h"
+#include "BCharacterMovement.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -10,7 +12,8 @@
 
 #define COLLISION_MELEE ECC_GameTraceChannel2
 
-ABCharacter::ABCharacter()
+ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBCharacterMovement>(ACharacter::CharacterMovementComponentName))
 {
 	// Create a CameraComponent
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
@@ -26,6 +29,8 @@ ABCharacter::ABCharacter()
 	FirstPersonMesh->bCastDynamicShadow = false;
 	FirstPersonMesh->CastShadow = false;
 	FirstPersonMesh->bReceivesDecals = false;
+
+	BCharacterMovement = Cast<UBCharacterMovement>(GetCharacterMovement());
 
 	GetMesh()->SetOwnerNoSee(true);
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
@@ -72,7 +77,7 @@ void ABCharacter::MoveForward(float Value)
 	{
 		// Find out which way is forward
 		const FRotator Rotation = GetControlRotation();
-		const FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
+		const FRotator YawRotation(Rotation);
 
 		// Add movement in forward direction
 		AddMovementInput(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X), Value);
@@ -85,11 +90,21 @@ void ABCharacter::MoveRight(float Value)
 	{
 		// Find out which way is right
 		const FRotator Rotation = GetControlRotation();
-		const FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
+		const FRotator YawRotation(Rotation);
 
 		// Add movement in right direction
 		AddMovementInput(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y), Value);
 	}
+}
+
+void ABCharacter::StartThrustBoosters()
+{
+
+}
+
+void ABCharacter::StopThrustBoosters()
+{
+
 }
 
 void ABCharacter::UpdateTeamColors()
@@ -194,7 +209,10 @@ void ABCharacter::QuickMelee()
 	ABPlayerController* PlayerController = Cast<ABPlayerController>(GetController());
 	if (PlayerController)
 	{
+		FVector CamLoc;
+		FRotator CamRot;
 
+		PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
 	}
 }
 
