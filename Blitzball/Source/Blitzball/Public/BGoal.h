@@ -5,6 +5,8 @@
 #include "GameFramework/Actor.h"
 #include "BGoal.generated.h"
 
+class UBoxComponent;
+
 UCLASS()
 class BLITZBALL_API ABGoal : public AActor
 {
@@ -17,5 +19,9 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* GoalMesh;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* GoalBox;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* SaveBox;
 };

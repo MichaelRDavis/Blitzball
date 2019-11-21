@@ -6,6 +6,7 @@
 #include "BGameMode.generated.h"
 
 class ABCharacter;
+class ABPlayerState;
 
 UCLASS()
 class BLITZBALL_API ABGameMode : public ABGameModeBase
@@ -15,8 +16,45 @@ class BLITZBALL_API ABGameMode : public ABGameModeBase
 public:
 	ABGameMode();
 
+	virtual void PreInitializeComponents() override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
+	UFUNCTION(BlueprintCallable, Category = GameMode)
+	void StartMatchTimer();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
 	TSubclassOf<ABCharacter> DefaultCharacterClass;
+
+protected:
+	int32 ChooseTeam(ABPlayerState* PlayerState) const;
+	void DetermineMatchWinner();
+	bool IsWinner() const;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = GameMode)
+	int32 NumTeams;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = GameMode)
+	int32 WinningTeam;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
+	int32 WarmupTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
+	int32 MatchTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
+	int32 TimeBetweenMatches;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
+	int32 GoalScore;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
+	int32 SaveScore;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
+	int32 KnockedBackScore;
+
+	FTimerHandle MatchTimer;
 };

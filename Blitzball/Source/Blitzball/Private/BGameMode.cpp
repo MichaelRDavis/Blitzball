@@ -11,6 +11,21 @@ ABGameMode::ABGameMode()
 	PlayerControllerClass = ABPlayerController::StaticClass();
 	PlayerStateClass = ABPlayerState::StaticClass();
 	GameStateClass = ABGameState::StaticClass();
+
+	NumTeams = 2;
+	WinningTeam = 0;
+}
+
+void ABGameMode::PreInitializeComponents()
+{
+	Super::PreInitializeComponents();
+
+	GetWorld()->GetTimerManager().SetTimer(MatchTimer, this, &ABGameMode::StartMatchTimer, GetWorldSettings()->GetEffectiveTimeDilation(), true);
+}
+
+void ABGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
 }
 
 UClass* ABGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
@@ -22,4 +37,70 @@ UClass* ABGameMode::GetDefaultPawnClassForController_Implementation(AController*
 	}
 
 	return DefaultPawnClass;
+}
+
+AActor* ABGameMode::ChoosePlayerStart_Implementation(AController* Player)
+{
+	return Super::ChoosePlayerStart_Implementation(Player);
+}
+
+void ABGameMode::StartMatchTimer()
+{
+	if (GetWorld()->IsPlayInEditor())
+	{
+		if (GetMatchState() == MatchState::WaitingToStart)
+		{
+			StartMatch();
+		}
+
+		return;
+	}
+
+	ABGameState* const Game = Cast<ABGameState>(GameState);
+	if (Game && Game->RemainingTime > 0)
+	{
+		if (Game->RemainingTime <= 0)
+		{
+			if (GetMatchState() == MatchState::WaitingPostMatch)
+			{
+				RestartGame();
+			}
+			else if (GetMatchState() == MatchState::InProgress)
+			{
+				EndMatch();
+			}
+			else if (GetMatchState() == MatchState::WaitingToStart)
+			{
+				StartMatch();
+			}
+		}
+	}
+}
+
+int32 ABGameMode::ChooseTeam(ABPlayerState* PlayerState) const
+{
+	TArray<int32> TeamBalance;
+	TeamBalance.AddZeroed(NumTeams);
+
+	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
+	{
+		ABPlayerState const* const Player = Cast<ABPlayerState>(GameState->PlayerArray[i]);
+		if (Player && Player != PlayerState && TeamBalance.IsValidIndex(Player->GetTeamNumber()))
+		{
+			TeamBalance[Player->GetTeamNumber()]++;
+		}
+	}
+
+	int32 BestTeam = TeamBalance[0];
+
+}
+
+void ABGameMode::DetermineMatchWinner()
+{
+
+}
+
+bool ABGameMode::IsWinner() const
+{
+	return true;
 }

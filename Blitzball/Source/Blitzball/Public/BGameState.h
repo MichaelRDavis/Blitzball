@@ -23,4 +23,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Replicated)
 	int32 BlueTeamGoals;
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int32 RemainingTime;
 };
