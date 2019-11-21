@@ -7,6 +7,13 @@
 
 class ABCharacter;
 
+UENUM(BlueprintType)
+enum class EWeaponState : uint8
+{
+	EIdle UMETA(DisplayName="Idle"),
+	EFiring UMETA(DisplayName = "Firing"),
+};
+
 UCLASS()
 class BLITZBALL_API ABWeapon : public AActor
 {
@@ -50,8 +57,15 @@ public:
 	virtual void ServerStopFire_Implementation();
 	virtual bool ServerStopFire_Validate();
 
-	UFUNCTION(BlueprintCallable, Category = Weapon)
-	virtual void ApplyImpulse(const FHitResult& Hit, const FVector& ShootDir);
+	UFUNCTION(Server, Reliable, WithValidation)
+	virtual void ServerStartAltFire();
+	virtual void ServerStartAltFire_Implementation();
+	virtual bool ServerStartAltFire_Validate();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	virtual void ServerStopAltFire();
+	virtual void ServerStopAltFire_Implementation();
+	virtual bool ServerStopAltFire_Validate();
 
 	virtual void GiveTo(ABCharacter* NewOwner);
 	virtual void Remove();
@@ -70,7 +84,10 @@ protected:
 	float TraceDistance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-	float ImpulseForce;
+	float BlitzballImpulseForce;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float PlayerImpulseForce;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Weapon)
 	FVector GetFireStartLocation(FVector& StartTrace);

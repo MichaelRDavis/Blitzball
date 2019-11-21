@@ -99,12 +99,18 @@ void ABCharacter::MoveRight(float Value)
 
 void ABCharacter::StartThrustBoosters()
 {
-
+	if (BCharacterMovement)
+	{
+		BCharacterMovement->SetThrustBoosters(true);
+	}
 }
 
 void ABCharacter::StopThrustBoosters()
 {
-
+	if (BCharacterMovement)
+	{
+		BCharacterMovement->SetThrustBoosters(false);
+	}
 }
 
 void ABCharacter::UpdateTeamColors()
@@ -120,7 +126,7 @@ void ABCharacter::UpdateTeamColors()
 		else if (Player->GetTeamNumber() == 1)
 		{
 			GetMesh()->SetRenderCustomDepth(true);
-			GetMesh()->SetCustomDepthStencilValue(253);
+			GetMesh()->SetCustomDepthStencilValue(254);
 		}
 	}
 }
@@ -148,6 +154,22 @@ void ABCharacter::StopFire()
 	if (Weapon)
 	{
 		Weapon->StopFire();
+	}
+}
+
+void ABCharacter::StartAltFire()
+{
+	if (Weapon)
+	{
+		Weapon->StartAltFire();
+	}
+}
+
+void ABCharacter::StopAltFire()
+{
+	if (Weapon)
+	{
+		Weapon->StopAltFire();
 	}
 }
 

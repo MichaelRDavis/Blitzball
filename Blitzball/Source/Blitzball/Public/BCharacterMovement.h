@@ -24,12 +24,19 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Thrust Boost")
 	bool bIsThrustBoosting; 
+
+	void SetThrustBoosters(bool bNewThrustBoosters);
+
+	virtual float GetMaxSpeed() const override;
+	virtual float GetMaxAcceleration() const override;
 };
 
 class FSavedMove_BCharacter : public FSavedMove_Character
 {
 public:
 	typedef FSavedMove_Character Super;
+
+	bool bSavedIsThrustBoosting;
 
 	virtual void Clear() override;
 	virtual void SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData) override;

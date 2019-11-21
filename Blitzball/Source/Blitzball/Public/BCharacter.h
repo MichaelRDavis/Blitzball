@@ -76,6 +76,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void StopFire();
 
+	/** Starts weapon alt fire */
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	void StartAltFire();
+
+	/** Stops weapon alt fire */
+	UFUNCTION(BlueprintCallable, Category = Pawn)
+	void StopAltFire();
+
 	/** Check if player can fire weapon */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
 	bool CanFire() const;

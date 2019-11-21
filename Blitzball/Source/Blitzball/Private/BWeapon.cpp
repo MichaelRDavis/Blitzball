@@ -3,6 +3,7 @@
 #include "BWeapon.h"
 #include "BCharacter.h"
 #include "BPlayerController.h"
+#include "BBlitzball.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -17,7 +18,8 @@ ABWeapon::ABWeapon()
 	Mesh->bSelfShadowOnly = true;
 
 	TraceDistance = 1000.0f;
-	ImpulseForce = 500000.0f;
+	BlitzballImpulseForce = 600000.0f;
+	PlayerImpulseForce = 300000.0f;
 
 	SetReplicates(true);
 	bNetUseOwnerRelevancy = true;
@@ -33,22 +35,38 @@ void ABWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 
 void ABWeapon::StartFire()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerStartFire();
+	}
+
 	Fire();
 }
 
 void ABWeapon::StopFire()
 {
-
+	if (Role < ROLE_Authority)
+	{
+		ServerStopFire();
+	}
 }
 
 void ABWeapon::StartAltFire()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerStartAltFire();
+	}
 
+	AltFire();
 }
 
 void ABWeapon::StopAltFire()
 {
-
+	if (Role < ROLE_Authority)
+	{
+		ServerStopAltFire();
+	}
 }
 
 void ABWeapon::Fire()
@@ -65,17 +83,48 @@ void ABWeapon::Fire()
 	// Check for impact
 	const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
 
-	ApplyImpulse(Impact, ShootDir);
+	AActor* HitActor = Impact.GetActor();
+	UPrimitiveComponent* HitComponent = Impact.GetComponent();
+	if (HitActor != nullptr && (HitActor != this) && (HitComponent != nullptr) && HitComponent->IsSimulatingPhysics())
+	{
+		HitComponent->AddImpulseAtLocation(ShootDir * BlitzballImpulseForce, Impact.Location);
+
+		ABBlitzball* Ball = Cast<ABBlitzball>(HitActor);
+		if (Ball)
+		{
+			Ball->SetLastPlayer(BOwner);
+		}
+	}
 }
 
 void ABWeapon::AltFire()
 {
+	FVector StartTrace;
+	FVector ShootDir = GetFireStartLocation(StartTrace);
 
+	// Adjust trace so there is nothing blocking the ray between the camera and the pawn, and calculate the distance from adjusted start
+	StartTrace = StartTrace + ShootDir * ((BOwner->GetActorLocation() - StartTrace) | ShootDir);
+
+	// Calculate endpoint of trace
+	const FVector EndTrace = StartTrace + ShootDir * TraceDistance;
+
+	// Check for impact
+	const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
+
+	AActor* HitActor = Impact.GetActor();
+	if (HitActor != nullptr && HitActor != this)
+	{
+		ABCharacter* Character = Cast<ABCharacter>(HitActor);
+		if (Character)
+		{
+			Character->LaunchCharacter(ShootDir * PlayerImpulseForce, true, true);
+		}
+	}
 }
 
 void ABWeapon::ServerStartFire_Implementation()
 {
-
+	StartFire();
 }
 
 bool ABWeapon::ServerStartFire_Validate()
@@ -85,7 +134,7 @@ bool ABWeapon::ServerStartFire_Validate()
 
 void ABWeapon::ServerStopFire_Implementation()
 {
-
+	StopFire();
 }
 
 bool ABWeapon::ServerStopFire_Validate()
@@ -93,14 +142,24 @@ bool ABWeapon::ServerStopFire_Validate()
 	return true;
 }
 
-void ABWeapon::ApplyImpulse(const FHitResult& Hit, const FVector& ShootDir)
+void ABWeapon::ServerStartAltFire_Implementation()
 {
-	AActor* HitActor = Hit.GetActor();
-	UPrimitiveComponent* HitComponent = Hit.GetComponent();
-	if (HitActor != nullptr && (HitActor != this) && (HitComponent != nullptr) && HitComponent->IsSimulatingPhysics())
-	{
-		HitComponent->AddImpulseAtLocation(ShootDir * ImpulseForce, Hit.Location);
-	}
+	StartAltFire();
+}
+
+bool ABWeapon::ServerStartAltFire_Validate()
+{
+	return true;
+}
+
+void ABWeapon::ServerStopAltFire_Implementation()
+{
+	StopAltFire();
+}
+
+bool ABWeapon::ServerStopAltFire_Validate()
+{
+	return true;
 }
 
 void ABWeapon::GiveTo(ABCharacter* NewOwner)

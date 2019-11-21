@@ -15,6 +15,8 @@ UBCharacterMovement::UBCharacterMovement()
 void UBCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
 {
 	Super::UpdateFromCompressedFlags(Flags);
+
+	bIsThrustBoosting = (Flags & FSavedMove_BCharacter::FLAG_Custom_0) != 0;
 }
 
 FNetworkPredictionData_Client* UBCharacterMovement::GetPredictionData_Client() const
@@ -31,9 +33,40 @@ FNetworkPredictionData_Client* UBCharacterMovement::GetPredictionData_Client() c
 	return ClientPredictionData;
 }
 
+void UBCharacterMovement::SetThrustBoosters(bool bNewThrustBoosters)
+{
+	bIsThrustBoosting = bNewThrustBoosters;
+}
+
+float UBCharacterMovement::GetMaxSpeed() const
+{
+	float MaxSpeed = Super::GetMaxSpeed();
+
+	if (bIsThrustBoosting)
+	{
+		MaxSpeed *= ThrustBoostSpeedMultiplier;
+	}
+
+	return MaxSpeed;
+}
+
+float UBCharacterMovement::GetMaxAcceleration() const
+{
+	float MaxAccel = Super::GetMaxAcceleration();
+
+	if (bIsThrustBoosting)
+	{
+		MaxAccel *= ThurstBoostAccelerationMultiplier;
+	}
+
+	return MaxAccel;
+}
+
 void FSavedMove_BCharacter::Clear()
 {
 	Super::Clear();
+
+	bSavedIsThrustBoosting = false;
 }
 
 void FSavedMove_BCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData)
@@ -43,7 +76,7 @@ void FSavedMove_BCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime,
 	UBCharacterMovement* CharMov = Cast<UBCharacterMovement>(Character->GetCharacterMovement());
 	if (CharMov)
 	{
-
+		bSavedIsThrustBoosting = CharMov->bIsThrustBoosting;
 	}
 }
 
@@ -51,11 +84,21 @@ uint8 FSavedMove_BCharacter::GetCompressedFlags() const
 {
 	uint8 Result = Super::GetCompressedFlags();
 
+	if (bSavedIsThrustBoosting)
+	{
+		Result |= FLAG_Custom_0;
+	}
+
 	return Result;
 }
 
 bool FSavedMove_BCharacter::CanCombineWith(const FSavedMovePtr& NewMove, ACharacter* InCharacter, float MaxDelta) const
 {
+	if (bSavedIsThrustBoosting != ((FSavedMove_BCharacter*)&NewMove)->bSavedIsThrustBoosting)
+	{
+		return false;
+	}
+
 	return Super::CanCombineWith(NewMove, InCharacter, MaxDelta);
 }
 
@@ -76,7 +119,7 @@ void FSavedMove_BCharacter::PrepMoveFor(ACharacter* Character)
 	UBCharacterMovement* CharMov = Cast<UBCharacterMovement>(Character->GetCharacterMovement());
 	if (CharMov)
 	{
-
+		CharMov->bIsThrustBoosting = bSavedIsThrustBoosting;
 	}
 }
 
