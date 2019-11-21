@@ -12,4 +12,9 @@ class BLITZBALL_API ABHUD : public AHUD
 	
 public:
 	ABHUD();
+
+	virtual void DrawHUD() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
+	TSubclassOf<UUserWidget> HUDWidgetClass;
 };
