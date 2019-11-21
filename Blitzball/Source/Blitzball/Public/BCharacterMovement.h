@@ -16,16 +16,16 @@ public:
 	virtual void UpdateFromCompressedFlags(uint8 Flags) override;
 	virtual FNetworkPredictionData_Client* GetPredictionData_Client() const override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thrust Boost")
-	float ThrustBoostSpeedMultiplier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Boost")
+	float SpeedBoostMultiplier;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Thrust Boost")
-	float ThurstBoostAccelerationMultiplier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Boost")
+	float SpeedBoostAccelMultiplier;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Thrust Boost")
-	bool bIsThrustBoosting; 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Speed Boost")
+	bool bWantsToSpeedBoost; 
 
-	void SetThrustBoosters(bool bNewThrustBoosters);
+	void SetSpeedBoost(bool bNewSpeedBoost);
 
 	virtual float GetMaxSpeed() const override;
 	virtual float GetMaxAcceleration() const override;
@@ -36,7 +36,7 @@ class FSavedMove_BCharacter : public FSavedMove_Character
 public:
 	typedef FSavedMove_Character Super;
 
-	bool bSavedIsThrustBoosting;
+	bool bSavedWantsToSpeedBoost;
 
 	virtual void Clear() override;
 	virtual void SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData) override;

@@ -53,8 +53,8 @@ protected:
 	void OnStopAltFire();
 
 	/** Thrust boosters */
-	void OnStartThrustBoosters();
-	void OnStopThrustBoosters();
+	void OnStartSpeedBoost();
+	void OnStopSpeedBoost();
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)

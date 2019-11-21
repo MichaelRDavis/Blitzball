@@ -29,8 +29,8 @@ void ABPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("LookUpRate", this, &ABPlayerController::LookUpAtRate);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ABPlayerController::OnJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ABPlayerController::OnStopJumping);
-	InputComponent->BindAction("ThrustBoosters", IE_Pressed, this, &ABPlayerController::OnStartThrustBoosters);
-	InputComponent->BindAction("ThrustBoosters", IE_Released, this, &ABPlayerController::OnStopThrustBoosters);
+	InputComponent->BindAction("SpeedBoost", IE_Pressed, this, &ABPlayerController::OnStartSpeedBoost);
+	InputComponent->BindAction("SpeedBoost", IE_Released, this, &ABPlayerController::OnStopSpeedBoost);
 
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ABPlayerController::OnStartFire);
 	InputComponent->BindAction("Fire", IE_Released, this, &ABPlayerController::OnStopFire);
@@ -122,18 +122,18 @@ void ABPlayerController::OnStopAltFire()
 	}
 }
 
-void ABPlayerController::OnStartThrustBoosters()
+void ABPlayerController::OnStartSpeedBoost()
 {
 	if (BCharacter)
 	{
-		BCharacter->StartThrustBoosters();
+		BCharacter->StartSpeedBoost();
 	}
 }
 
-void ABPlayerController::OnStopThrustBoosters()
+void ABPlayerController::OnStopSpeedBoost()
 {
 	if (BCharacter)
 	{
-		BCharacter->StopThrustBoosters();
+		BCharacter->StopSpeedBoost();
 	}
 }

@@ -71,6 +71,23 @@ void ABCharacter::PawnClientRestart()
 	UpdateTeamColors();
 }
 
+void ABCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	UpdateTeamColors();
+}
+
+void ABCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	if (GetPlayerState() != nullptr)
+	{
+		UpdateTeamColors();
+	}
+}
+
 void ABCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
@@ -97,19 +114,19 @@ void ABCharacter::MoveRight(float Value)
 	}
 }
 
-void ABCharacter::StartThrustBoosters()
+void ABCharacter::StartSpeedBoost()
 {
 	if (BCharacterMovement)
 	{
-		BCharacterMovement->SetThrustBoosters(true);
+		BCharacterMovement->SetSpeedBoost(true);
 	}
 }
 
-void ABCharacter::StopThrustBoosters()
+void ABCharacter::StopSpeedBoost()
 {
 	if (BCharacterMovement)
 	{
-		BCharacterMovement->SetThrustBoosters(false);
+		BCharacterMovement->SetSpeedBoost(false);
 	}
 }
 

@@ -83,6 +83,7 @@ void ABWeapon::Fire()
 	// Check for impact
 	const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
 
+	// Apply impulse to Blitzball
 	AActor* HitActor = Impact.GetActor();
 	UPrimitiveComponent* HitComponent = Impact.GetComponent();
 	if (HitActor != nullptr && (HitActor != this) && (HitComponent != nullptr) && HitComponent->IsSimulatingPhysics())
@@ -111,6 +112,7 @@ void ABWeapon::AltFire()
 	// Check for impact
 	const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
 
+	// Apply impulse to character
 	AActor* HitActor = Impact.GetActor();
 	if (HitActor != nullptr && HitActor != this)
 	{

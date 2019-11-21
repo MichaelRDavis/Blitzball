@@ -32,6 +32,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
 	virtual void PawnClientRestart() override;
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
 
 private:
 	/** Pawn mesh: 1st person (arms; seen only by self) */
@@ -53,9 +55,9 @@ public:
 	void MoveRight(float Value);
 
 	UFUNCTION(BlueprintCallable, Category = Pawn)
-	void StartThrustBoosters();
+	void StartSpeedBoost();
 	UFUNCTION(BlueprintCallable, Category = Pawn)
-	void StopThrustBoosters();
+	void StopSpeedBoost();
 
 	/** Update team outline colors for player mesh */
 	void UpdateTeamColors();

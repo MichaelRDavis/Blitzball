@@ -25,6 +25,10 @@ void ABGameMode::PreInitializeComponents()
 
 void ABGameMode::PostLogin(APlayerController* NewPlayer)
 {
+	ABPlayerState* PlayerState = Cast<ABPlayerState>(NewPlayer->PlayerState);
+	const int32 TeamNumber = ChooseTeam(PlayerState);
+	PlayerState->SetTeamNumber(TeamNumber);
+
 	Super::PostLogin(NewPlayer);
 }
 
@@ -84,7 +88,7 @@ int32 ABGameMode::ChooseTeam(ABPlayerState* PlayerState) const
 
 	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
 	{
-		ABPlayerState const* const Player = Cast<ABPlayerState>(GameState->PlayerArray[i]);
+		ABPlayerState* Player = Cast<ABPlayerState>(GameState->PlayerArray[i]);
 		if (Player && Player != PlayerState && TeamBalance.IsValidIndex(Player->GetTeamNumber()))
 		{
 			TeamBalance[Player->GetTeamNumber()]++;
@@ -92,7 +96,25 @@ int32 ABGameMode::ChooseTeam(ABPlayerState* PlayerState) const
 	}
 
 	int32 BestTeam = TeamBalance[0];
+	for (int32 i = 1; i < TeamBalance.Num(); i++)
+	{
+		if (BestTeam > TeamBalance[i])
+		{
+			BestTeam = TeamBalance[i];
+		}
+	}
 
+	TArray<int32> BestTeams;
+	for (int32 i = 0; i < TeamBalance.Num(); i++)
+	{
+		if (TeamBalance[i] == BestTeam)
+		{
+			BestTeams.Add(i);
+		}
+	}
+
+	const int32 RandomBestTeam = BestTeams[FMath::RandHelper(BestTeams.Num())];
+	return RandomBestTeam;
 }
 
 void ABGameMode::DetermineMatchWinner()

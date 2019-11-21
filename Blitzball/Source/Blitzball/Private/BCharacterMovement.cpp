@@ -5,18 +5,23 @@
 
 UBCharacterMovement::UBCharacterMovement()
 {
-	MaxFlySpeed = 900.0f;
-	ThrustBoostSpeedMultiplier = 1.5f;
-	ThurstBoostAccelerationMultiplier = 1.5f;
-	bIsThrustBoosting = false;
-	DefaultLandMovementMode = EMovementMode::MOVE_Flying;
+	MaxWalkSpeed = 1200.0f;
+	AirControl = 0.555f;
+	MaxAcceleration = 3200.0f;
+	GroundFriction = 10.5f;
+	BrakingFriction = 5.0f;
+	GravityScale = 1.0f;
+	JumpZVelocity = 700.0f;
+	SpeedBoostMultiplier = 1.5f;
+	SpeedBoostAccelMultiplier = 1.5f;
+	bWantsToSpeedBoost = false;
 }
 
 void UBCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
 {
 	Super::UpdateFromCompressedFlags(Flags);
 
-	bIsThrustBoosting = (Flags & FSavedMove_BCharacter::FLAG_Custom_0) != 0;
+	bWantsToSpeedBoost = (Flags & FSavedMove_BCharacter::FLAG_Custom_0) != 0;
 }
 
 FNetworkPredictionData_Client* UBCharacterMovement::GetPredictionData_Client() const
@@ -33,18 +38,18 @@ FNetworkPredictionData_Client* UBCharacterMovement::GetPredictionData_Client() c
 	return ClientPredictionData;
 }
 
-void UBCharacterMovement::SetThrustBoosters(bool bNewThrustBoosters)
+void UBCharacterMovement::SetSpeedBoost(bool bNewSpeedBoost)
 {
-	bIsThrustBoosting = bNewThrustBoosters;
+	bWantsToSpeedBoost = bNewSpeedBoost;
 }
 
 float UBCharacterMovement::GetMaxSpeed() const
 {
 	float MaxSpeed = Super::GetMaxSpeed();
 
-	if (bIsThrustBoosting)
+	if (bWantsToSpeedBoost)
 	{
-		MaxSpeed *= ThrustBoostSpeedMultiplier;
+		MaxSpeed *= SpeedBoostMultiplier;
 	}
 
 	return MaxSpeed;
@@ -54,9 +59,9 @@ float UBCharacterMovement::GetMaxAcceleration() const
 {
 	float MaxAccel = Super::GetMaxAcceleration();
 
-	if (bIsThrustBoosting)
+	if (bWantsToSpeedBoost)
 	{
-		MaxAccel *= ThurstBoostAccelerationMultiplier;
+		MaxAccel *= SpeedBoostAccelMultiplier;
 	}
 
 	return MaxAccel;
@@ -66,7 +71,7 @@ void FSavedMove_BCharacter::Clear()
 {
 	Super::Clear();
 
-	bSavedIsThrustBoosting = false;
+	bSavedWantsToSpeedBoost = false;
 }
 
 void FSavedMove_BCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData)
@@ -76,7 +81,7 @@ void FSavedMove_BCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime,
 	UBCharacterMovement* CharMov = Cast<UBCharacterMovement>(Character->GetCharacterMovement());
 	if (CharMov)
 	{
-		bSavedIsThrustBoosting = CharMov->bIsThrustBoosting;
+		bSavedWantsToSpeedBoost = CharMov->bWantsToSpeedBoost;
 	}
 }
 
@@ -84,7 +89,7 @@ uint8 FSavedMove_BCharacter::GetCompressedFlags() const
 {
 	uint8 Result = Super::GetCompressedFlags();
 
-	if (bSavedIsThrustBoosting)
+	if (bSavedWantsToSpeedBoost)
 	{
 		Result |= FLAG_Custom_0;
 	}
@@ -94,7 +99,7 @@ uint8 FSavedMove_BCharacter::GetCompressedFlags() const
 
 bool FSavedMove_BCharacter::CanCombineWith(const FSavedMovePtr& NewMove, ACharacter* InCharacter, float MaxDelta) const
 {
-	if (bSavedIsThrustBoosting != ((FSavedMove_BCharacter*)&NewMove)->bSavedIsThrustBoosting)
+	if (bSavedWantsToSpeedBoost != ((FSavedMove_BCharacter*)&NewMove)->bSavedWantsToSpeedBoost)
 	{
 		return false;
 	}
@@ -119,7 +124,7 @@ void FSavedMove_BCharacter::PrepMoveFor(ACharacter* Character)
 	UBCharacterMovement* CharMov = Cast<UBCharacterMovement>(Character->GetCharacterMovement());
 	if (CharMov)
 	{
-		CharMov->bIsThrustBoosting = bSavedIsThrustBoosting;
+		CharMov->bWantsToSpeedBoost = bSavedWantsToSpeedBoost;
 	}
 }
 
