@@ -8,9 +8,9 @@ ABHUD::ABHUD()
 
 }
 
-void ABHUD::DrawHUD()
+void ABHUD::BeginPlay()
 {
-	Super::DrawHUD();
+	Super::BeginPlay();
 
 	if (HUDWidgetClass)
 	{

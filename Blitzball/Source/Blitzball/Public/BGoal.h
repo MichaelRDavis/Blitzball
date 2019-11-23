@@ -24,4 +24,8 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* SaveBox;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameObject)
+	int32 TeamNumber;
 };

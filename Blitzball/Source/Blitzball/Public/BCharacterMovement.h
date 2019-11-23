@@ -29,6 +29,12 @@ public:
 
 	virtual float GetMaxSpeed() const override;
 	virtual float GetMaxAcceleration() const override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Multijump", meta = (DisplayName = "Max Multijump Count"))
+	int32 MaxMultiJumpCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Multijump", meta = (DisplayName = "Current Multijump Count"))
+	int32 CurrentMultiJumpCount;
 };
 
 class FSavedMove_BCharacter : public FSavedMove_Character

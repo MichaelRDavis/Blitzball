@@ -54,6 +54,8 @@ public:
 	/** Handles strafing movement left and right */
 	void MoveRight(float Value);
 
+	virtual bool CanJumpInternal_Implementation() const;
+
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void StartSpeedBoost();
 	UFUNCTION(BlueprintCallable, Category = Pawn)

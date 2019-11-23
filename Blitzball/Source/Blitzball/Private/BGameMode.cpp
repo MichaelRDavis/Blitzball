@@ -20,7 +20,7 @@ void ABGameMode::PreInitializeComponents()
 {
 	Super::PreInitializeComponents();
 
-	GetWorld()->GetTimerManager().SetTimer(MatchTimer, this, &ABGameMode::StartMatchTimer, GetWorldSettings()->GetEffectiveTimeDilation(), true);
+	//GetWorld()->GetTimerManager().SetTimer(MatchTimer, this, &ABGameMode::StartMatchTimer, GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
 void ABGameMode::PostLogin(APlayerController* NewPlayer)

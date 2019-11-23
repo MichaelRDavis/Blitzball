@@ -4,5 +4,5 @@
 
 ABMenuPlayerController::ABMenuPlayerController()
 {
-
+	bShowMouseCursor = true;
 }

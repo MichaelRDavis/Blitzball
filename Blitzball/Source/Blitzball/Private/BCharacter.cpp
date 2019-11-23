@@ -94,7 +94,7 @@ void ABCharacter::MoveForward(float Value)
 	{
 		// Find out which way is forward
 		const FRotator Rotation = GetControlRotation();
-		const FRotator YawRotation(Rotation);
+		const FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
 
 		// Add movement in forward direction
 		AddMovementInput(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X), Value);
@@ -107,11 +107,16 @@ void ABCharacter::MoveRight(float Value)
 	{
 		// Find out which way is right
 		const FRotator Rotation = GetControlRotation();
-		const FRotator YawRotation(Rotation);
+		const FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
 
 		// Add movement in right direction
 		AddMovementInput(FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y), Value);
 	}
+}
+
+bool ABCharacter::CanJumpInternal_Implementation() const
+{
+	return Super::CanJumpInternal_Implementation();
 }
 
 void ABCharacter::StartSpeedBoost()
