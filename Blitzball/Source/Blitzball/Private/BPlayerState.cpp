@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BPlayerState.h"
+#include "BGameState.h"
 #include "Net/UnrealNetwork.h"
 
 ABPlayerState::ABPlayerState()
@@ -24,7 +25,21 @@ void ABPlayerState::SetTeamNumber(int32 NewTeamNumber)
 
 void ABPlayerState::ScoreGoal(ABPlayerState* ScoredBy, int32 Points)
 {
+	ABGameState* const Game = Cast<ABGameState>(GetWorld()->GetGameState());
+	if (Game)
+	{
+		if (TeamNumber == 0)
+		{
+
+		}
+		else if (TeamNumber == 1)
+		{
+
+		}
+	}
+
 	Goals++;
+	Score += Points;
 }
 
 int32 ABPlayerState::GetTeamNumber()

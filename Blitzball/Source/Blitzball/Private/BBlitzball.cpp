@@ -6,6 +6,7 @@
 #include "BBlitzballBase.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ABBlitzball::ABBlitzball()
 {
@@ -34,7 +35,10 @@ void ABBlitzball::SetLastPlayer(ABCharacter* NewPlayer)
 
 void ABBlitzball::Score()
 {
-
+	if (Player)
+	{
+		Player->ScoreGoal(Player, 100);
+	}
 }
 
 void ABBlitzball::TeleportHome()
