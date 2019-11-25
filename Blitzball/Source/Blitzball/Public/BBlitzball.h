@@ -22,7 +22,7 @@ public:
 	void SetLastPlayer(ABCharacter* NewPlayer);
 
 	UFUNCTION(BlueprintCallable, Category = GameObject)
-	void Score(ABCharacter* ScoringPawn, ABPlayerState* ScoringPlayer);
+	void Score();
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))

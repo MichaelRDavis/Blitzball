@@ -31,7 +31,7 @@ void ABBlitzball::SetLastPlayer(ABCharacter* NewPlayer)
 	HitTime = GetWorld()->GetTimeSeconds();
 }
 
-void ABBlitzball::Score(ABCharacter* ScoringPawn, ABPlayerState* ScoringPlayer)
+void ABBlitzball::Score()
 {
 
 }

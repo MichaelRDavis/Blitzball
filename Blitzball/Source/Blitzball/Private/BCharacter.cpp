@@ -116,7 +116,13 @@ void ABCharacter::MoveRight(float Value)
 
 bool ABCharacter::CanJumpInternal_Implementation() const
 {
-	return Super::CanJumpInternal_Implementation();
+	bool bCanJump = Super::CanJumpInternal_Implementation();
+	if (!bCanJump && BCharacterMovement)
+	{
+		bCanJump = BCharacterMovement->OnMultiJump();
+	}
+
+	return bCanJump;
 }
 
 void ABCharacter::StartSpeedBoost()

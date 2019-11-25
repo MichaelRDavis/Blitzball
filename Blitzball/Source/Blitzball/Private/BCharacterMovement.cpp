@@ -15,6 +15,9 @@ UBCharacterMovement::UBCharacterMovement()
 	SpeedBoostMultiplier = 1.5f;
 	SpeedBoostAccelMultiplier = 1.5f;
 	bWantsToSpeedBoost = false;
+	MaxMultiJumpCount = 3;
+	CurrentMultiJumpCount = 0;
+	MultiJumpImpulse = 600.0f;
 }
 
 void UBCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
@@ -67,11 +70,47 @@ float UBCharacterMovement::GetMaxAcceleration() const
 	return MaxAccel;
 }
 
+bool UBCharacterMovement::OnMultiJump()
+{
+	if (CharacterOwner)
+	{
+		Velocity.Z = MultiJumpImpulse;
+		CurrentMultiJumpCount++;
+		return true;
+	}
+
+	return false;
+}
+
+bool UBCharacterMovement::CanMultiJump()
+{
+	return MaxMultiJumpCount > 0 && CurrentMultiJumpCount < MaxMultiJumpCount;
+}
+
+bool UBCharacterMovement::CanJump()
+{
+	return IsMovingOnGround() || CanMultiJump() && CanEverJump();
+}
+
+bool UBCharacterMovement::DoJump(bool bReplayingMoves)
+{
+	return CharacterOwner->CanJump() && (IsFalling()) ? OnMultiJump() : Super::DoJump(bReplayingMoves);
+}
+
+void UBCharacterMovement::ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations)
+{
+	Super::ProcessLanded(Hit, remainingTime, Iterations);
+
+	CurrentMultiJumpCount = 0;
+}
+
 void FSavedMove_BCharacter::Clear()
 {
 	Super::Clear();
 
 	bSavedWantsToSpeedBoost = false;
+
+	SavedMultiJumpCount = 0;
 }
 
 void FSavedMove_BCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData)
@@ -82,6 +121,8 @@ void FSavedMove_BCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime,
 	if (CharMov)
 	{
 		bSavedWantsToSpeedBoost = CharMov->bWantsToSpeedBoost;
+
+		SavedMultiJumpCount = CharMov->CurrentMultiJumpCount;
 	}
 }
 
@@ -99,7 +140,12 @@ uint8 FSavedMove_BCharacter::GetCompressedFlags() const
 
 bool FSavedMove_BCharacter::CanCombineWith(const FSavedMovePtr& NewMove, ACharacter* InCharacter, float MaxDelta) const
 {
-	if (bSavedWantsToSpeedBoost != ((FSavedMove_BCharacter*)&NewMove)->bSavedWantsToSpeedBoost)
+	if (bSavedWantsToSpeedBoost != ((FSavedMove_BCharacter*)& NewMove)->bSavedWantsToSpeedBoost)
+	{
+		return false;
+	}
+
+	if (SavedMultiJumpCount != ((FSavedMove_BCharacter*)& NewMove)->SavedMultiJumpCount)
 	{
 		return false;
 	}
@@ -125,6 +171,8 @@ void FSavedMove_BCharacter::PrepMoveFor(ACharacter* Character)
 	if (CharMov)
 	{
 		CharMov->bWantsToSpeedBoost = bSavedWantsToSpeedBoost;
+
+		CharMov->CurrentMultiJumpCount = SavedMultiJumpCount;
 	}
 }
 

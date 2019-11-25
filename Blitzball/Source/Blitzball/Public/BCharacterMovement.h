@@ -33,8 +33,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Multijump", meta = (DisplayName = "Max Multijump Count"))
 	int32 MaxMultiJumpCount;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Multijump", meta = (DisplayName = "Current Multijump Count"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Multijump", meta = (DisplayName = "Current Multijump Count"))
 	int32 CurrentMultiJumpCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Multijump")
+	float MultiJumpImpulse;
+
+	virtual bool OnMultiJump();
+	virtual bool CanMultiJump();
+	virtual bool CanJump();
+
+	virtual bool DoJump(bool bReplayingMoves) override;
+	virtual void ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations) override;
 };
 
 class FSavedMove_BCharacter : public FSavedMove_Character
@@ -43,6 +53,8 @@ public:
 	typedef FSavedMove_Character Super;
 
 	bool bSavedWantsToSpeedBoost;
+
+	int32 SavedMultiJumpCount;
 
 	virtual void Clear() override;
 	virtual void SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData) override;
