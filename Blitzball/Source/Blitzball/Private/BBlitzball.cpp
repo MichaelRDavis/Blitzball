@@ -3,6 +3,7 @@
 #include "BBlitzball.h"
 #include "BCharacter.h"
 #include "BPlayerState.h"
+#include "BBlitzballBase.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 
@@ -34,5 +35,13 @@ void ABBlitzball::SetLastPlayer(ABCharacter* NewPlayer)
 void ABBlitzball::Score()
 {
 
+}
+
+void ABBlitzball::TeleportHome()
+{
+	if (HomeBase)
+	{
+		TeleportTo(HomeBase->GetActorLocation(), HomeBase->GetActorRotation());
+	}
 }
 

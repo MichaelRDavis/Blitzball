@@ -9,6 +9,7 @@ ABGoal::ABGoal()
 {
 	GoalBox = CreateDefaultSubobject<UBoxComponent>(TEXT("GoalBoxCollision"));
 	GoalBox->SetupAttachment(GetRootComponent());
+	GoalBox->OnComponentBeginOverlap.AddDynamic(this, &ABGoal::OnOverlapBegin);
 
 	GoalMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	GoalMesh->SetupAttachment(GoalBox);
@@ -25,6 +26,7 @@ void ABGoal::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		if (Ball)
 		{
 			Ball->Score();
+			Ball->TeleportHome();
 		}
 	}
 }

@@ -8,6 +8,7 @@
 class USphereComponent;
 class ABCharacter;
 class ABPlayerState;
+class ABBlitzballBase;
 
 UCLASS()
 class BLITZBALL_API ABBlitzball : public AActor
@@ -23,6 +24,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = GameObject)
 	void Score();
+
+	UFUNCTION(BlueprintCallable, Category = GameObject)
+	void TeleportHome();
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
@@ -50,4 +54,7 @@ public:
 	/** Sound played on hit */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sounds)
 	USoundBase* HitSound;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = GameObject)
+	ABBlitzballBase* HomeBase;
 };

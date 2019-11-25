@@ -13,5 +13,9 @@ void ABBlitzballBase::BeginPlay()
 	Super::BeginPlay();
 
 	Blitzball = GetWorld()->SpawnActor<ABBlitzball>(BlitzballClass, GetActorTransform());
+	if (Blitzball)
+	{
+		Blitzball->HomeBase = this;
+	}
 }
 
