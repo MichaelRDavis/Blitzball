@@ -17,6 +17,11 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerSpawnBlitzball();
+	void ServerSpawnBlitzball_Implementation();
+	bool ServerSpawnBlitzball_Validate();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameObject)
 	TSubclassOf<ABBlitzball> BlitzballClass;
 
