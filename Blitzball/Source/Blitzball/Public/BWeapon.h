@@ -124,9 +124,6 @@ protected:
 	FTimerHandle FireTimerHandle;
 	FTimerHandle AltFireTimerHandle;
 
-	UFUNCTION()
-	void OnRep_Charging();
-
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Weapon)
 	FVector GetFireStartLocation(FVector& StartTrace);
 
