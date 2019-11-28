@@ -24,10 +24,24 @@ ABWeapon::ABWeapon()
 	bWantsToAltFire = false;
 	FireCooldownTime = 1.0f;
 	AltFireCooldownTime = 10.0f;
+	ChargePercentage = 0.0f;
+	ChargeAmount = 1.25f;
+	bIsCharging = false;
+	bIsCharged = false;
 
 	SetReplicates(true);
 	bNetUseOwnerRelevancy = true;
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+void ABWeapon::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (bIsCharging)
+	{
+
+	}
 }
 
 void ABWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

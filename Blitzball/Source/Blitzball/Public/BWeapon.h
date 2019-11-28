@@ -22,6 +22,8 @@ class BLITZBALL_API ABWeapon : public AActor
 public:	
 	ABWeapon();
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private:
@@ -104,8 +106,26 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	float AltFireCooldownTime;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	bool bIsCharging;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	bool bIsCharged;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Wapon)
+	float ChargePercentage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Wapon)
+	float ChargeAmount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	USoundBase* ChargedSound;
+
 	FTimerHandle FireTimerHandle;
 	FTimerHandle AltFireTimerHandle;
+
+	UFUNCTION()
+	void OnRep_Charging();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Weapon)
 	FVector GetFireStartLocation(FVector& StartTrace);
