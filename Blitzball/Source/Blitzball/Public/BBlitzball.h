@@ -9,6 +9,7 @@ class USphereComponent;
 class ABCharacter;
 class ABPlayerState;
 class ABBlitzballBase;
+class ABGoal;
 
 UCLASS()
 class BLITZBALL_API ABBlitzball : public AActor
@@ -23,10 +24,10 @@ public:
 	void SetLastPlayer(ABCharacter* NewPlayer);
 
 	UFUNCTION(BlueprintCallable, Category = GameObject)
-	void Score();
+	void Score(ABGoal* Goal);
 
 	UFUNCTION(BlueprintCallable, Category = GameObject)
-	void TeleportHome();
+	void SpawnAtBase();
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
@@ -57,4 +58,8 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = GameObject)
 	ABBlitzballBase* HomeBase;
+
+	/** Score for scoring a gaol, negates if own goal */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameObject)
+	int32 GoalScore;
 };

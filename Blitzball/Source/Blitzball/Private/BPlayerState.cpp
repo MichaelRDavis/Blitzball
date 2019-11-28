@@ -25,19 +25,6 @@ void ABPlayerState::SetTeamNumber(int32 NewTeamNumber)
 
 void ABPlayerState::ScoreGoal(ABPlayerState* ScoredBy, int32 Points)
 {
-	ABGameState* const Game = Cast<ABGameState>(GetWorld()->GetGameState());
-	if (Game)
-	{
-		if (TeamNumber == 0)
-		{
-
-		}
-		else if (TeamNumber == 1)
-		{
-
-		}
-	}
-
 	Goals++;
 	Score += Points;
 }

@@ -58,8 +58,6 @@ void ABWeapon::StopFire()
 	{
 		ServerStopFire();
 	}
-
-	//GetWorldTimerManager().ClearTimer(FireTimerHandle);
 }
 
 void ABWeapon::StartAltFire()

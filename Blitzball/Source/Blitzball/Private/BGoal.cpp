@@ -2,6 +2,7 @@
 
 #include "BGoal.h"
 #include "BBlitzball.h"
+#include "BPlayerState.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 
@@ -25,9 +26,15 @@ void ABGoal::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		ABBlitzball* Ball = Cast<ABBlitzball>(OtherActor);
 		if (Ball)
 		{
-			Ball->Score();
-			Ball->TeleportHome();
+			Ball->Score(this);
+			Ball->SpawnAtBase();
+			Ball->Destroy();
 		}
 	}
+}
+
+int32 ABGoal::GetTeamNumber() const
+{
+	return TeamNumber;
 }
 
