@@ -19,7 +19,11 @@ ABWeapon::ABWeapon()
 
 	TraceDistance = 1000.0f;
 	BlitzballImpulseForce = 600000.0f;
-	PlayerImpulseForce = 300000.0f;
+	PlayerImpulseForce = 1000000.0f;
+	bWantsToFire = false;
+	bWantsToAltFire = false;
+	FireCooldownTime = 1.0f;
+	AltFireCooldownTime = 10.0f;
 
 	SetReplicates(true);
 	bNetUseOwnerRelevancy = true;
@@ -40,7 +44,12 @@ void ABWeapon::StartFire()
 		ServerStartFire();
 	}
 
-	Fire();
+	if (!bWantsToFire)
+	{
+		bWantsToFire = true;
+		Fire();
+		GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ABWeapon::SetCanFire, FireCooldownTime, false);
+	}
 }
 
 void ABWeapon::StopFire()
@@ -49,6 +58,8 @@ void ABWeapon::StopFire()
 	{
 		ServerStopFire();
 	}
+
+	//GetWorldTimerManager().ClearTimer(FireTimerHandle);
 }
 
 void ABWeapon::StartAltFire()
@@ -58,7 +69,12 @@ void ABWeapon::StartAltFire()
 		ServerStartAltFire();
 	}
 
-	AltFire();
+	if (!bWantsToAltFire)
+	{
+		bWantsToAltFire = true;
+		AltFire();
+		GetWorldTimerManager().SetTimer(AltFireTimerHandle, this, &ABWeapon::SetCanAltFire, AltFireCooldownTime, false);
+	}
 }
 
 void ABWeapon::StopAltFire()
@@ -119,7 +135,7 @@ void ABWeapon::AltFire()
 		ABCharacter* Character = Cast<ABCharacter>(HitActor);
 		if (Character)
 		{
-			Character->LaunchCharacter(ShootDir * PlayerImpulseForce, true, true);
+			Character->LaunchCharacter(ShootDir * PlayerImpulseForce, false, false);
 		}
 	}
 }
@@ -192,6 +208,16 @@ void ABWeapon::Equip()
 void ABWeapon::UnEquip()
 {
 	Mesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
+}
+
+void ABWeapon::SetCanFire()
+{
+	bWantsToFire = false;
+}
+
+void ABWeapon::SetCanAltFire()
+{
+	bWantsToAltFire = false;
 }
 
 FVector ABWeapon::GetFireStartLocation(FVector& StartTrace)

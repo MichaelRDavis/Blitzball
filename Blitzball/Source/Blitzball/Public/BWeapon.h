@@ -73,6 +73,9 @@ public:
 	virtual void Equip();
 	virtual void UnEquip();
 
+	virtual void SetCanFire();
+	virtual void SetCanAltFire();
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = Weapon)
 	ABCharacter* BOwner;
@@ -88,6 +91,21 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	float PlayerImpulseForce;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	bool bWantsToFire;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	bool bWantsToAltFire;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float FireCooldownTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	float AltFireCooldownTime;
+
+	FTimerHandle FireTimerHandle;
+	FTimerHandle AltFireTimerHandle;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Weapon)
 	FVector GetFireStartLocation(FVector& StartTrace);
