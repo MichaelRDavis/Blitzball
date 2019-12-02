@@ -5,6 +5,7 @@
 #include "BPlayerState.h"
 #include "BGameState.h"
 #include "BCharacter.h"
+#include "BTeamPlayerStart.h"
 
 ABGameMode::ABGameMode()
 {
@@ -20,7 +21,7 @@ void ABGameMode::PreInitializeComponents()
 {
 	Super::PreInitializeComponents();
 
-	//GetWorld()->GetTimerManager().SetTimer(MatchTimer, this, &ABGameMode::StartMatchTimer, GetWorldSettings()->GetEffectiveTimeDilation(), true);
+	GetWorld()->GetTimerManager().SetTimer(MatchTimer, this, &ABGameMode::StartMatchTimer, GetWorldSettings()->GetEffectiveTimeDilation(), true);
 }
 
 void ABGameMode::PostLogin(APlayerController* NewPlayer)
@@ -45,6 +46,9 @@ UClass* ABGameMode::GetDefaultPawnClassForController_Implementation(AController*
 
 AActor* ABGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
+	TArray<APlayerStart> PreferredStarts;
+	TArray<APlayerStart> FallbackStarts;
+
 	return Super::ChoosePlayerStart_Implementation(Player);
 }
 
@@ -63,6 +67,8 @@ void ABGameMode::StartMatchTimer()
 	ABGameState* const Game = Cast<ABGameState>(GameState);
 	if (Game && Game->RemainingTime > 0)
 	{
+		Game->RemainingTime--;
+
 		if (Game->RemainingTime <= 0)
 		{
 			if (GetMatchState() == MatchState::WaitingPostMatch)
@@ -120,6 +126,22 @@ int32 ABGameMode::ChooseTeam(ABPlayerState* PlayerState) const
 void ABGameMode::DetermineMatchWinner()
 {
 
+}
+
+bool ABGameMode::IsSpawnPointAllowed(APlayerStart* Start, AController* Player) const
+{
+	if (Player)
+	{
+		ABTeamPlayerStart* TeamStart = Cast<ABTeamPlayerStart>(Start);
+		ABPlayerState* PlayerState = Cast<ABPlayerState>(Player->PlayerState);
+
+		if (PlayerState && TeamStart && TeamStart->SpawnTeam != PlayerState->GetTeamNumber())
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 bool ABGameMode::IsWinner() const

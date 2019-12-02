@@ -7,6 +7,7 @@
 
 class ABCharacter;
 class ABPlayerState;
+class APlayerStart;
 
 UCLASS()
 class BLITZBALL_API ABGameMode : public ABGameModeBase
@@ -30,6 +31,7 @@ public:
 protected:
 	int32 ChooseTeam(ABPlayerState* PlayerState) const;
 	void DetermineMatchWinner();
+	bool IsSpawnPointAllowed(APlayerStart* Start, AController* Player) const;
 	bool IsWinner() const;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = GameMode)
