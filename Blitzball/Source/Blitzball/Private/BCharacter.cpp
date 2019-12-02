@@ -11,6 +11,8 @@
 #include "Net/UnrealNetwork.h"
 
 #define COLLISION_MELEE ECC_GameTraceChannel2
+#define RED_TEAM 254
+#define BLUE_TEAM 253
 
 ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBCharacterMovement>(ACharacter::CharacterMovementComponentName))
@@ -149,12 +151,12 @@ void ABCharacter::UpdateTeamColors()
 		if (Player->GetTeamNumber() == 0)
 		{
 			GetMesh()->SetRenderCustomDepth(true);
-			GetMesh()->SetCustomDepthStencilValue(253);
+			GetMesh()->SetCustomDepthStencilValue(BLUE_TEAM);
 		}
 		else if (Player->GetTeamNumber() == 1)
 		{
 			GetMesh()->SetRenderCustomDepth(true);
-			GetMesh()->SetCustomDepthStencilValue(254);
+			GetMesh()->SetCustomDepthStencilValue(RED_TEAM);
 		}
 	}
 }

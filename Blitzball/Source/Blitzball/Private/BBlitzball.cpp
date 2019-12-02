@@ -5,6 +5,7 @@
 #include "BPlayerState.h"
 #include "BBlitzballBase.h"
 #include "BGoal.h"
+#include "BGameState.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -38,15 +39,30 @@ void ABBlitzball::SetLastPlayer(ABCharacter* NewPlayer)
 
 void ABBlitzball::Score(ABGoal* Goal)
 {
-	if (Player)
+	ABGameState* Game = Cast<ABGameState>(GetWorld()->GetGameState());
+	if (Player && Game)
 	{
 		if (Player->GetTeamNumber() != Goal->GetTeamNumber())
 		{
-			Player->ScoreGoal(Player, GoalScore);
+			if (Player->GetTeamNumber() == 0)
+			{
+				Game->BlueTeamGoals++;
+			}
+			else if(Player->GetTeamNumber() == 1)
+			{
+				Game->RedTeamGoals++;
+			}
 		}
 		else
 		{
-			Player->ScoreGoal(Player, -GoalScore);
+			if (Player->GetTeamNumber() == 0)
+			{
+				Game->BlueTeamGoals--;
+			}
+			else if (Player->GetTeamNumber() == 1)
+			{
+				Game->RedTeamGoals--;
+			}
 		}
 	}
 }
