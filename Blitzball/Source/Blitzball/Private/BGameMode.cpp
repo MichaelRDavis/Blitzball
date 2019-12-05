@@ -6,6 +6,9 @@
 #include "BGameState.h"
 #include "BCharacter.h"
 #include "BTeamPlayerStart.h"
+#include "GameFramework/PlayerStart.h"
+#include "Engine/PlayerStartPIE.h"
+#include "EngineUtils.h"
 
 ABGameMode::ABGameMode()
 {
@@ -46,10 +49,42 @@ UClass* ABGameMode::GetDefaultPawnClassForController_Implementation(AController*
 
 AActor* ABGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
-	TArray<APlayerStart> PreferredStarts;
-	TArray<APlayerStart> FallbackStarts;
+	TArray<APlayerStart*> PreferredStarts;
+	TArray<APlayerStart*> FallbackStarts;
 
-	return Super::ChoosePlayerStart_Implementation(Player);
+	APlayerStart* BestStart = nullptr;
+	for (TActorIterator<APlayerStart> It(GetWorld()); It; ++It)
+	{
+		APlayerStart* TestStart = *It;
+		if (TestStart->IsA<APlayerStartPIE>())
+		{
+			BestStart = TestStart;
+			break;
+		}
+		else
+		{
+			if (IsSpawnPointAllowed(TestStart, Player))
+			{
+				PreferredStarts.Add(TestStart);
+			}
+
+			FallbackStarts.Add(TestStart);
+		}
+	}
+
+	if (BestStart == nullptr)
+	{
+		if (PreferredStarts.Num() > 0)
+		{
+			BestStart = PreferredStarts[FMath::RandHelper(PreferredStarts.Num())];
+		}
+		else if (FallbackStarts.Num() > 0)
+		{
+			BestStart = FallbackStarts[FMath::RandHelper(FallbackStarts.Num())];
+		}
+	}
+
+	return BestStart ? BestStart : Super::ChoosePlayerStart_Implementation(Player);
 }
 
 void ABGameMode::StartMatchTimer()
