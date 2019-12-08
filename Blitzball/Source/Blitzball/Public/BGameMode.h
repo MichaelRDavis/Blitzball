@@ -21,6 +21,8 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	virtual void HandleMatchIsWaitingToStart() override;
+	virtual void HandleMatchHasStarted() override;
 
 	UFUNCTION(BlueprintCallable, Category = GameMode)
 	void StartMatchTimer();

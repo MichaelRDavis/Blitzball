@@ -15,7 +15,7 @@ UBCharacterMovement::UBCharacterMovement()
 	SpeedBoostMultiplier = 1.5f;
 	SpeedBoostAccelMultiplier = 1.5f;
 	bWantsToSpeedBoost = false;
-	MaxMultiJumpCount = 3;
+	MaxMultiJumpCount = 2;
 	CurrentMultiJumpCount = 0;
 	MultiJumpImpulse = 600.0f;
 }
@@ -99,9 +99,9 @@ bool UBCharacterMovement::DoJump(bool bReplayingMoves)
 
 void UBCharacterMovement::ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations)
 {
-	Super::ProcessLanded(Hit, remainingTime, Iterations);
-
 	CurrentMultiJumpCount = 0;
+
+	Super::ProcessLanded(Hit, remainingTime, Iterations);
 }
 
 void FSavedMove_BCharacter::Clear()

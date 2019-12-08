@@ -87,6 +87,19 @@ AActor* ABGameMode::ChoosePlayerStart_Implementation(AController* Player)
 	return BestStart ? BestStart : Super::ChoosePlayerStart_Implementation(Player);
 }
 
+void ABGameMode::HandleMatchIsWaitingToStart()
+{
+	Super::HandleMatchIsWaitingToStart();
+}
+
+void ABGameMode::HandleMatchHasStarted()
+{
+	Super::HandleMatchHasStarted();
+
+	ABGameState* BGameState = Cast<ABGameState>(GameState);
+	BGameState->RemainingTime = MatchTime;
+}
+
 void ABGameMode::StartMatchTimer()
 {
 	if (GetWorld()->IsPlayInEditor())

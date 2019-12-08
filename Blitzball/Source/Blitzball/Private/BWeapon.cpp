@@ -38,9 +38,19 @@ void ABWeapon::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	if (bWantsToFire)
+	{
+		bIsCharging = true;
+	}
+
 	if (bIsCharging)
 	{
-
+		ChargePercentage = FMath::Min(1.0f, ChargePercentage + ChargeAmount * DeltaSeconds);
+		bIsCharged = (ChargePercentage >= 1.0f);
+		if (bIsCharged)
+		{
+			BlitzballImpulseForce *= ChargePercentage;
+		}
 	}
 }
 
@@ -128,26 +138,26 @@ void ABWeapon::Fire()
 
 void ABWeapon::AltFire()
 {
-	FVector StartTrace;
-	FVector ShootDir = GetFireStartLocation(StartTrace);
+	TArray<FHitResult> Hits;
 
-	// Adjust trace so there is nothing blocking the ray between the camera and the pawn, and calculate the distance from adjusted start
-	StartTrace = StartTrace + ShootDir * ((BOwner->GetActorLocation() - StartTrace) | ShootDir);
+	FVector StartLocation = BOwner->GetActorLocation();
+	FVector StartTrace = StartLocation;
+	FVector EndTrace = StartLocation;
 
-	// Calculate endpoint of trace
-	const FVector EndTrace = StartTrace + ShootDir * TraceDistance;
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(1000.0f);
+	DrawDebugSphere(GetWorld(), BOwner->GetActorLocation(), 1000.0f, 50, FColor::Green);
 
-	// Check for impact
-	const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
-
-	// Apply impulse to character
-	AActor* HitActor = Impact.GetActor();
-	if (HitActor != nullptr && HitActor != this)
+	bool bHit = GetWorld()->SweepMultiByChannel(Hits, StartTrace, EndTrace, FQuat::Identity, ECC_PhysicsBody, Sphere);
+	if (bHit)
 	{
-		ABCharacter* Character = Cast<ABCharacter>(HitActor);
-		if (Character)
+		for (FHitResult& Hit : Hits)
 		{
-			Character->LaunchCharacter(ShootDir * PlayerImpulseForce, false, false);
+			AActor* HitActor = Hit.GetActor();
+			UPrimitiveComponent* HitComponent = Hit.GetComponent();
+			if (HitActor != nullptr && (HitActor != this) && (HitComponent != nullptr) && HitComponent->IsSimulatingPhysics())
+			{
+				HitComponent->AddRadialImpulse(StartLocation, 1000.0f, PlayerImpulseForce, ERadialImpulseFalloff::RIF_Constant, true);
+			}
 		}
 	}
 }

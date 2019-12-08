@@ -28,14 +28,22 @@ public:
 
 	void ScoreGoal(ABPlayerState* ScoredBy, int32 Points);
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = PlayerState)
-	int32 GetTeamNumber();
+	void ScoreOwnGoal(ABPlayerState* ScoredBy, int32 Points);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = PlayerState)
-	int32 GetGoals();
+	int32 GetTeamNumber() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = PlayerState)
-	float GetScore();
+	int32 GetGoals() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = PlayerState)
+	int32 GetOwnGoals() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = PlayerState)
+	int32 GetSaves() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = PlayerState)
+	float GetScore() const;
 
 protected:
 	UPROPERTY(Replicated)
@@ -43,4 +51,10 @@ protected:
 
 	UPROPERTY(Replicated)
 	int32 Goals;
+
+	UPROPERTY(Replicated)
+	int32 OwnGoals;
+
+	UPROPERTY(Replicated)
+	int32 Saves;
 };

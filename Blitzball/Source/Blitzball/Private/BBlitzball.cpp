@@ -52,17 +52,21 @@ void ABBlitzball::Score(ABGoal* Goal)
 			{
 				Game->RedTeamGoals++;
 			}
+
+			Player->ScoreGoal(Player, 100);
 		}
 		else
 		{
 			if (Player->GetTeamNumber() == 0)
 			{
-				Game->BlueTeamGoals--;
+				Game->RedTeamGoals++;
 			}
 			else if (Player->GetTeamNumber() == 1)
 			{
-				Game->RedTeamGoals--;
+				Game->BlueTeamGoals++;
 			}
+
+			Player->ScoreOwnGoal(Player, 100);
 		}
 	}
 }
