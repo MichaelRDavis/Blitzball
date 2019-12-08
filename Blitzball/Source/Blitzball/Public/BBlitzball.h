@@ -52,6 +52,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = GameObject)
 	float HitTime;
 
+	UPROPERTY(BlueprintReadOnly, Category = GameObject)
+	bool bIsHit;
+
 	/** Sound played on hit */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sounds)
 	USoundBase* HitSound;

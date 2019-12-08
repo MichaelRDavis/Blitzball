@@ -132,6 +132,7 @@ void ABWeapon::Fire()
 		if (Ball)
 		{
 			Ball->SetLastPlayer(BOwner);
+			Ball->bIsHit = true;
 		}
 	}
 }

@@ -17,6 +17,7 @@ void ABPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	DOREPLIFETIME_CONDITION(ABPlayerState, TeamNumber, COND_None);
 	DOREPLIFETIME_CONDITION(ABPlayerState, Goals, COND_None);
 	DOREPLIFETIME_CONDITION(ABPlayerState, OwnGoals, COND_None);
+	DOREPLIFETIME_CONDITION(ABPlayerState, Saves, COND_None);
 }
 
 void ABPlayerState::SetTeamNumber(int32 NewTeamNumber)
@@ -34,6 +35,12 @@ void ABPlayerState::ScoreOwnGoal(ABPlayerState* ScoredBy, int32 Points)
 {
 	OwnGoals++;
 	Score -= Points;
+}
+
+void ABPlayerState::ScoreSave(ABPlayerState* ScoredBy, int32 Points)
+{
+	Saves++;
+	Score += Points;
 }
 
 int32 ABPlayerState::GetTeamNumber() const

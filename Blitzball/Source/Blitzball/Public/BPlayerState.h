@@ -30,6 +30,9 @@ public:
 
 	void ScoreOwnGoal(ABPlayerState* ScoredBy, int32 Points);
 
+	UFUNCTION(BlueprintCallable, Category=PlayerState)
+	void ScoreSave(ABPlayerState* ScoredBy, int32 Points);
+
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = PlayerState)
 	int32 GetTeamNumber() const;
 
