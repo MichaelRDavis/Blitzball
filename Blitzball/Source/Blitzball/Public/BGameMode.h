@@ -23,9 +23,13 @@ public:
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 	virtual void HandleMatchIsWaitingToStart() override;
 	virtual void HandleMatchHasStarted() override;
+	virtual void RestartPlayer(AController* NewPlayer) override;
 
 	UFUNCTION(BlueprintCallable, Category = GameMode)
 	void StartMatchTimer();
+
+	UFUNCTION(BlueprintCallable, Category = GameMode)
+	void RestartMatch();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
 	TSubclassOf<ABCharacter> DefaultCharacterClass;

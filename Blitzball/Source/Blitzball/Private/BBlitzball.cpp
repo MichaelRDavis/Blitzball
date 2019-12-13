@@ -6,6 +6,7 @@
 #include "BBlitzballBase.h"
 #include "BGoal.h"
 #include "BGameState.h"
+#include "BGameMode.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -68,6 +69,12 @@ void ABBlitzball::Score(ABGoal* Goal)
 
 			Player->ScoreOwnGoal(Player, 100);
 		}
+	}
+
+	ABGameMode* GameMode = Cast<ABGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GameMode)
+	{
+		GameMode->RestartMatch();
 	}
 }
 

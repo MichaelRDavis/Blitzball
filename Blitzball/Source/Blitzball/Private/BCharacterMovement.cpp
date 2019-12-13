@@ -15,9 +15,11 @@ UBCharacterMovement::UBCharacterMovement()
 	SpeedBoostMultiplier = 1.5f;
 	SpeedBoostAccelMultiplier = 1.5f;
 	bWantsToSpeedBoost = false;
-	MaxMultiJumpCount = 2;
+	MaxMultiJumpCount = 1;
 	CurrentMultiJumpCount = 0;
-	MultiJumpImpulse = 600.0f;
+	MultiJumpImpulse = 900.0f;
+	NavAgentProps.bCanCrouch = true;
+	NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
 }
 
 void UBCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
@@ -84,17 +86,23 @@ bool UBCharacterMovement::OnMultiJump()
 
 bool UBCharacterMovement::CanMultiJump()
 {
-	return MaxMultiJumpCount > 0 && CurrentMultiJumpCount < MaxMultiJumpCount;
+	return (MaxMultiJumpCount > 0) && (CurrentMultiJumpCount < MaxMultiJumpCount);
 }
 
 bool UBCharacterMovement::CanJump()
 {
-	return IsMovingOnGround() || CanMultiJump() && CanEverJump();
+	return (IsMovingOnGround() || CanMultiJump()) && CanEverJump();
 }
 
 bool UBCharacterMovement::DoJump(bool bReplayingMoves)
 {
-	return CharacterOwner->CanJump() && (IsFalling()) ? OnMultiJump() : Super::DoJump(bReplayingMoves);
+	bool bResult = false;
+	if (CanJump() && (IsFalling()) ? OnMultiJump() : Super::DoJump(bReplayingMoves)) 
+	{
+		bResult = true;
+	}
+
+	return bResult;
 }
 
 void UBCharacterMovement::ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations)

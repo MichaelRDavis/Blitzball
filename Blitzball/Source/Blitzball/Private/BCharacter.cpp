@@ -121,7 +121,7 @@ bool ABCharacter::CanJumpInternal_Implementation() const
 	bool bCanJump = Super::CanJumpInternal_Implementation();
 	if (!bCanJump && BCharacterMovement)
 	{
-		bCanJump = BCharacterMovement->OnMultiJump();
+		bCanJump = BCharacterMovement->CanJump();
 	}
 
 	return bCanJump;

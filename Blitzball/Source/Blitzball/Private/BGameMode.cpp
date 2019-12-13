@@ -8,6 +8,7 @@
 #include "BTeamPlayerStart.h"
 #include "GameFramework/PlayerStart.h"
 #include "Engine/PlayerStartPIE.h"
+#include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
 
 ABGameMode::ABGameMode()
@@ -100,6 +101,13 @@ void ABGameMode::HandleMatchHasStarted()
 	BGameState->RemainingTime = MatchTime;
 }
 
+void ABGameMode::RestartPlayer(AController* NewPlayer)
+{
+	Super::RestartPlayer(NewPlayer);
+
+	ChoosePlayerStart_Implementation(NewPlayer);
+}
+
 void ABGameMode::StartMatchTimer()
 {
 	if (GetWorld()->IsPlayInEditor())
@@ -131,6 +139,19 @@ void ABGameMode::StartMatchTimer()
 			{
 				StartMatch();
 			}
+		}
+	}
+}
+
+void ABGameMode::RestartMatch()
+{
+	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
+	{
+		ABPlayerState* Player = Cast<ABPlayerState>(GameState->PlayerArray[i]);
+		if (Player)
+		{
+			ABPlayerController* Controller = Cast<ABPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), i));
+			RestartPlayer(Controller);
 		}
 	}
 }
