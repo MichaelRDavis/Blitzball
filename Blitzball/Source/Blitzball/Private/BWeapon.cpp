@@ -265,7 +265,6 @@ FHitResult ABWeapon::WeaponTrace(const FVector& StartTrace, const FVector& EndTr
 
 	FHitResult Hit(ForceInit);
 	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_WEAPON, TraceParams);
-	DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Green, false, 1.0f, 0, 5.0f);
 
 	return Hit;
 }

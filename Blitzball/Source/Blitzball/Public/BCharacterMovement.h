@@ -22,6 +22,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Boost")
 	float SpeedBoostAccelMultiplier;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Boost")
+	float SpeedBoostCooldownTime;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Speed Boost")
 	bool bWantsToSpeedBoost; 
 
@@ -45,6 +48,12 @@ public:
 
 	virtual bool DoJump(bool bReplayingMoves) override;
 	virtual void ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Afterburners")
+	float AfterburnerCooldownTime;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Afterburners")
+	bool bIsUsingAfterburners;
 };
 
 class FSavedMove_BCharacter : public FSavedMove_Character
