@@ -5,12 +5,14 @@
 #include "BPlayerState.h"
 #include "BPlayerController.h"
 #include "BCharacterMovement.h"
+#include "BBlitzball.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Net/UnrealNetwork.h"
 
 #define COLLISION_MELEE ECC_GameTraceChannel2
+#define COLLISION_BLITZBALL ECC_GameTraceChannel3
 #define RED_TEAM 254
 #define BLUE_TEAM 253
 
@@ -57,6 +59,37 @@ void ABCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnWeapon();
+}
+
+void ABCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (Controller && Controller->IsLocalController())
+	{
+		ABBlitzball* Ball = GetBlitzballInView();
+
+		if (BlitzballInView != Ball)
+		{
+			if (BlitzballInView)
+			{
+				BlitzballInView->OnEndFocus();
+			}
+
+			bIsBlitzballInView = true;
+		}
+
+		BlitzballInView = Ball;
+
+		if (Ball)
+		{
+			if (bIsBlitzballInView)
+			{
+				BlitzballInView->OnBeginFocus();
+				bIsBlitzballInView = false;
+			}
+		}
+	}
 }
 
 void ABCharacter::Destroyed()
@@ -266,6 +299,31 @@ void ABCharacter::QuickMelee()
 
 		PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
 	}
+}
+
+ABBlitzball* ABCharacter::GetBlitzballInView()
+{
+	FVector CamLoc;
+	FRotator CamRot;
+
+	ABPlayerController* PlayerController = Cast<ABPlayerController>(GetController());
+	if (PlayerController)
+	{
+		PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
+	}
+
+	const FVector StartTrace = CamLoc;
+	const FVector Direction = CamRot.Vector();
+	const FVector EndTrace = StartTrace + (Direction * 250.0f);
+
+	FCollisionQueryParams TraceParams(FName(TEXT("")), true, this);
+	TraceParams.bReturnPhysicalMaterial = false;
+	TraceParams.bTraceComplex = true;
+
+	FHitResult Hit(ForceInit);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_BLITZBALL, TraceParams);
+
+	return Cast<ABBlitzball>(Hit.GetActor());
 }
 
 FHitResult ABCharacter::RayTrace(const FVector& StartTrace, const FVector& EndTrace) const

@@ -7,6 +7,7 @@
 
 class UCameraComponent;
 class ABWeapon;
+class ABBlitzball;
 class UBCharacterMovement;
 
 /** Replicated information on a hit we've taken */
@@ -30,6 +31,7 @@ public:
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void Destroyed() override;
 	virtual void PawnClientRestart() override;
 	virtual void PossessedBy(AController* NewController) override;
@@ -147,6 +149,18 @@ protected:
 	/** Cooldown time for quick melee attack */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	float MeleeCooldownTime;
+
+	/**  */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category=Pawn)
+	ABBlitzball* BlitzballInView;
+
+	/**  */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn)
+	bool bIsBlitzballInView;
+
+	/**  */
+	UFUNCTION(BlueprintCallable, Category=Pawn)
+	ABBlitzball* GetBlitzballInView();
 
 	FTimerHandle QuickMeleeTimer;
 

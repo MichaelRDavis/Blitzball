@@ -21,6 +21,9 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	void OnBeginFocus();
+	void OnEndFocus();
+
 	void SetLastPlayer(ABCharacter* NewPlayer);
 
 	UFUNCTION(BlueprintCallable, Category = GameObject)

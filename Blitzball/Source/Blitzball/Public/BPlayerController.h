@@ -46,6 +46,11 @@ protected:
 	void OnJump();
 	void OnStopJumping();
 
+	/** Crouching */
+	void OnCrouch();
+	void OnUnCrouch();
+	void OnToggleCrouch();
+
 	/** Firing */
 	void OnStartFire();
 	void OnStopFire();

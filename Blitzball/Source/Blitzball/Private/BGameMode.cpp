@@ -103,9 +103,9 @@ void ABGameMode::HandleMatchHasStarted()
 
 void ABGameMode::RestartPlayer(AController* NewPlayer)
 {
-	Super::RestartPlayer(NewPlayer);
-
 	ChoosePlayerStart_Implementation(NewPlayer);
+
+	Super::RestartPlayer(NewPlayer);
 }
 
 void ABGameMode::StartMatchTimer()

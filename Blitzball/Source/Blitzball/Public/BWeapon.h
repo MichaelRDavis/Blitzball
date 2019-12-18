@@ -14,6 +14,12 @@ enum class EWeaponState : uint8
 	EFiring UMETA(DisplayName = "Firing"),
 };
 
+USTRUCT()
+struct FInstantHitInfo
+{
+	GENERATED_USTRUCT_BODY()
+};
+
 UCLASS()
 class BLITZBALL_API ABWeapon : public AActor
 {
@@ -29,6 +35,9 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* Mesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	USkeletalMeshComponent* ThirdPersonMesh;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = Weapon)
@@ -120,6 +129,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	USoundBase* ChargedSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	UAnimMontage* WeaponSwingAnimation;
 
 	FTimerHandle FireTimerHandle;
 	FTimerHandle AltFireTimerHandle;

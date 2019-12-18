@@ -26,7 +26,7 @@ void UBCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
 {
 	Super::UpdateFromCompressedFlags(Flags);
 
-	bWantsToSpeedBoost = (Flags & FSavedMove_BCharacter::FLAG_Custom_0) != 0;
+	//bWantsToSpeedBoost = (Flags & FSavedMove_BCharacter::FLAG_Custom_0) != 0;
 }
 
 FNetworkPredictionData_Client* UBCharacterMovement::GetPredictionData_Client() const

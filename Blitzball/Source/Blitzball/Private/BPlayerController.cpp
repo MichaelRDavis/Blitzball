@@ -31,6 +31,9 @@ void ABPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", IE_Released, this, &ABPlayerController::OnStopJumping);
 	InputComponent->BindAction("SpeedBoost", IE_Pressed, this, &ABPlayerController::OnStartSpeedBoost);
 	InputComponent->BindAction("SpeedBoost", IE_Released, this, &ABPlayerController::OnStopSpeedBoost);
+	InputComponent->BindAction("Crouch", IE_Pressed, this, &ABPlayerController::OnCrouch);
+	InputComponent->BindAction("Crouch", IE_Released, this, &ABPlayerController::OnUnCrouch);
+	InputComponent->BindAction("ToggleCrouch", IE_Pressed, this, &ABPlayerController::OnToggleCrouch);
 
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ABPlayerController::OnStartFire);
 	InputComponent->BindAction("Fire", IE_Released, this, &ABPlayerController::OnStopFire);
@@ -87,6 +90,30 @@ void ABPlayerController::OnStopJumping()
 	if (BCharacter)
 	{
 		BCharacter->StopJumping();
+	}
+}
+
+void ABPlayerController::OnCrouch()
+{
+	if (BCharacter)
+	{
+		BCharacter->Crouch();
+	}
+}
+
+void ABPlayerController::OnUnCrouch()
+{
+	if (BCharacter)
+	{
+		BCharacter->UnCrouch();
+	}
+}
+
+void ABPlayerController::OnToggleCrouch()
+{
+	if (GetCharacter())
+	{
+		GetCharacter()->bIsCrouched ? OnUnCrouch() : OnCrouch();
 	}
 }
 

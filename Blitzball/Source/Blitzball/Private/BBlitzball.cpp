@@ -11,6 +11,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 
+#define BLITZBALL_HIGHLIGHT 255
+
 ABBlitzball::ABBlitzball()
 {
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
@@ -29,6 +31,18 @@ ABBlitzball::ABBlitzball()
 void ABBlitzball::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
+void ABBlitzball::OnBeginFocus()
+{
+	BlitzballMesh->SetRenderCustomDepth(true);
+	BlitzballMesh->SetCustomDepthStencilValue(BLITZBALL_HIGHLIGHT);
+}
+
+void ABBlitzball::OnEndFocus()
+{
+	BlitzballMesh->SetRenderCustomDepth(false);
+	BlitzballMesh->SetCustomDepthStencilValue(0);
 }
 
 void ABBlitzball::SetLastPlayer(ABCharacter* NewPlayer)
