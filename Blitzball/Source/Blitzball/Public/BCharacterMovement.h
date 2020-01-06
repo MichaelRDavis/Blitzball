@@ -16,44 +16,17 @@ public:
 	virtual void UpdateFromCompressedFlags(uint8 Flags) override;
 	virtual FNetworkPredictionData_Client* GetPredictionData_Client() const override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Boost")
-	float SpeedBoostMultiplier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sprint")
+	float SprintSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Boost")
-	float SpeedBoostAccelMultiplier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sprint")
+	float SprintAccel;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed Boost")
-	float SpeedBoostCooldownTime;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Speed Boost")
-	bool bWantsToSpeedBoost; 
-
-	void SetSpeedBoost(bool bNewSpeedBoost);
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Sprint")
+	bool bIsSprinting;
 
 	virtual float GetMaxSpeed() const override;
 	virtual float GetMaxAcceleration() const override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Multijump", meta = (DisplayName = "Max Multijump Count"))
-	int32 MaxMultiJumpCount;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Multijump", meta = (DisplayName = "Current Multijump Count"))
-	int32 CurrentMultiJumpCount;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Multijump")
-	float MultiJumpImpulse;
-
-	virtual bool OnMultiJump();
-	virtual bool CanMultiJump();
-	virtual bool CanJump();
-
-	virtual bool DoJump(bool bReplayingMoves) override;
-	virtual void ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations) override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Afterburners")
-	float AfterburnerCooldownTime;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Afterburners")
-	bool bIsUsingAfterburners;
 };
 
 class FSavedMove_BCharacter : public FSavedMove_Character
@@ -61,9 +34,7 @@ class FSavedMove_BCharacter : public FSavedMove_Character
 public:
 	typedef FSavedMove_Character Super;
 
-	bool bSavedWantsToSpeedBoost;
-
-	int32 SavedMultiJumpCount;
+	bool bSavedIsSprinting;
 
 	virtual void Clear() override;
 	virtual void SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData) override;

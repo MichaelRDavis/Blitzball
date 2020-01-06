@@ -24,6 +24,7 @@ public:
 	void OnBeginFocus();
 	void OnEndFocus();
 
+	UFUNCTION(BlueprintCallable, Category=GameObject)
 	void SetLastPlayer(ABCharacter* NewPlayer);
 
 	UFUNCTION(BlueprintCallable, Category = GameObject)
@@ -68,4 +69,9 @@ public:
 	/** Score for scoring a gaol, negates if own goal */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameObject)
 	int32 GoalScore;
+
+	inline USphereComponent* GetCollisionComp() const
+	{
+		return CollisionComp;
+	}
 };

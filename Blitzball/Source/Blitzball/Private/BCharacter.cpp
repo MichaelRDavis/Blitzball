@@ -1,48 +1,45 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BCharacter.h"
-#include "BWeapon.h"
 #include "BPlayerState.h"
 #include "BPlayerController.h"
 #include "BCharacterMovement.h"
 #include "BBlitzball.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
 
-#define COLLISION_MELEE ECC_GameTraceChannel2
-#define COLLISION_BLITZBALL ECC_GameTraceChannel3
 #define RED_TEAM 254
 #define BLUE_TEAM 253
 
 ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBCharacterMovement>(ACharacter::CharacterMovementComponentName))
 {
-	// Create a CameraComponent
-	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->RelativeLocation = FVector(0.0f, 0.0f, BaseEyeHeight);
-	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	//
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(GetRootComponent());
+	CameraBoom->TargetArmLength = 300.0f;
+	CameraBoom->bUsePawnControlRotation = true;
 
-	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
-	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	FirstPersonMesh->SetupAttachment(FirstPersonCameraComponent);
-	FirstPersonMesh->SetOnlyOwnerSee(true);
-	FirstPersonMesh->SetCollisionObjectType(ECC_Pawn);
-	FirstPersonMesh->bCastDynamicShadow = false;
-	FirstPersonMesh->CastShadow = false;
-	FirstPersonMesh->bReceivesDecals = false;
+	// Create a CameraComponent
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	FollowCamera->bUsePawnControlRotation = false;
+
+	//
+	CollisionComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionComp"));
+	CollisionComp->SetupAttachment(GetMesh());
+	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ABCharacter::OnOverlapBegin);
+	CollisionComp->OnComponentEndOverlap.AddDynamic(this, &ABCharacter::OnOverlapEnd);
 
 	BCharacterMovement = Cast<UBCharacterMovement>(GetCharacterMovement());
 
-	GetMesh()->SetOwnerNoSee(true);
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->bReceivesDecals = false;
-
-	MeleeTraceDistance = 250.0f;
-	MeleeForce = 10000.0f;
-	MeleeDamage = 30;
 
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
@@ -50,44 +47,23 @@ ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 void ABCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME_CONDITION(ABCharacter, Weapon, COND_None);
 }
 
 void ABCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	SpawnWeapon();
 }
 
 void ABCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (Controller && Controller->IsLocalController())
+	if (GetCharacterMovement()->MovementMode == MOVE_Walking)
 	{
-		ABBlitzball* Ball = GetBlitzballInView();
-
-		if (BlitzballInView != Ball)
+		float Speed = GetCharacterMovement()->Velocity.Size();
+		if (Speed > 0.0f && GetWorld()->TimeSeconds - LastFootStepTime > 0.35f * GetCharacterMovement()->MaxWalkSpeed / Speed)
 		{
-			if (BlitzballInView)
-			{
-				BlitzballInView->OnEndFocus();
-			}
-
-			bIsBlitzballInView = true;
-		}
-
-		BlitzballInView = Ball;
-
-		if (Ball)
-		{
-			if (bIsBlitzballInView)
-			{
-				BlitzballInView->OnBeginFocus();
-				bIsBlitzballInView = false;
-			}
+			PlayFootstep();
 		}
 	}
 }
@@ -95,8 +71,6 @@ void ABCharacter::Tick(float DeltaSeconds)
 void ABCharacter::Destroyed()
 {
 	Super::Destroyed();
-
-	DestroyWeapon();
 }
 
 void ABCharacter::PawnClientRestart()
@@ -149,30 +123,19 @@ void ABCharacter::MoveRight(float Value)
 	}
 }
 
-bool ABCharacter::CanJumpInternal_Implementation() const
-{
-	bool bCanJump = Super::CanJumpInternal_Implementation();
-	if (!bCanJump && BCharacterMovement)
-	{
-		bCanJump = BCharacterMovement->CanJump();
-	}
-
-	return bCanJump;
-}
-
-void ABCharacter::StartSpeedBoost()
+void ABCharacter::StartSprinting()
 {
 	if (BCharacterMovement)
 	{
-		BCharacterMovement->SetSpeedBoost(true);
+		BCharacterMovement->bIsSprinting = true;
 	}
 }
 
-void ABCharacter::StopSpeedBoost()
+void ABCharacter::StopSprinting()
 {
 	if (BCharacterMovement)
 	{
-		BCharacterMovement->SetSpeedBoost(false);
+		BCharacterMovement->bIsSprinting = false;
 	}
 }
 
@@ -194,147 +157,75 @@ void ABCharacter::UpdateTeamColors()
 	}
 }
 
-int32 ABCharacter::GetHealth() const
+void ABCharacter::Kick()
 {
-	return Health;
-}
-
-int32 ABCharacter::GetMaxHealth() const
-{
-	return MaxHealth;
-}
-
-void ABCharacter::StartFire()
-{
-	if (Weapon)
+	if (Role < ROLE_Authority)
 	{
-		Weapon->StartFire();
+		ServerKick();
 	}
-}
 
-void ABCharacter::StopFire()
-{
-	if (Weapon)
+	if (PossesedBall)
 	{
-		Weapon->StopFire();
-	}
-}
-
-void ABCharacter::StartAltFire()
-{
-	if (Weapon)
-	{
-		Weapon->StartAltFire();
-	}
-}
-
-void ABCharacter::StopAltFire()
-{
-	if (Weapon)
-	{
-		Weapon->StopAltFire();
-	}
-}
-
-bool ABCharacter::CanFire() const
-{
-	return true;
-}
-
-void ABCharacter::SpawnWeapon()
-{
-	FActorSpawnParameters SpawnInfo;
-	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	ABWeapon* Weap = GetWorld()->SpawnActor<ABWeapon>(WeaponClass, SpawnInfo);
-	if (Weap)
-	{
-		EquipWeapon(Weap);
-	}
-}
-
-void ABCharacter::DestroyWeapon()
-{
-	if (Weapon != nullptr)
-	{
-		Weapon->Remove();
-		Weapon->UnEquip();
-		Weapon->Destroy();
-	}
-}
-
-void ABCharacter::EquipWeapon(ABWeapon* Weap)
-{
-	if (Weap)
-	{
-		if (Role == ROLE_Authority)
+		UPrimitiveComponent* HitComp = Cast<UPrimitiveComponent>(PossesedBall->GetCollisionComp());
+		if (HitComp)
 		{
-			Weapon = Weap;
-			Weapon->GiveTo(this);
-			Weapon->Equip();
-		}
-		else
-		{
-			ServerEquipWeapon(Weap);
+			const FVector KickDirection = GetControlRotation().Vector();
+			HitComp->AddImpulseAtLocation(KickDirection * 500000.0f, PossesedBall->GetActorLocation());
+			PlayKick();
 		}
 	}
 }
 
-void ABCharacter::ServerEquipWeapon_Implementation(ABWeapon* Weap)
+void ABCharacter::ServerKick_Implementation()
 {
-	EquipWeapon(Weap);
+	Kick();
 }
 
-bool ABCharacter::ServerEquipWeapon_Validate(ABWeapon* Weap)
+bool ABCharacter::ServerKick_Validate()
 {
 	return true;
 }
 
-void ABCharacter::QuickMelee()
+ABBlitzball* ABCharacter::GetPossesedBall() const
 {
-	ABPlayerController* PlayerController = Cast<ABPlayerController>(GetController());
-	if (PlayerController)
-	{
-		FVector CamLoc;
-		FRotator CamRot;
+	return PossesedBall;
+}
 
-		PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
+void ABCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor != nullptr)
+	{
+		ABBlitzball* Ball = Cast<ABBlitzball>(OtherActor);
+		if (Ball)
+		{
+			PossesedBall = Ball;
+			PossesedBall->SetLastPlayer(this);
+		}
 	}
 }
 
-ABBlitzball* ABCharacter::GetBlitzballInView()
+void ABCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	FVector CamLoc;
-	FRotator CamRot;
-
-	ABPlayerController* PlayerController = Cast<ABPlayerController>(GetController());
-	if (PlayerController)
+	if (PossesedBall != nullptr)
 	{
-		PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
+		PossesedBall = nullptr;
 	}
-
-	const FVector StartTrace = CamLoc;
-	const FVector Direction = CamRot.Vector();
-	const FVector EndTrace = StartTrace + (Direction * 250.0f);
-
-	FCollisionQueryParams TraceParams(FName(TEXT("")), true, this);
-	TraceParams.bReturnPhysicalMaterial = false;
-	TraceParams.bTraceComplex = true;
-
-	FHitResult Hit(ForceInit);
-	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_BLITZBALL, TraceParams);
-
-	return Cast<ABBlitzball>(Hit.GetActor());
 }
 
-FHitResult ABCharacter::RayTrace(const FVector& StartTrace, const FVector& EndTrace) const
+void ABCharacter::PlayFootstep()
 {
-	// Perform trace to retrieve hit info
-	FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(RayTrace), true, Instigator);
-	TraceParams.bReturnPhysicalMaterial = true;
+	if (GetWorld()->TimeSeconds - LastFootStepTime < 0.1f)
+	{
+		return;
+	}
 
-	FHitResult Hit(ForceInit);
-	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_MELEE, TraceParams);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), FootstepSound, GetActorLocation());
 
-	return Hit;
+	LastFootStepTime = GetWorld()->TimeSeconds;
+}
+
+void ABCharacter::PlayKick()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), KickSound, GetActorLocation());
 }
 

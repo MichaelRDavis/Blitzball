@@ -51,15 +51,11 @@ protected:
 	void OnUnCrouch();
 	void OnToggleCrouch();
 
-	/** Firing */
-	void OnStartFire();
-	void OnStopFire();
-	void OnStartAltFire();
-	void OnStopAltFire();
+	/** Sprinting */
+	void OnSprint();
+	void OnStopSprinting();
 
-	/** Thrust boosters */
-	void OnStartSpeedBoost();
-	void OnStopSpeedBoost();
+	void OnKick();
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)

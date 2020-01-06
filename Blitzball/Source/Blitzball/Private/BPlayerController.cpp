@@ -29,16 +29,13 @@ void ABPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("LookUpRate", this, &ABPlayerController::LookUpAtRate);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ABPlayerController::OnJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ABPlayerController::OnStopJumping);
-	InputComponent->BindAction("SpeedBoost", IE_Pressed, this, &ABPlayerController::OnStartSpeedBoost);
-	InputComponent->BindAction("SpeedBoost", IE_Released, this, &ABPlayerController::OnStopSpeedBoost);
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &ABPlayerController::OnCrouch);
 	InputComponent->BindAction("Crouch", IE_Released, this, &ABPlayerController::OnUnCrouch);
 	InputComponent->BindAction("ToggleCrouch", IE_Pressed, this, &ABPlayerController::OnToggleCrouch);
+	InputComponent->BindAction("Sprint", IE_Pressed, this, &ABPlayerController::OnSprint);
+	InputComponent->BindAction("Sprint", IE_Released, this, &ABPlayerController::OnStopSprinting);
 
-	InputComponent->BindAction("Fire", IE_Pressed, this, &ABPlayerController::OnStartFire);
-	InputComponent->BindAction("Fire", IE_Released, this, &ABPlayerController::OnStopFire);
-	InputComponent->BindAction("AltFire", IE_Pressed, this, &ABPlayerController::OnStartAltFire);
-	InputComponent->BindAction("AltFire", IE_Released, this, &ABPlayerController::OnStopAltFire);
+	InputComponent->BindAction("Kick", IE_Pressed, this, &ABPlayerController::OnKick);
 }
 
 void ABPlayerController::MoveForward(float Value)
@@ -117,50 +114,26 @@ void ABPlayerController::OnToggleCrouch()
 	}
 }
 
-void ABPlayerController::OnStartFire()
+void ABPlayerController::OnSprint()
 {
 	if (BCharacter)
 	{
-		BCharacter->StartFire();
+		BCharacter->StartSprinting();
 	}
 }
 
-void ABPlayerController::OnStopFire()
+void ABPlayerController::OnStopSprinting()
 {
 	if (BCharacter)
 	{
-		BCharacter->StopFire();
+		BCharacter->StopSprinting();
 	}
 }
 
-void ABPlayerController::OnStartAltFire()
+void ABPlayerController::OnKick()
 {
 	if (BCharacter)
 	{
-		BCharacter->StartAltFire();
-	}
-}
-
-void ABPlayerController::OnStopAltFire()
-{
-	if (BCharacter)
-	{
-		BCharacter->StopAltFire();
-	}
-}
-
-void ABPlayerController::OnStartSpeedBoost()
-{
-	if (BCharacter)
-	{
-		BCharacter->StartSpeedBoost();
-	}
-}
-
-void ABPlayerController::OnStopSpeedBoost()
-{
-	if (BCharacter)
-	{
-		BCharacter->StopSpeedBoost();
+		BCharacter->Kick();
 	}
 }

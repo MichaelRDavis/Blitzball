@@ -5,20 +5,17 @@
 
 UBCharacterMovement::UBCharacterMovement()
 {
-	MaxWalkSpeed = 1200.0f;
-	AirControl = 0.555f;
+	MaxWalkSpeed = 900.0f;
+	AirControl = 0.25f;
 	MaxAcceleration = 3200.0f;
-	GroundFriction = 10.5f;
+	GroundFriction = 10.0f;
 	BrakingFriction = 5.0f;
+	BrakingFrictionFactor = 1.0f;
 	GravityScale = 1.0f;
-	JumpZVelocity = 700.0f;
-	SpeedBoostMultiplier = 1.5f;
-	SpeedBoostAccelMultiplier = 1.5f;
-	bWantsToSpeedBoost = false;
-	MaxMultiJumpCount = 1;
-	CurrentMultiJumpCount = 0;
-	MultiJumpImpulse = 900.0f;
-	NavAgentProps.bCanCrouch = true;
+	JumpZVelocity = 620.0f;
+	SprintSpeed = 1350.0f;
+	SprintAccel = 1350.0f;
+	bIsSprinting = false;
 	NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
 }
 
@@ -26,7 +23,7 @@ void UBCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
 {
 	Super::UpdateFromCompressedFlags(Flags);
 
-	//bWantsToSpeedBoost = (Flags & FSavedMove_BCharacter::FLAG_Custom_0) != 0;
+	bIsSprinting = (Flags & FSavedMove_BCharacter::FLAG_Custom_0) != 0;
 }
 
 FNetworkPredictionData_Client* UBCharacterMovement::GetPredictionData_Client() const
@@ -35,7 +32,7 @@ FNetworkPredictionData_Client* UBCharacterMovement::GetPredictionData_Client() c
 	{
 		UBCharacterMovement* MutableThis = const_cast<UBCharacterMovement*>(this);
 
-		MutableThis->ClientPredictionData = new FNetworkPredictionData_Client_Character(*this);
+		MutableThis->ClientPredictionData = new FNetworkPredictionData_Client_BCharacter(*this);
 		MutableThis->ClientPredictionData->MaxSmoothNetUpdateDist = 92.0f;
 		MutableThis->ClientPredictionData->NoSmoothNetUpdateDist = 140.0f;
 	}
@@ -43,82 +40,20 @@ FNetworkPredictionData_Client* UBCharacterMovement::GetPredictionData_Client() c
 	return ClientPredictionData;
 }
 
-void UBCharacterMovement::SetSpeedBoost(bool bNewSpeedBoost)
-{
-	bWantsToSpeedBoost = bNewSpeedBoost;
-}
-
 float UBCharacterMovement::GetMaxSpeed() const
 {
-	float MaxSpeed = Super::GetMaxSpeed();
-
-	if (bWantsToSpeedBoost)
-	{
-		MaxSpeed *= SpeedBoostMultiplier;
-	}
-
-	return MaxSpeed;
+	return bIsSprinting ? SprintSpeed : Super::GetMaxSpeed();
 }
 
 float UBCharacterMovement::GetMaxAcceleration() const
 {
-	float MaxAccel = Super::GetMaxAcceleration();
-
-	if (bWantsToSpeedBoost)
-	{
-		MaxAccel *= SpeedBoostAccelMultiplier;
-	}
-
-	return MaxAccel;
+	return bIsSprinting ? SprintAccel : Super::GetMaxAcceleration();
 }
-
-bool UBCharacterMovement::OnMultiJump()
-{
-	if (CharacterOwner)
-	{
-		Velocity.Z = MultiJumpImpulse;
-		CurrentMultiJumpCount++;
-		return true;
-	}
-
-	return false;
-}
-
-bool UBCharacterMovement::CanMultiJump()
-{
-	return (MaxMultiJumpCount > 0) && (CurrentMultiJumpCount < MaxMultiJumpCount);
-}
-
-bool UBCharacterMovement::CanJump()
-{
-	return (IsMovingOnGround() || CanMultiJump()) && CanEverJump();
-}
-
-bool UBCharacterMovement::DoJump(bool bReplayingMoves)
-{
-	bool bResult = false;
-	if (CanJump() && (IsFalling()) ? OnMultiJump() : Super::DoJump(bReplayingMoves)) 
-	{
-		bResult = true;
-	}
-
-	return bResult;
-}
-
-void UBCharacterMovement::ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations)
-{
-	CurrentMultiJumpCount = 0;
-
-	Super::ProcessLanded(Hit, remainingTime, Iterations);
-}
-
 void FSavedMove_BCharacter::Clear()
 {
 	Super::Clear();
 
-	bSavedWantsToSpeedBoost = false;
-
-	SavedMultiJumpCount = 0;
+	bSavedIsSprinting = false;
 }
 
 void FSavedMove_BCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData)
@@ -128,9 +63,7 @@ void FSavedMove_BCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime,
 	UBCharacterMovement* CharMov = Cast<UBCharacterMovement>(Character->GetCharacterMovement());
 	if (CharMov)
 	{
-		bSavedWantsToSpeedBoost = CharMov->bWantsToSpeedBoost;
-
-		SavedMultiJumpCount = CharMov->CurrentMultiJumpCount;
+		bSavedIsSprinting = CharMov->bIsSprinting;
 	}
 }
 
@@ -138,7 +71,7 @@ uint8 FSavedMove_BCharacter::GetCompressedFlags() const
 {
 	uint8 Result = Super::GetCompressedFlags();
 
-	if (bSavedWantsToSpeedBoost)
+	if (bSavedIsSprinting)
 	{
 		Result |= FLAG_Custom_0;
 	}
@@ -148,12 +81,7 @@ uint8 FSavedMove_BCharacter::GetCompressedFlags() const
 
 bool FSavedMove_BCharacter::CanCombineWith(const FSavedMovePtr& NewMove, ACharacter* InCharacter, float MaxDelta) const
 {
-	if (bSavedWantsToSpeedBoost != ((FSavedMove_BCharacter*)& NewMove)->bSavedWantsToSpeedBoost)
-	{
-		return false;
-	}
-
-	if (SavedMultiJumpCount != ((FSavedMove_BCharacter*)& NewMove)->SavedMultiJumpCount)
+	if (bSavedIsSprinting != ((FSavedMove_BCharacter*)& NewMove)->bSavedIsSprinting)
 	{
 		return false;
 	}
@@ -178,9 +106,7 @@ void FSavedMove_BCharacter::PrepMoveFor(ACharacter* Character)
 	UBCharacterMovement* CharMov = Cast<UBCharacterMovement>(Character->GetCharacterMovement());
 	if (CharMov)
 	{
-		CharMov->bWantsToSpeedBoost = bSavedWantsToSpeedBoost;
-
-		CharMov->CurrentMultiJumpCount = SavedMultiJumpCount;
+		CharMov->bIsSprinting = bSavedIsSprinting;
 	}
 }
 

@@ -13,6 +13,9 @@ class BLITZBALL_API ABTeamPlayerStart : public APlayerStart
 public:
 	ABTeamPlayerStart(const FObjectInitializer& ObjectInitializer);
 
+	UFUNCTION(BlueprintCallable, Category = Team)
+	void SetSpawnTeam(int32 NewSpawnTeam);
+
 	/** Which team can start at this point */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Team)
 	int32 SpawnTeam;

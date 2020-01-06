@@ -5,6 +5,7 @@
 #include "BPlayerState.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ABGoal::ABGoal()
 {
@@ -29,12 +30,23 @@ void ABGoal::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 			Ball->Score(this);
 			Ball->SpawnAtBase();
 			Ball->Destroy();
+			PlayGoalEffects();
 		}
 	}
+}
+
+void ABGoal::SetTeamNumber(int32 NewTeamNumber)
+{
+	TeamNumber = NewTeamNumber;
 }
 
 int32 ABGoal::GetTeamNumber() const
 {
 	return TeamNumber;
+}
+
+void ABGoal::PlayGoalEffects()
+{
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), NetSound, GetActorLocation());
 }
 

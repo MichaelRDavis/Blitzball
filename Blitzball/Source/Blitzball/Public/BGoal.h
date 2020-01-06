@@ -18,8 +18,14 @@ public:
 	UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintCallable, Category = GameObject)
+	void SetTeamNumber(int32 NewTeamNumber);
+
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = GameObject)
 	int32 GetTeamNumber() const;
+
+	UFUNCTION(BlueprintCallable, Category = GameObject)
+	void PlayGoalEffects();
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
@@ -31,7 +37,13 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* SaveBox;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* GoalJet;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameObject)
 	int32 TeamNumber;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameObject)
+	USoundBase* NetSound;
 };

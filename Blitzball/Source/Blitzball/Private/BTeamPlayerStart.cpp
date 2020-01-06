@@ -7,3 +7,8 @@ ABTeamPlayerStart::ABTeamPlayerStart(const FObjectInitializer& ObjectInitializer
 {
 
 }
+
+void ABTeamPlayerStart::SetSpawnTeam(int32 NewSpawnTeam)
+{
+	SpawnTeam = NewSpawnTeam;
+}

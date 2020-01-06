@@ -30,6 +30,8 @@
 *.pdb
 **/*.framework/**
 
+**/StarterContent/**
+
 # Engine binaries 
 **/Binaries/**
 
