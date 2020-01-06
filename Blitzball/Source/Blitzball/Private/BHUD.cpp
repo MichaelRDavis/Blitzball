@@ -21,3 +21,13 @@ void ABHUD::BeginPlay()
 		}
 	}
 }
+
+FString ABHUD::GetTime(int32 Time)
+{
+	const int32 TotalSeononds = FMath::Max(0, FMath::TruncToInt(Time) % 3600);
+	const int32 NumMinutes = TotalSeononds / 60;
+	const int32 NumSeconds = TotalSeononds % 60;
+
+	const FString TimeDesc = FString::Printf(TEXT("%02d:%02d"), NumMinutes, NumSeconds);
+	return TimeDesc;
+}

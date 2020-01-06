@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Online.h"
 #include "Engine/GameInstance.h"
 #include "BGameInstance.generated.h"
 
@@ -12,4 +13,19 @@ class BLITZBALL_API UBGameInstance : public UGameInstance
 	
 public:
 	UBGameInstance();
+
+	virtual void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
+
+	void OnStartOnlineGameComplete(FName SessionName, bool bWasSuccessful);
+
+	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bIsPressence, int32 MaxNumPlayers);
+
+protected:
+	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
+	FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
+
+	FDelegateHandle OnCreateSessionCompleteHandle;
+	FDelegateHandle OnStartSessionCompleteHandle;
+
+	TSharedPtr<FOnlineSessionSettings> SessionSettings;
 };

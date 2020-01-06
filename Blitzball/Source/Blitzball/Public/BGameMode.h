@@ -19,6 +19,7 @@ public:
 
 	virtual void PreInitializeComponents() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+	virtual void InitGameState() override;
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 	virtual void HandleMatchIsWaitingToStart() override;
@@ -60,9 +61,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
 	int32 SaveScore;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
-	int32 KnockedBackScore;
 
 	FTimerHandle MatchTimer;
 };

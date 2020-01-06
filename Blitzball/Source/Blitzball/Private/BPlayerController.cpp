@@ -137,3 +137,8 @@ void ABPlayerController::OnKick()
 		BCharacter->Kick();
 	}
 }
+
+void ABPlayerController::OnGoalScored()
+{
+
+}

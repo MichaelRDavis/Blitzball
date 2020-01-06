@@ -21,9 +21,6 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	void OnBeginFocus();
-	void OnEndFocus();
-
 	UFUNCTION(BlueprintCallable, Category=GameObject)
 	void SetLastPlayer(ABCharacter* NewPlayer);
 
@@ -53,9 +50,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = GameObject)
 	ABPlayerState* LastPlayer;
 
+	/** Time ball was hit */
 	UPROPERTY(BlueprintReadOnly, Category = GameObject)
 	float HitTime;
 
+	/** True if ball was kicked */
 	UPROPERTY(BlueprintReadOnly, Category = GameObject)
 	bool bIsHit;
 
@@ -63,6 +62,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sounds)
 	USoundBase* HitSound;
 
+	/** Spawn location for ball */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = GameObject)
 	ABBlitzballBase* HomeBase;
 

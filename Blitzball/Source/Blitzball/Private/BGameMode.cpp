@@ -19,6 +19,7 @@ ABGameMode::ABGameMode()
 
 	NumTeams = 2;
 	WinningTeam = 0;
+	bDelayedStart = true;
 }
 
 void ABGameMode::PreInitializeComponents()
@@ -37,6 +38,15 @@ void ABGameMode::PostLogin(APlayerController* NewPlayer)
 	Super::PostLogin(NewPlayer);
 }
 
+void ABGameMode::InitGameState()
+{
+	ABGameState* const BGameState = Cast<ABGameState>(GameState);
+	if (GameState)
+	{
+		BGameState->NumTeams = NumTeams;
+	}
+}
+
 UClass* ABGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
 {
 	ABPlayerController* PlayerController = Cast<ABPlayerController>(InController);
@@ -51,7 +61,6 @@ UClass* ABGameMode::GetDefaultPawnClassForController_Implementation(AController*
 AActor* ABGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
 	TArray<APlayerStart*> PreferredStarts;
-	TArray<APlayerStart*> FallbackStarts;
 
 	APlayerStart* BestStart = nullptr;
 	for (TActorIterator<APlayerStart> It(GetWorld()); It; ++It)
@@ -68,8 +77,6 @@ AActor* ABGameMode::ChoosePlayerStart_Implementation(AController* Player)
 			{
 				PreferredStarts.Add(TestStart);
 			}
-
-			FallbackStarts.Add(TestStart);
 		}
 	}
 
@@ -79,13 +86,9 @@ AActor* ABGameMode::ChoosePlayerStart_Implementation(AController* Player)
 		{
 			BestStart = PreferredStarts[FMath::RandHelper(PreferredStarts.Num())];
 		}
-		else if (FallbackStarts.Num() > 0)
-		{
-			BestStart = FallbackStarts[FMath::RandHelper(FallbackStarts.Num())];
-		}
 	}
 
-	return BestStart ? BestStart : Super::ChoosePlayerStart_Implementation(Player);
+	return BestStart;
 }
 
 void ABGameMode::HandleMatchIsWaitingToStart()

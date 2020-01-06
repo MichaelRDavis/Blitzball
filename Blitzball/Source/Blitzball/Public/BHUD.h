@@ -17,4 +17,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
 	TSubclassOf<UUserWidget> HUDWidgetClass;
+
+	UFUNCTION(BlueprintCallable, Category = HUD)
+	FString GetTime(int32 Time);
 };

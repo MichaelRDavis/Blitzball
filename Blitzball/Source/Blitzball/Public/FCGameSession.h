@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Online.h"
 #include "GameFramework/GameSession.h"
 #include "FCGameSession.generated.h"
 
@@ -12,10 +11,5 @@ class BLITZBALL_API AFCGameSession : public AGameSession
 {
 	GENERATED_BODY()
 	
-protected:
-	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
-	FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
 
-public:
-	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bIsPressence, int32 MaxNumPlayers);
 };
