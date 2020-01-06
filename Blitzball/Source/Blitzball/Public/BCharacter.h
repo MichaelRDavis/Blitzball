@@ -84,6 +84,18 @@ public:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Emote)
+	UAnimMontage* CurrentEmote;
+
+	UFUNCTION(BlueprintCallable, Category = Emote)
+	void PlayEmote(UAnimMontage* EmoteToPlay);
+
+	UFUNCTION()
+	void ResetEmote(UAnimMontage* Montage, bool bInterrupted);
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Emote)
+	bool bIsPlayingEmote;
+
 protected:
 	UFUNCTION(BlueprintCallable, Category = Effects)
 	void PlayFootstep();

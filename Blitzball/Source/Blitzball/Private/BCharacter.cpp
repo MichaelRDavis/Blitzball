@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Animation/AnimInstance.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -99,7 +100,7 @@ void ABCharacter::OnRep_PlayerState()
 
 void ABCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !bIsPlayingEmote)
 	{
 		// Find out which way is forward
 		const FRotator Rotation = GetControlRotation();
@@ -112,7 +113,7 @@ void ABCharacter::MoveForward(float Value)
 
 void ABCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !bIsPlayingEmote)
 	{
 		// Find out which way is right
 		const FRotator Rotation = GetControlRotation();
@@ -170,7 +171,7 @@ void ABCharacter::Kick()
 		if (HitComp)
 		{
 			const FVector KickDirection = GetControlRotation().Vector();
-			HitComp->AddImpulseAtLocation(KickDirection * 500000.0f, PossesedBall->GetActorLocation());
+			HitComp->AddImpulseAtLocation(KickDirection * 350000.0f, PossesedBall->GetActorLocation());
 			PlayKick();
 		}
 	}
@@ -210,6 +211,30 @@ void ABCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor*
 	{
 		PossesedBall = nullptr;
 	}
+}
+
+void ABCharacter::PlayEmote(UAnimMontage* EmoteToPlay)
+{
+	if (EmoteToPlay != nullptr)
+	{
+		GetMesh()->bPauseAnims = false;
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance != nullptr)
+		{
+			AnimInstance->Montage_Play(EmoteToPlay, 1.0f);
+			bIsPlayingEmote = true;
+			CurrentEmote = EmoteToPlay;
+
+			FOnMontageEnded EndDelegate;
+			EndDelegate.BindUObject(this, &ABCharacter::ResetEmote);
+			AnimInstance->Montage_SetEndDelegate(EndDelegate);
+		}
+	}
+}
+
+void ABCharacter::ResetEmote(UAnimMontage* Montage, bool bInterrupted)
+{
+	bIsPlayingEmote = false;
 }
 
 void ABCharacter::PlayFootstep()

@@ -8,6 +8,17 @@ ABPlayerState::ABPlayerState()
 {
 	TeamNumber = 0;
 	Goals = 0;
+	OwnGoals = 0;
+	Saves = 0;
+}
+
+void ABPlayerState::Reset()
+{
+	Super::Reset();
+
+	Goals = 0;
+	OwnGoals = 0;
+	Saves = 0;
 }
 
 void ABPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

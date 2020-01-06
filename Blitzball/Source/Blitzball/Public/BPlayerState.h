@@ -22,6 +22,8 @@ class BLITZBALL_API ABPlayerState : public APlayerState
 public:
 	ABPlayerState();
 
+	virtual void Reset() override;
+
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void SetTeamNumber(int32 NewTeamNumber);
