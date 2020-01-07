@@ -140,6 +140,16 @@ void ABCharacter::StopSprinting()
 	}
 }
 
+bool ABCharacter::IsSprinting() const
+{
+	return BCharacterMovement ? BCharacterMovement->bIsSprinting : false;
+}
+
+bool ABCharacter::IsJumping() const
+{
+	return bPressedJump;
+}
+
 void ABCharacter::UpdateTeamColors()
 {
 	ABPlayerState* Player = Cast<ABPlayerState>(GetPlayerState());
@@ -222,6 +232,7 @@ void ABCharacter::PlayEmote(UAnimMontage* EmoteToPlay)
 		if (AnimInstance != nullptr)
 		{
 			AnimInstance->Montage_Play(EmoteToPlay, 1.0f);
+			bUseControllerRotationYaw = false;
 			bIsPlayingEmote = true;
 			CurrentEmote = EmoteToPlay;
 
@@ -235,6 +246,7 @@ void ABCharacter::PlayEmote(UAnimMontage* EmoteToPlay)
 void ABCharacter::ResetEmote(UAnimMontage* Montage, bool bInterrupted)
 {
 	bIsPlayingEmote = false;
+	bUseControllerRotationYaw = true;
 }
 
 void ABCharacter::PlayFootstep()

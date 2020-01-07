@@ -59,6 +59,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void StopSprinting();
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	bool IsSprinting() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
+	bool IsJumping() const;
+
 	/** Update team outline colors for player mesh */
 	void UpdateTeamColors();
 
