@@ -32,6 +32,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = GameMode)
 	void RestartMatch();
 
+	UFUNCTION(BlueprintCallable, Category = GameMode)
+	void FinishMatch();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
 	TSubclassOf<ABCharacter> DefaultCharacterClass;
 
@@ -39,7 +42,7 @@ protected:
 	int32 ChooseTeam(ABPlayerState* PlayerState) const;
 	void DetermineMatchWinner();
 	bool IsSpawnPointAllowed(APlayerStart* Start, AController* Player) const;
-	bool IsWinner() const;
+	bool IsWinner(ABPlayerState* PlayerState) const;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = GameMode)
 	int32 NumTeams;

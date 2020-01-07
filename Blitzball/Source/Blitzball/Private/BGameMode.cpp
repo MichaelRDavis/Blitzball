@@ -136,7 +136,7 @@ void ABGameMode::StartMatchTimer()
 			}
 			else if (GetMatchState() == MatchState::InProgress)
 			{
-				EndMatch();
+				FinishMatch();
 			}
 			else if (GetMatchState() == MatchState::WaitingToStart)
 			{
@@ -156,6 +156,19 @@ void ABGameMode::RestartMatch()
 			ABPlayerController* Controller = Cast<ABPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), i));
 			RestartPlayer(Controller);
 		}
+	}
+}
+
+void ABGameMode::FinishMatch()
+{
+	ABGameState* const BGameState = Cast<ABGameState>(GameState);
+
+	if (IsMatchInProgress())
+	{
+		EndMatch();
+		DetermineMatchWinner();
+
+		BGameState->RemainingTime = TimeBetweenMatches;
 	}
 }
 
@@ -197,7 +210,15 @@ int32 ABGameMode::ChooseTeam(ABPlayerState* PlayerState) const
 
 void ABGameMode::DetermineMatchWinner()
 {
-
+	ABGameState const* const BGameState = Cast<ABGameState>(GameState);
+	if (BGameState->RedTeamGoals > BGameState->BlueTeamGoals)
+	{
+		WinningTeam = 1;
+	}
+	else if (BGameState->BlueTeamGoals > BGameState->RedTeamGoals)
+	{
+		WinningTeam = 0;
+	}
 }
 
 bool ABGameMode::IsSpawnPointAllowed(APlayerStart* Start, AController* Player) const
@@ -216,7 +237,7 @@ bool ABGameMode::IsSpawnPointAllowed(APlayerStart* Start, AController* Player) c
 	return true;
 }
 
-bool ABGameMode::IsWinner() const
+bool ABGameMode::IsWinner(ABPlayerState* PlayerState) const
 {
-	return true;
+	return PlayerState && PlayerState->GetTeamNumber() == WinningTeam;
 }
