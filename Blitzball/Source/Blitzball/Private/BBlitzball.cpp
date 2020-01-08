@@ -10,6 +10,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 ABBlitzball::ABBlitzball()
 {
@@ -23,12 +24,16 @@ ABBlitzball::ABBlitzball()
 	GoalScore = 100;
 
 	SetReplicates(true);
+	NetPriority = 3.0f;
 	bReplicateMovement = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ABBlitzball::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(ABBlitzball, Player, COND_None);
 }
 
 void ABBlitzball::SetLastPlayer(ABCharacter* NewPlayer)
@@ -69,12 +74,6 @@ void ABBlitzball::Score(ABGoal* Goal)
 
 			Player->ScoreOwnGoal(Player, 100);
 		}
-	}
-
-	ABGameMode* GameMode = Cast<ABGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if (GameMode)
-	{
-		GameMode->RestartMatch();
 	}
 }
 

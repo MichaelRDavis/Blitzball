@@ -22,6 +22,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sprint")
 	float SprintAccel;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sprint")
+	float SprintCooldownTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sprint")
+	float SprintDuration;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Sprint")
 	bool bIsSprinting;
 

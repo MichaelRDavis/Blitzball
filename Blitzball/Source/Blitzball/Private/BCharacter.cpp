@@ -42,6 +42,8 @@ ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
 	GetMesh()->bReceivesDecals = false;
 
+	MinNetUpdateFrequency = 100.0f;
+	bAlwaysRelevant = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
@@ -225,7 +227,7 @@ void ABCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor*
 
 void ABCharacter::PlayEmote(UAnimMontage* EmoteToPlay)
 {
-	if (EmoteToPlay != nullptr)
+	if (EmoteToPlay != nullptr && !bIsPlayingEmote)
 	{
 		GetMesh()->bPauseAnims = false;
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();

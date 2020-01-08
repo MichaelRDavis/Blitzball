@@ -15,6 +15,8 @@ UBCharacterMovement::UBCharacterMovement()
 	JumpZVelocity = 620.0f;
 	SprintSpeed = 1350.0f;
 	SprintAccel = 1350.0f;
+	SprintCooldownTime = 2.0f;
+	SprintDuration = 0.0f;
 	bIsSprinting = false;
 	NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
 }
