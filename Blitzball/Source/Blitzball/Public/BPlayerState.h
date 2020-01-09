@@ -9,9 +9,8 @@
 UENUM(BlueprintType)
 enum class ETeam : uint8
 {
-	ENone,
-	ERed,
-	EBlue
+	ERed = 0,
+	EBlue = 1
 };
 
 UCLASS()

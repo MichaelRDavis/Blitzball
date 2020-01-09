@@ -19,7 +19,6 @@ ABGameMode::ABGameMode()
 
 	NumTeams = 2;
 	WinningTeam = 0;
-	bDelayedStart = true;
 }
 
 void ABGameMode::PreInitializeComponents()
@@ -34,6 +33,8 @@ void ABGameMode::PostLogin(APlayerController* NewPlayer)
 	ABPlayerState* PlayerState = Cast<ABPlayerState>(NewPlayer->PlayerState);
 	const int32 TeamNumber = ChooseTeam(PlayerState);
 	PlayerState->SetTeamNumber(TeamNumber);
+
+	// Notify new players that the match is in progress
 
 	Super::PostLogin(NewPlayer);
 }
@@ -137,6 +138,12 @@ void ABGameMode::StartMatchTimer()
 			else if (GetMatchState() == MatchState::InProgress)
 			{
 				FinishMatch();
+
+				// Notify the player that the match has ended
+				for (FConstControllerIterator It = GetWorld()->GetControllerIterator(); It; ++It)
+				{
+
+				}
 			}
 			else if (GetMatchState() == MatchState::WaitingToStart)
 			{
@@ -167,6 +174,18 @@ void ABGameMode::FinishMatch()
 	{
 		EndMatch();
 		DetermineMatchWinner();
+
+		// Notify all players of match end
+		for (FConstControllerIterator It = GetWorld()->GetControllerIterator(); It; ++It)
+		{
+			
+		}
+
+		// Lock all pawns
+		for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
+		{
+			(*It)->TurnOff();
+		}
 
 		BGameState->RemainingTime = TimeBetweenMatches;
 	}
@@ -228,13 +247,13 @@ bool ABGameMode::IsSpawnPointAllowed(APlayerStart* Start, AController* Player) c
 		ABTeamPlayerStart* TeamStart = Cast<ABTeamPlayerStart>(Start);
 		ABPlayerState* PlayerState = Cast<ABPlayerState>(Player->PlayerState);
 
-		if (PlayerState && TeamStart && TeamStart->SpawnTeam != PlayerState->GetTeamNumber())
+		if (PlayerState && TeamStart && TeamStart->SpawnTeam == PlayerState->GetTeamNumber())
 		{
-			return false;
+			return true;
 		}
 	}
 
-	return true;
+	return false;
 }
 
 bool ABGameMode::IsWinner(ABPlayerState* PlayerState) const
