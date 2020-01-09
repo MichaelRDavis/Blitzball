@@ -61,4 +61,10 @@ protected:
 
 	UPROPERTY(Replicated)
 	int32 Saves;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	int32 Level;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 MaxLevel;
 };
