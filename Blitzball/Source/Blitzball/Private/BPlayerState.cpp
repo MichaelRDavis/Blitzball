@@ -31,6 +31,11 @@ void ABPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	DOREPLIFETIME_CONDITION(ABPlayerState, Saves, COND_None);
 }
 
+void ABPlayerState::K2_SetPlayerName(const FString& NewPlayerName)
+{
+	SetPlayerName(NewPlayerName);
+}
+
 void ABPlayerState::SetTeamNumber(int32 NewTeamNumber)
 {
 	TeamNumber = NewTeamNumber;
