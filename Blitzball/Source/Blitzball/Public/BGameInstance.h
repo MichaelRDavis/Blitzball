@@ -18,7 +18,11 @@ public:
 
 	void OnStartOnlineGameComplete(FName SessionName, bool bWasSuccessful);
 
+	void OnFindSessionComplete(bool bWasSuccessful);
+
 	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bIsPressence, int32 MaxNumPlayers);
+
+	void FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIsLan, bool bIsPresence);
 
 protected:
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
@@ -27,5 +31,11 @@ protected:
 	FDelegateHandle OnCreateSessionCompleteHandle;
 	FDelegateHandle OnStartSessionCompleteHandle;
 
+	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
+
+	FDelegateHandle OnFindSessionsCompleteHandle;
+
 	TSharedPtr<FOnlineSessionSettings> SessionSettings;
+
+	TSharedPtr<FOnlineSessionSearch> SessionSearch;
 };

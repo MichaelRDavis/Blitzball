@@ -47,6 +47,11 @@ void UBGameInstance::OnStartOnlineGameComplete(FName SessionName, bool bWasSucce
 	}
 }
 
+void UBGameInstance::OnFindSessionComplete(bool bWasSuccessful)
+{
+
+}
+
 bool UBGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bIsPressence, int32 MaxNumPlayers)
 {
 	IOnlineSubsystem* const OnlineSub = IOnlineSubsystem::Get();
@@ -74,8 +79,13 @@ bool UBGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, FName Se
 	}
 	else
 	{
-		// TOOD: Log message that no OnlineSubystem could be found
+		// TOOD: Log message that no OnlineSubsystem could be found
 	}
 
 	return false;
+}
+
+void UBGameInstance::FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIsLan, bool bIsPresence)
+{
+
 }
