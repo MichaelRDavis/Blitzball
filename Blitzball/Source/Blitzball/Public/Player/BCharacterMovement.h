@@ -5,6 +5,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BCharacterMovement.generated.h"
 
+UENUM(BlueprintType)
+enum class EGait : uint8
+{
+	EWalking UMETA(DisplayName = "Walking"),
+	ERunning UMETA(DisplayName = "Running"),
+	ESprinting UMETA(DisplayName = "Sprinting")
+};
+
 UCLASS()
 class BLITZBALL_API UBCharacterMovement : public UCharacterMovementComponent
 {
@@ -16,11 +24,23 @@ public:
 	virtual void UpdateFromCompressedFlags(uint8 Flags) override;
 	virtual FNetworkPredictionData_Client* GetPredictionData_Client() const override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Character Movement")
+	EGait CharacterGait;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Running")
+	float RunningSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Running")
+	float RunningAcceleration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Running")
+	float RunningGroundFriction;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sprint")
 	float SprintSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sprint")
-	float SprintAccel;
+	float SprintAcceleration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sprint")
 	float SprintCooldownTime;

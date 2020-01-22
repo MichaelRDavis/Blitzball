@@ -14,7 +14,7 @@ UBCharacterMovement::UBCharacterMovement()
 	GravityScale = 1.0f;
 	JumpZVelocity = 620.0f;
 	SprintSpeed = 1350.0f;
-	SprintAccel = 1350.0f;
+	SprintAcceleration = 250.0f;
 	SprintCooldownTime = 2.0f;
 	SprintDuration = 0.0f;
 	bIsSprinting = false;
@@ -49,7 +49,7 @@ float UBCharacterMovement::GetMaxSpeed() const
 
 float UBCharacterMovement::GetMaxAcceleration() const
 {
-	return bIsSprinting ? SprintAccel : Super::GetMaxAcceleration();
+	return bIsSprinting ? SprintAcceleration : Super::GetMaxAcceleration();
 }
 void FSavedMove_BCharacter::Clear()
 {
