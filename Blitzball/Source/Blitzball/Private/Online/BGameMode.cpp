@@ -20,11 +20,14 @@ ABGameMode::ABGameMode()
 
 	NumTeams = 2;
 	WinningTeam = 0;
+	bIsMatchDraw = false;
 	WarmupTime = 15;
 	MatchTime = 300;
 	TimeBetweenMatches = 15;
 	GoalScore = 50;
-	SaveScore = 50;
+	SaveScore = 25;
+	WinScore = 500;
+	DrawScore = 250;
 }
 
 void ABGameMode::PreInitializeComponents()
@@ -116,6 +119,16 @@ void ABGameMode::RestartPlayer(AController* NewPlayer)
 	ChoosePlayerStart_Implementation(NewPlayer);
 
 	Super::RestartPlayer(NewPlayer);
+}
+
+void ABGameMode::StartMatch()
+{
+	Super::StartMatch();
+
+	if (StartMatchSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), StartMatchSound);
+	}
 }
 
 void ABGameMode::StartMatchTimer()
@@ -252,6 +265,26 @@ void ABGameMode::DetermineMatchWinner()
 	else if (BGameState->BlueTeamGoals > BGameState->RedTeamGoals)
 	{
 		WinningTeam = 0;
+	}
+	else if (BGameState->BlueTeamGoals == BGameState->RedTeamGoals)
+	{
+		WinningTeam = 0;
+		bIsMatchDraw = true;
+	}
+}
+
+void ABGameMode::RewardEndMatchScore()
+{
+	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
+	{
+		ABPlayerState* PlayerState = Cast<ABPlayerState>(GameState->PlayerArray[i]);
+		if (PlayerState)
+		{
+			if (IsWinner(PlayerState))
+			{
+				// TODO: Add win score to player score
+			}
+		}
 	}
 }
 

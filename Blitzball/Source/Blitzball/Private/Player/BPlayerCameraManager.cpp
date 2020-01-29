@@ -4,5 +4,5 @@
 
 ABPlayerCameraManager::ABPlayerCameraManager()
 {
-
+	DefaultFOV = 110.0f;
 }

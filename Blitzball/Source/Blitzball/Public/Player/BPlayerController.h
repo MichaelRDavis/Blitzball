@@ -55,7 +55,20 @@ protected:
 	void OnSprint();
 	void OnStopSprinting();
 
+	/** Kick */
 	void OnKick();
+
+	/** Shows scoreboard */
+	void OnShowScoreboard();
+
+	/** Hides scoreboard */
+	void OnHideScoreboard();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=HUD)
+	TSubclassOf<UUserWidget> ScoreboardWidget;
+
+	UPROPERTY(BlueprintReadOnly, Category=HUD)
+	UUserWidget* CurrentWidget;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)

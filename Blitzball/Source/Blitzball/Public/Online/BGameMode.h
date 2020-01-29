@@ -25,6 +25,7 @@ public:
 	virtual void HandleMatchIsWaitingToStart() override;
 	virtual void HandleMatchHasStarted() override;
 	virtual void RestartPlayer(AController* NewPlayer) override;
+	virtual void StartMatch() override;
 
 	UFUNCTION(BlueprintCallable, Category = GameMode)
 	void StartMatchTimer();
@@ -51,6 +52,7 @@ public:
 protected:
 	int32 ChooseTeam(ABPlayerState* PlayerState) const;
 	void DetermineMatchWinner();
+	void RewardEndMatchScore();
 	bool IsSpawnPointAllowed(APlayerStart* Start, AController* Player) const;
 
 	UFUNCTION(BlueprintCallable, Category=GameMode)
@@ -61,6 +63,9 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = GameMode)
 	int32 WinningTeam;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=GameMode)
+	bool bIsMatchDraw;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
 	int32 WarmupTime;
@@ -77,11 +82,23 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
 	int32 SaveScore;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=GameMode)
+	int32 WinScore;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=GameMode)
+	int32 DrawScore;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
 	TSubclassOf<UUserWidget> EndMatchWidget;
 
 	UPROPERTY(BlueprintReadOnly, Category = GameMode)
 	UUserWidget* CurrentWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Sounds)
+	USoundBase* StartMatchSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Sounds)
+	USoundBase* EndMatchSound;
 
 	FTimerHandle MatchTimer;
 };

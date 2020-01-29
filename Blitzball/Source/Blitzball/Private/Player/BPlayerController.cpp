@@ -2,9 +2,12 @@
 
 #include "BPlayerController.h"
 #include "BCharacter.h"
+#include "Blueprint/UserWidget.h"
+#include "BPlayerCameraManager.h"
 
 ABPlayerController::ABPlayerController()
 {
+	PlayerCameraManagerClass = ABPlayerCameraManager::StaticClass();
 	BaseTurnRate = 45.0f;
 	BaseLookUpRate = 45.0f;
 }
@@ -36,6 +39,9 @@ void ABPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Sprint", IE_Released, this, &ABPlayerController::OnStopSprinting);
 
 	InputComponent->BindAction("Kick", IE_Pressed, this, &ABPlayerController::OnKick);
+
+	InputComponent->BindAction("Scorebaord", IE_Pressed, this, &ABPlayerController::OnShowScoreboard);
+	InputComponent->BindAction("Scorebaord", IE_Released, this, &ABPlayerController::OnHideScoreboard);
 }
 
 void ABPlayerController::MoveForward(float Value)
@@ -135,5 +141,25 @@ void ABPlayerController::OnKick()
 	if (BCharacter)
 	{
 		BCharacter->Kick();
+	}
+}
+
+void ABPlayerController::OnShowScoreboard()
+{
+	if (ScoreboardWidget)
+	{
+		CurrentWidget = CreateWidget<UUserWidget>(this, ScoreboardWidget);
+		if (CurrentWidget)
+		{
+			CurrentWidget->AddToViewport();
+		}
+	}
+}
+
+void ABPlayerController::OnHideScoreboard()
+{
+	if (CurrentWidget)
+	{
+		CurrentWidget->RemoveFromParent();
 	}
 }
