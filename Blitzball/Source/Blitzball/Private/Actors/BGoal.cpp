@@ -27,7 +27,7 @@ void ABGoal::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		ABBlitzball* Ball = Cast<ABBlitzball>(OtherActor);
 		if (Ball)
 		{
-			Ball->Score(this);
+			Ball->Score(TeamNumber);
 			Ball->SpawnAtBase();
 			Ball->Destroy();
 			PlayGoalEffects();

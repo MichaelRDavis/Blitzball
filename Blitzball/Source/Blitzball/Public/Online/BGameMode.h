@@ -38,6 +38,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
 	TSubclassOf<ABCharacter> DefaultCharacterClass;
 
+	inline int32 GetGoalScore() const
+	{
+		return GoalScore;
+	}
+
+	inline int32 GetSaveScore() const
+	{
+		return SaveScore;
+	}
+
 protected:
 	int32 ChooseTeam(ABPlayerState* PlayerState) const;
 	void DetermineMatchWinner();

@@ -4,9 +4,9 @@
 #include "BCharacter.h"
 #include "BPlayerState.h"
 #include "BBlitzballBase.h"
-#include "BGoal.h"
 #include "BGameState.h"
 #include "BGameMode.h"
+#include "FCReplicatedPhysicsComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -21,7 +21,7 @@ ABBlitzball::ABBlitzball()
 	BlitzballMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	BlitzballMesh->SetupAttachment(CollisionComp);
 
-	GoalScore = 100;
+	PhysicsReplication = CreateDefaultSubobject<UFCReplicatedPhysicsComponent>(TEXT("PhysicsReplication"));
 
 	SetReplicates(true);
 	NetPriority = 3.0f;
@@ -43,12 +43,13 @@ void ABBlitzball::SetLastPlayer(ABCharacter* NewPlayer)
 	HitTime = GetWorld()->GetTimeSeconds();
 }
 
-void ABBlitzball::Score(ABGoal* Goal)
+void ABBlitzball::Score(int32 TeamNumber)
 {
 	ABGameState* Game = Cast<ABGameState>(GetWorld()->GetGameState());
-	if (Player && Game)
+	ABGameMode* BGameMode = Cast<ABGameMode>(GetWorld()->GetAuthGameMode());
+	if (Player && Game && BGameMode)
 	{
-		if (Player->GetTeamNumber() != Goal->GetTeamNumber())
+		if (Player->GetTeamNumber() != TeamNumber)
 		{
 			if (Player->GetTeamNumber() == 0)
 			{
@@ -59,7 +60,7 @@ void ABBlitzball::Score(ABGoal* Goal)
 				Game->RedTeamGoals++;
 			}
 
-			Player->ScoreGoal(Player, 100);
+			Player->ScoreGoal(Player, BGameMode->GetGoalScore());
 		}
 		else
 		{
@@ -72,7 +73,7 @@ void ABBlitzball::Score(ABGoal* Goal)
 				Game->BlueTeamGoals++;
 			}
 
-			Player->ScoreOwnGoal(Player, 100);
+			Player->ScoreOwnGoal(Player, BGameMode->GetGoalScore());
 		}
 	}
 }

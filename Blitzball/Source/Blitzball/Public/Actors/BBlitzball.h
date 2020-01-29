@@ -10,6 +10,7 @@ class ABCharacter;
 class ABPlayerState;
 class ABBlitzballBase;
 class ABGoal;
+class UFCReplicatedPhysicsComponent;
 
 UCLASS()
 class BLITZBALL_API ABBlitzball : public AActor
@@ -25,7 +26,7 @@ public:
 	void SetLastPlayer(ABCharacter* NewPlayer);
 
 	UFUNCTION(BlueprintCallable, Category = GameObject)
-	void Score(ABGoal* Goal);
+	void Score(int32 TeamNumber);
 
 	UFUNCTION(BlueprintCallable, Category = GameObject)
 	void SpawnAtBase();
@@ -36,6 +37,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BlitzballMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Physics, meta=(AllowPrivateAccess="true"))
+	UFCReplicatedPhysicsComponent* PhysicsReplication;
 
 public:
 	/** Reference to pawn that last hit this object */
@@ -65,10 +69,6 @@ public:
 	/** Spawn location for ball */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = GameObject)
 	ABBlitzballBase* HomeBase;
-
-	/** Score for scoring a gaol, negates if own goal */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameObject)
-	int32 GoalScore;
 
 	inline USphereComponent* GetCollisionComp() const
 	{
