@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerStart.h"
 #include "Engine/PlayerStartPIE.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 #include "EngineUtils.h"
 
 ABGameMode::ABGameMode()
@@ -19,6 +20,11 @@ ABGameMode::ABGameMode()
 
 	NumTeams = 2;
 	WinningTeam = 0;
+	WarmupTime = 15;
+	MatchTime = 300;
+	TimeBetweenMatches = 15;
+	GoalScore = 50;
+	SaveScore = 50;
 }
 
 void ABGameMode::PreInitializeComponents()
@@ -185,6 +191,15 @@ void ABGameMode::FinishMatch()
 		for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
 		{
 			(*It)->TurnOff();
+		}
+
+		if (EndMatchWidget)
+		{
+			CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), EndMatchWidget);
+			if (CurrentWidget)
+			{
+				CurrentWidget->AddToViewport();
+			}
 		}
 
 		BGameState->RemainingTime = TimeBetweenMatches;

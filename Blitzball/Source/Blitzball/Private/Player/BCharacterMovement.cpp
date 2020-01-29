@@ -5,7 +5,7 @@
 
 UBCharacterMovement::UBCharacterMovement()
 {
-	MaxWalkSpeed = 900.0f;
+	MaxWalkSpeed = 700.0f;
 	AirControl = 0.25f;
 	MaxAcceleration = 3200.0f;
 	GroundFriction = 10.0f;
@@ -13,8 +13,8 @@ UBCharacterMovement::UBCharacterMovement()
 	BrakingFrictionFactor = 1.0f;
 	GravityScale = 1.0f;
 	JumpZVelocity = 620.0f;
-	SprintSpeed = 1350.0f;
-	SprintAcceleration = 500.0f;
+	SprintSpeed = 1400.0f;
+	SprintAcceleration = 700.0f;
 	SprintCooldownTime = 2.0f;
 	SprintDuration = 0.0f;
 	bIsSprinting = false;

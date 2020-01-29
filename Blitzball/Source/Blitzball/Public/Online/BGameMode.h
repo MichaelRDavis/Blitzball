@@ -52,6 +52,8 @@ protected:
 	int32 ChooseTeam(ABPlayerState* PlayerState) const;
 	void DetermineMatchWinner();
 	bool IsSpawnPointAllowed(APlayerStart* Start, AController* Player) const;
+
+	UFUNCTION(BlueprintCallable, Category=GameMode)
 	bool IsWinner(ABPlayerState* PlayerState) const;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = GameMode)
@@ -74,6 +76,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
 	int32 SaveScore;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
+	TSubclassOf<UUserWidget> EndMatchWidget;
+
+	UPROPERTY(BlueprintReadOnly, Category = GameMode)
+	UUserWidget* CurrentWidget;
 
 	FTimerHandle MatchTimer;
 };
