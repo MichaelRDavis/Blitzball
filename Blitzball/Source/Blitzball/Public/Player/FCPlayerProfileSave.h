@@ -6,21 +6,32 @@
 #include "GameFramework/SaveGame.h"
 #include "FCPlayerProfileSave.generated.h"
 
+class ABPlayerState;
+
 UCLASS()
 class BLITZBALL_API UFCPlayerProfileSave : public USaveGame
 {
 	GENERATED_BODY()
 
 public:
+	UFCPlayerProfileSave();
+
+	UFUNCTION(BlueprintCallable, Category=SaveGame)
 	static UFCPlayerProfileSave* LoadPlayerProfileData(FString SlotName, const int32 UserIndex);
 	
+	UFUNCTION(BlueprintCallable, Category=SaveGame)
+	void SavePlayerProfileData();
+
+	UFUNCTION(BlueprintCallable, Category = SaveGame)
+	void SaveIfDirty();
+
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerProfileName(FString InPlayerProfileName);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FString GetPlayerProfileName() const;
 
-	void AddMatchResult(int32 Goals, int32 Saves, bool bIsMatchWinner);
+	void AddMatchResult(ABPlayerState* PlayerState);
 
 protected:
 	UPROPERTY()
@@ -36,10 +47,19 @@ protected:
 	int32 Saves;
 
 	UPROPERTY()
-	int32 Wins;
+	int32 Assists;
 
 	UPROPERTY()
-	int32 Losses;
+	int32 MatchWins;
+
+	UPROPERTY()
+	int32 MatchLosses;
+
+	UPROPERTY()
+	int32 MatchesDraw;
+
+	UPROPERTY()
+	int32 MatchesPlayed;
 
 private:
 	bool bIsDirty;

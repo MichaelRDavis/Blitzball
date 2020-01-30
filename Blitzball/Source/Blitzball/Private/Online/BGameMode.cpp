@@ -206,6 +206,11 @@ void ABGameMode::FinishMatch()
 			(*It)->TurnOff();
 		}
 
+		if (EndMatchSound)
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), EndMatchSound);
+		}
+
 		if (EndMatchWidget)
 		{
 			CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), EndMatchWidget);
@@ -282,7 +287,7 @@ void ABGameMode::RewardEndMatchScore()
 		{
 			if (IsWinner(PlayerState))
 			{
-				// TODO: Add win score to player score
+				PlayerState->AddScore(WinScore);
 			}
 		}
 	}

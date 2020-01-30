@@ -28,10 +28,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = PlayerState)
 	void K2_SetPlayerName(const FString& NewPlayerName);
 
+	UFUNCTION(BlueprintCallable, Category = PlayerState)
 	void SetTeamNumber(int32 NewTeamNumber);
 
+	UFUNCTION(BlueprintCallable, Category = PlayerState)
+	void AddScore(int32 Points);
+
+	UFUNCTION(BlueprintCallable, Category = PlayerState)
 	void ScoreGoal(ABPlayerState* ScoredBy, int32 Points);
 
+	UFUNCTION(BlueprintCallable, Category = PlayerState)
 	void ScoreOwnGoal(ABPlayerState* ScoredBy, int32 Points);
 
 	UFUNCTION(BlueprintCallable, Category=PlayerState)
@@ -65,9 +71,30 @@ protected:
 	UPROPERTY(Replicated)
 	int32 Saves;
 
+	UPROPERTY(Replicated)
+	int32 MatchesPlayed;
+
+	UPROPERTY(Replicated)
+	int32 MatchesWon;
+
+	UPROPERTY(Replicated)
+	int32 MatchesLost;
+
+	UPROPERTY(Replicated)
+	int32 MatchesDraw;
+
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	int32 Level;
 
 	UPROPERTY(BlueprintReadOnly)
 	int32 MaxLevel;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 XP;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 XPToNextLevel;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 XPLevelMultiplier;
 };

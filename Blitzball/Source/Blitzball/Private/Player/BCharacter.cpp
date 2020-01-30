@@ -40,8 +40,11 @@ ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 	BCharacterMovement = Cast<UBCharacterMovement>(GetCharacterMovement());
 
 	GetMesh()->SetCollisionObjectType(ECC_Pawn);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
 	GetMesh()->bReceivesDecals = false;
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 	MinNetUpdateFrequency = 100.0f;
 	bAlwaysRelevant = true;

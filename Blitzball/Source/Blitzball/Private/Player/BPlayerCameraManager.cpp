@@ -5,4 +5,6 @@
 ABPlayerCameraManager::ABPlayerCameraManager()
 {
 	DefaultFOV = 110.0f;
+	ViewPitchMin = -87.0f;
+	ViewPitchMax = 87.0f;
 }

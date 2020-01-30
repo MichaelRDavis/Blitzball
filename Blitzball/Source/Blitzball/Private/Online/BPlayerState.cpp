@@ -41,22 +41,27 @@ void ABPlayerState::SetTeamNumber(int32 NewTeamNumber)
 	TeamNumber = NewTeamNumber;
 }
 
+void ABPlayerState::AddScore(int32 Points)
+{
+	Score += Points;
+}
+
 void ABPlayerState::ScoreGoal(ABPlayerState* ScoredBy, int32 Points) 
 {
 	Goals++;
-	Score += Points;
+	AddScore(Points);
 }
 
 void ABPlayerState::ScoreOwnGoal(ABPlayerState* ScoredBy, int32 Points)
 {
 	OwnGoals++;
-	Score -= Points;
+	AddScore(-Points);
 }
 
 void ABPlayerState::ScoreSave(ABPlayerState* ScoredBy, int32 Points)
 {
 	Saves++;
-	Score += Points;
+	AddScore(Points);
 }
 
 int32 ABPlayerState::GetTeamNumber() const

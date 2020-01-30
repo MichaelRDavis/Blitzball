@@ -17,9 +17,11 @@ ABBlitzball::ABBlitzball()
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	CollisionComp->SetupAttachment(GetRootComponent());
 	CollisionComp->SetSimulatePhysics(true);
+	CollisionComp->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 	BlitzballMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	BlitzballMesh->SetupAttachment(CollisionComp);
+	BlitzballMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 	PhysicsReplication = CreateDefaultSubobject<UFCReplicatedPhysicsComponent>(TEXT("PhysicsReplication"));
 

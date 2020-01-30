@@ -64,8 +64,14 @@ protected:
 	/** Hides scoreboard */
 	void OnHideScoreboard();
 
+	/** Shows pause menu */
+	void OnShowPauseMenu();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=HUD)
 	TSubclassOf<UUserWidget> ScoreboardWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=HUD)
+	TSubclassOf<UUserWidget> PauseMenuWidget;
 
 	UPROPERTY(BlueprintReadOnly, Category=HUD)
 	UUserWidget* CurrentWidget;

@@ -2,8 +2,9 @@
 
 #include "BPlayerController.h"
 #include "BCharacter.h"
-#include "Blueprint/UserWidget.h"
 #include "BPlayerCameraManager.h"
+#include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 ABPlayerController::ABPlayerController()
 {
@@ -42,6 +43,7 @@ void ABPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("Scorebaord", IE_Pressed, this, &ABPlayerController::OnShowScoreboard);
 	InputComponent->BindAction("Scorebaord", IE_Released, this, &ABPlayerController::OnHideScoreboard);
+	InputComponent->BindAction("Pause", IE_Pressed, this, &ABPlayerController::OnShowPauseMenu);
 }
 
 void ABPlayerController::MoveForward(float Value)
@@ -161,5 +163,19 @@ void ABPlayerController::OnHideScoreboard()
 	if (CurrentWidget)
 	{
 		CurrentWidget->RemoveFromParent();
+	}
+}
+
+void ABPlayerController::OnShowPauseMenu()
+{
+	if (PauseMenuWidget)
+	{
+		CurrentWidget = CreateWidget<UUserWidget>(this, PauseMenuWidget);
+		if (CurrentWidget)
+		{
+			CurrentWidget->AddToViewport();
+			UWidgetBlueprintLibrary::SetInputMode_UIOnly(this, CurrentWidget);
+			bShowMouseCursor = true;
+		}
 	}
 }
