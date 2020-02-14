@@ -21,6 +21,8 @@ class BLITZBALL_API UBCharacterMovement : public UCharacterMovementComponent
 public:
 	UBCharacterMovement();
 
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	virtual void UpdateFromCompressedFlags(uint8 Flags) override;
 	virtual FNetworkPredictionData_Client* GetPredictionData_Client() const override;
 
