@@ -5,7 +5,7 @@
 
 UBCharacterMovement::UBCharacterMovement()
 {
-	MaxWalkSpeed = 700.0f;
+	MaxWalkSpeed = 900.0f;
 	AirControl = 0.25f;
 	MaxAcceleration = 3200.0f;
 	GroundFriction = 10.0f;

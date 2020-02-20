@@ -22,6 +22,9 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	UFUNCTION()
+	virtual void OnHit(UPrimitiveComponent* MyComp, UPrimitiveComponent* OtherComp, AActor* OtherActor, UPrimitiveComponent* HitComp, FVector NormalImpulse, const FHitResult& Hit);
+
 	UFUNCTION(BlueprintCallable, Category=GameObject)
 	void SetLastPlayer(ABCharacter* NewPlayer);
 
@@ -30,6 +33,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = GameObject)
 	void SpawnAtBase();
+
+	UFUNCTION(BlueprintCallable, Category = GameObject)
+	void HeaderBall(AActor* OtherActor, FVector HitLocation);
+
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerHeaderBall(AActor* OtherActor, FVector HitLocation);
+	void ServerHeaderBall_Implementation(AActor* OtherActor, FVector HitLocation);
+	bool ServerHeaderBall_Validate(AActor* OtherActor, FVector HitLocation);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
@@ -62,9 +73,17 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = GameObject)
 	bool bIsHit;
 
+	/** Impulse applied to ball when headed by the player */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameObject)
+	float HeaderImpulse;
+
 	/** Sound played on hit */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sounds)
 	USoundBase* HitSound;
+
+	/** Sound played on header */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sounds)
+	USoundBase* HeaderSound;
 
 	/** Spawn location for ball */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = GameObject)
