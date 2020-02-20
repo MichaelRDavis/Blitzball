@@ -24,6 +24,17 @@ UBCharacterMovement::UBCharacterMovement()
 void UBCharacterMovement::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (bIsSprinting && SprintDuration <= 0.0f)
+	{
+		bIsSprinting = false;
+		SprintDuration = SprintCooldownTime;
+	}
+
+	if (SprintDuration > 0.0f)
+	{
+		SprintDuration -= DeltaTime;
+	}
 }
 
 void UBCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
@@ -61,6 +72,7 @@ void FSavedMove_BCharacter::Clear()
 	Super::Clear();
 
 	bSavedIsSprinting = false;
+	SavedSprintCooldownTime = 0;
 }
 
 void FSavedMove_BCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData)
@@ -71,6 +83,7 @@ void FSavedMove_BCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime,
 	if (CharMov)
 	{
 		bSavedIsSprinting = CharMov->bIsSprinting;
+		SavedSprintCooldownTime = CharMov->SprintDuration;
 	}
 }
 
@@ -114,6 +127,7 @@ void FSavedMove_BCharacter::PrepMoveFor(ACharacter* Character)
 	if (CharMov)
 	{
 		CharMov->bIsSprinting = bSavedIsSprinting;
+		CharMov->SprintDuration = SavedSprintCooldownTime;
 	}
 }
 

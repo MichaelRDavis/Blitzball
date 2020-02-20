@@ -8,6 +8,8 @@
 
 class ABCharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerScored);
+
 UCLASS()
 class BLITZBALL_API ABPlayerController : public ABPlayerControllerBase
 {
@@ -18,6 +20,10 @@ public:
 
 	virtual void SetPawn(APawn* InPawn) override;
 	virtual void SetupInputComponent() override;
+
+	/** Event trigged when player has scored */
+	UFUNCTION(BlueprintCallable, Category=HUD)
+	void OnScored();
 
 private:
 	UPROPERTY()
@@ -66,6 +72,9 @@ protected:
 
 	/** Shows pause menu */
 	void OnShowPauseMenu();
+
+	UPROPERTY(BlueprintAssignable)
+	FPlayerScored PlayerScoredDelegate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=HUD)
 	TSubclassOf<UUserWidget> ScoreboardWidget;

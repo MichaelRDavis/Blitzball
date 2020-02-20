@@ -53,6 +53,10 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Sprint")
 	bool bIsSprinting;
 
+	/** True if player pressed floor slide action */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="FlooSlide")
+	bool bWantsToFloorSlide;
+
 	virtual float GetMaxSpeed() const override;
 	virtual float GetMaxAcceleration() const override;
 };
@@ -63,6 +67,10 @@ public:
 	typedef FSavedMove_Character Super;
 
 	bool bSavedIsSprinting;
+	bool bWantsToFloorSlide;
+
+	float SavedSprintCooldownTime;
+	float SavedFloorSlideEndTime;
 
 	virtual void Clear() override;
 	virtual void SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData) override;

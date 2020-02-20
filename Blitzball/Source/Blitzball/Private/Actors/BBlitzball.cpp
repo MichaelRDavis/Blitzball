@@ -6,6 +6,7 @@
 #include "BBlitzballBase.h"
 #include "BGameState.h"
 #include "BGameMode.h"
+#include "BPlayerController.h"
 #include "FCReplicatedPhysicsComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -52,8 +53,8 @@ void ABBlitzball::OnHit(UPrimitiveComponent* MyComp, UPrimitiveComponent* OtherC
 void ABBlitzball::SetLastPlayer(ABCharacter* NewPlayer)
 {
 	Pawn = NewPlayer;
+	PlayerController = Cast<ABPlayerController>(NewPlayer->GetController());
 	Player = Cast<ABPlayerState>(NewPlayer->GetPlayerState());
-	LastPlayer = Player;
 	HitTime = GetWorld()->GetTimeSeconds();
 }
 
@@ -75,6 +76,7 @@ void ABBlitzball::Score(int32 TeamNumber)
 			}
 
 			Player->ScoreGoal(Player, BGameMode->GetGoalScore());
+			PlayerController->OnScored();
 		}
 		else
 		{

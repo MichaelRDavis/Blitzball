@@ -8,6 +8,7 @@
 class USphereComponent;
 class ABCharacter;
 class ABPlayerState;
+class ABPlayerController;
 class ABBlitzballBase;
 class ABGoal;
 class UFCReplicatedPhysicsComponent;
@@ -57,13 +58,17 @@ public:
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = GameObject)
 	ABCharacter* Pawn;
 
-	/** Reference to player that last hit this object */
+	/** Reference to player state that last hit this object */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = GameObject)
 	ABPlayerState* Player;
 
-	/** Reference to the last player that hit this object */
+	/** Reference to the last player state that hit this object */
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = GameObject)
 	ABPlayerState* LastPlayer;
+
+	/** Reference to player controller that hit this ball */
+	UPROPERTY(BlueprintReadOnly, Replicated, Category=GameObject)
+	ABPlayerController* PlayerController;
 
 	/** Time ball was hit */
 	UPROPERTY(BlueprintReadOnly, Category = GameObject)

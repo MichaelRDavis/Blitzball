@@ -23,12 +23,19 @@ ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 	//
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
-	CameraBoom->TargetArmLength = 300.0f;
+	CameraBoom->CameraLagSpeed = 15.0f;
+	CameraBoom->CameraRotationLagSpeed = 15.0f;
+	CameraBoom->TargetArmLength = 350.0f;
+	CameraBoom->bEnableCameraLag = true;
+	CameraBoom->bEnableCameraRotationLag = true;
 	CameraBoom->bUsePawnControlRotation = true;
 
 	// Create a CameraComponent
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	FollowCamera->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
+	FollowCamera->SetRelativeRotation(FRotator(-10.0f, 0.0f, 0.0f));
+	FollowCamera->FieldOfView = 110.0f;
 	FollowCamera->bUsePawnControlRotation = false;
 
 	//
@@ -48,6 +55,8 @@ ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->bReceivesDecals = false;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
+	KickImpulse = 350000.0f;
 
 	MinNetUpdateFrequency = 100.0f;
 	bAlwaysRelevant = true;
@@ -149,6 +158,11 @@ void ABCharacter::StopSprinting()
 	}
 }
 
+bool ABCharacter::CanSprint()
+{
+	return BCharacterMovement ? BCharacterMovement->SprintDuration <= 0.0f : false;
+}
+
 bool ABCharacter::IsSprinting() const
 {
 	return BCharacterMovement ? BCharacterMovement->bIsSprinting : false;
@@ -190,7 +204,7 @@ void ABCharacter::Kick()
 		if (HitComp)
 		{
 			const FVector KickDirection = GetControlRotation().Vector();
-			HitComp->AddImpulseAtLocation(KickDirection * 350000.0f, PossesedBall->GetActorLocation());
+			HitComp->AddImpulseAtLocation(KickDirection * KickImpulse, PossesedBall->GetActorLocation());
 			PlayKick();
 		}
 	}

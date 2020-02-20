@@ -61,6 +61,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Pawn)
 	void StopSprinting();
 
+	/** True if player can sprint this frame */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category=Pawn)
+	bool CanSprint();
+
 	/** True if currently sprinting */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Pawn)
 	bool IsSprinting() const;
@@ -81,6 +85,10 @@ public:
 	void ServerKick();
 	void ServerKick_Implementation();
 	bool ServerKick_Validate();
+
+	/** Impulse applied to ball in current possession when kicked */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Pawn)
+	float KickImpulse;
 
 	/** Ball in current player possession */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawm)

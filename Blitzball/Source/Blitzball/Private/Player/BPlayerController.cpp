@@ -3,8 +3,10 @@
 #include "BPlayerController.h"
 #include "BCharacter.h"
 #include "BPlayerCameraManager.h"
+#include "BPlayerState.h"
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Engine/Engine.h"
 
 ABPlayerController::ABPlayerController()
 {
@@ -178,4 +180,10 @@ void ABPlayerController::OnShowPauseMenu()
 			bShowMouseCursor = true;
 		}
 	}
+}
+
+void ABPlayerController::OnScored()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, (TEXT("Player: %s scored"), PlayerState->GetPlayerName()));
+	PlayerScoredDelegate.Broadcast();
 }
