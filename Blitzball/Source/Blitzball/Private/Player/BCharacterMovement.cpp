@@ -21,6 +21,11 @@ UBCharacterMovement::UBCharacterMovement()
 	NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
 }
 
+void UBCharacterMovement::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
+
 void UBCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
 {
 	Super::UpdateFromCompressedFlags(Flags);

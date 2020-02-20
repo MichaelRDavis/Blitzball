@@ -87,5 +87,17 @@ bool UBGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, FName Se
 
 void UBGameInstance::FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIsLan, bool bIsPresence)
 {
+	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
+	if (OnlineSub)
+	{
+		IOnlineSessionPtr Sessions = OnlineSub->GetSessionInterface();
+		if (Sessions.IsValid() && UserId.IsValid())
+		{
+			SessionSearch = MakeShareable(new FOnlineSessionSearch());
 
+			SessionSearch->bIsLanQuery = bIsLan;
+			SessionSearch->MaxSearchResults = 20;
+			SessionSearch->PingBucketSize = 50;
+		}
+	}
 }
