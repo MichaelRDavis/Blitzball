@@ -43,6 +43,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category=PlayerState)
 	void ScoreSave(ABPlayerState* ScoredBy, int32 Points);
 
+	UFUNCTION(BlueprintCallable, Category = PLayerState)
+	void ScoreAssist(ABPlayerState* ScoredBy, ABPlayerState* LastPlayer, int32 Points);
+
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = PlayerState)
 	int32 GetTeamNumber() const;
 
@@ -70,6 +73,9 @@ protected:
 
 	UPROPERTY(Replicated)
 	int32 Saves;
+
+	UPROPERTY(Replicated)
+	int32 Assist;
 
 	UPROPERTY(Replicated)
 	int32 MatchesPlayed;

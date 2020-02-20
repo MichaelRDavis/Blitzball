@@ -64,6 +64,15 @@ void ABPlayerState::ScoreSave(ABPlayerState* ScoredBy, int32 Points)
 	AddScore(Points);
 }
 
+void ABPlayerState::ScoreAssist(ABPlayerState* ScoredBy, ABPlayerState* LastPlayer, int32 Points)
+{
+	if (ScoredBy->TeamNumber == LastPlayer->TeamNumber)
+	{
+		Assist++;
+		AddScore(Points);
+	}
+}
+
 int32 ABPlayerState::GetTeamNumber() const
 {
 	return TeamNumber;

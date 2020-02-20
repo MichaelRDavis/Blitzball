@@ -53,6 +53,7 @@ void ABBlitzball::SetLastPlayer(ABCharacter* NewPlayer)
 {
 	Pawn = NewPlayer;
 	Player = Cast<ABPlayerState>(NewPlayer->GetPlayerState());
+	LastPlayer = Player;
 	HitTime = GetWorld()->GetTimeSeconds();
 }
 

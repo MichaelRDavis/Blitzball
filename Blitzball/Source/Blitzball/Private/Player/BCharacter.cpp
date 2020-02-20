@@ -34,6 +34,9 @@ ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 	//
 	CollisionComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionComp"));
 	CollisionComp->SetupAttachment(GetMesh());
+	CollisionComp->SetRelativeLocation(FVector(0.0f, 80.0f, 45.0f));
+	CollisionComp->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+	CollisionComp->SetCapsuleSize(45.0f, 45.0f);
 	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ABCharacter::OnOverlapBegin);
 	CollisionComp->OnComponentEndOverlap.AddDynamic(this, &ABCharacter::OnOverlapEnd);
 
