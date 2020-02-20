@@ -30,6 +30,8 @@
 *.pdb
 **/*.framework/**
 
+#Ignore content folders 
+**/Contnet/**
 **/StarterContent/**
 
 # Engine binaries 
