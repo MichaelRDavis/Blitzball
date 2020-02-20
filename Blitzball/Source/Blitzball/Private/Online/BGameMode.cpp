@@ -197,7 +197,17 @@ void ABGameMode::FinishMatch()
 		// Notify all players of match end
 		for (FConstControllerIterator It = GetWorld()->GetControllerIterator(); It; ++It)
 		{
-			
+			ABPlayerState* PlayerState = Cast<ABPlayerState>((*It)->PlayerState);
+			IsWinner(PlayerState);
+
+			if (EndMatchWidget)
+			{
+				CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), EndMatchWidget);
+				if (CurrentWidget)
+				{
+					CurrentWidget->AddToViewport();
+				}
+			}
 		}
 
 		// Lock all pawns
@@ -209,15 +219,6 @@ void ABGameMode::FinishMatch()
 		if (EndMatchSound)
 		{
 			UGameplayStatics::PlaySound2D(GetWorld(), EndMatchSound);
-		}
-
-		if (EndMatchWidget)
-		{
-			CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), EndMatchWidget);
-			if (CurrentWidget)
-			{
-				CurrentWidget->AddToViewport();
-			}
 		}
 
 		BGameState->RemainingTime = TimeBetweenMatches;
