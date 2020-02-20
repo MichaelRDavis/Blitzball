@@ -2,4 +2,10 @@
 
 
 #include "BBotCharacter.h"
+#include "BBotAIController.h"
 
+ABBotCharacter::ABBotCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	AIControllerClass = ABBotAIController::StaticClass();
+}

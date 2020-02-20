@@ -5,6 +5,7 @@
 #include "BPlayerState.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 ABGoal::ABGoal()
@@ -18,6 +19,8 @@ ABGoal::ABGoal()
 
 	SaveBox = CreateDefaultSubobject<UBoxComponent>(TEXT("SaveBoxCollision"));
 	SaveBox->SetupAttachment(GoalBox);
+
+	GoalPCS = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("GoalPCS"));
 }
 
 void ABGoal::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -48,5 +51,11 @@ int32 ABGoal::GetTeamNumber() const
 void ABGoal::PlayGoalEffects()
 {
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), NetSound, GetActorLocation());
+	OnPlayGoalEffects();
+}
+
+void ABGoal::OnPlayGoalEffects_Implementation()
+{
+
 }
 

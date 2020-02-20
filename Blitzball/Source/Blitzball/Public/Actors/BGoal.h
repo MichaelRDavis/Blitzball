@@ -27,6 +27,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = GameObject)
 	void PlayGoalEffects();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPlayGoalEffects();
+	void OnPlayGoalEffects_Implementation();
+
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* GoalMesh;
@@ -38,7 +42,7 @@ private:
 	UBoxComponent* SaveBox;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
-	UParticleSystemComponent* GoalJet;
+	UParticleSystemComponent* GoalPCS;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameObject)

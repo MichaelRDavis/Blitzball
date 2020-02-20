@@ -3,3 +3,7 @@
 
 #include "BBotAIController.h"
 
+ABBotAIController::ABBotAIController()
+{
+
+}

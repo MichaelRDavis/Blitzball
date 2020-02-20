@@ -11,5 +11,6 @@ class BLITZBALL_API AFCGameSession : public AGameSession
 {
 	GENERATED_BODY()
 	
-
+public:
+	AFCGameSession();
 };

@@ -3,3 +3,7 @@
 
 #include "FCGameSession.h"
 
+AFCGameSession::AFCGameSession()
+{
+
+}
