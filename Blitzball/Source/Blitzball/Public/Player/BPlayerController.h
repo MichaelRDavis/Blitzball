@@ -85,7 +85,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=HUD)
 	TSubclassOf<UUserWidget> PauseMenuWidget;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
 	TSubclassOf<UUserWidget> EndMatchWidget;
 
 	UPROPERTY(BlueprintReadOnly, Category=HUD)

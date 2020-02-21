@@ -13,4 +13,12 @@ class BLITZBALL_API AFCGameSession : public AGameSession
 	
 public:
 	AFCGameSession();
+
+protected:
+	/**  */
+	FDelegateHandle OnStartSessionCompleteDelegateHandle;
+	FDelegateHandle OnCreateSessionCompleteDelegateHandle;
+	FDelegateHandle OnDestroySessionCompleteDelegateHandle;
+	FDelegateHandle OnFindSessionCompleteDelegateHandle;
+	FDelegateHandle OnJointSessionCompleteDelegateHandle;
 };

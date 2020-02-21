@@ -98,6 +98,21 @@ void UBGameInstance::FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIs
 			SessionSearch->bIsLanQuery = bIsLan;
 			SessionSearch->MaxSearchResults = 20;
 			SessionSearch->PingBucketSize = 50;
+
+			if (bIsPresence)
+			{
+				SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, bIsPresence, EOnlineComparisonOp::Equals);
+			}
+
+			TSharedRef<FOnlineSessionSearch> SearchSettingsRef = SessionSearch.ToSharedRef();
+
+			OnFindSessionsCompleteHandle = Sessions->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
+
+			Sessions->FindSessions(*UserId, SearchSettingsRef);
 		}
+	}
+	else
+	{
+		OnFindSessionComplete(false);
 	}
 }
