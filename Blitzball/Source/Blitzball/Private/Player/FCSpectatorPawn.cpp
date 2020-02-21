@@ -3,3 +3,7 @@
 
 #include "FCSpectatorPawn.h"
 
+AFCSpectatorPawn::AFCSpectatorPawn()
+{
+
+}

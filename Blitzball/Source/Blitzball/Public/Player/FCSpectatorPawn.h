@@ -6,12 +6,11 @@
 #include "GameFramework/SpectatorPawn.h"
 #include "FCSpectatorPawn.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class BLITZBALL_API AFCSpectatorPawn : public ASpectatorPawn
 {
 	GENERATED_BODY()
 	
+public:
+	AFCSpectatorPawn();
 };
