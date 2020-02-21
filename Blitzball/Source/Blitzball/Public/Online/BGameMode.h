@@ -88,12 +88,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=GameMode)
 	int32 DrawScore;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
-	TSubclassOf<UUserWidget> EndMatchWidget;
-
-	UPROPERTY(BlueprintReadOnly, Category = GameMode)
-	UUserWidget* CurrentWidget;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Sounds)
 	USoundBase* StartMatchSound;
 

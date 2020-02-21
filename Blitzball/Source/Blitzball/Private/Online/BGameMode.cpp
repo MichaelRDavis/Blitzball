@@ -174,14 +174,17 @@ void ABGameMode::StartMatchTimer()
 
 void ABGameMode::RestartMatch()
 {
-	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
+	for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
 	{
-		ABPlayerState* Player = Cast<ABPlayerState>(GameState->PlayerArray[i]);
-		if (Player)
-		{
-			ABPlayerController* Controller = Cast<ABPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), i));
-			RestartPlayer(Controller);
-		}
+		ABCharacter* Pawn = Cast<ABCharacter>(*It);
+		Pawn->Destroy();
+	}
+
+	for (FConstControllerIterator It = GetWorld()->GetControllerIterator(); It; ++It)
+	{
+		ABPlayerController* PlayerController = Cast<ABPlayerController>(*It);
+		PlayerController->ServerRestartPlayer();
+		//RestartPlayer(PlayerController);
 	}
 }
 
@@ -199,15 +202,8 @@ void ABGameMode::FinishMatch()
 		{
 			ABPlayerState* PlayerState = Cast<ABPlayerState>((*It)->PlayerState);
 			IsWinner(PlayerState);
-
-			if (EndMatchWidget)
-			{
-				CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), EndMatchWidget);
-				if (CurrentWidget)
-				{
-					CurrentWidget->AddToViewport();
-				}
-			}
+			ABPlayerController* PlayerController = Cast<ABPlayerController>(*It);
+			PlayerController->OnEndMatch();
 		}
 
 		// Lock all pawns

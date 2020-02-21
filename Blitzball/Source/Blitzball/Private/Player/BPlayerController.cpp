@@ -187,3 +187,15 @@ void ABPlayerController::OnScored()
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, (TEXT("Player: %s scored"), PlayerState->GetPlayerName()));
 	PlayerScoredDelegate.Broadcast();
 }
+
+void ABPlayerController::OnEndMatch()
+{
+	if (EndMatchWidget)
+	{
+		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), EndMatchWidget);
+		if (CurrentWidget)
+		{
+			CurrentWidget->AddToViewport();
+		}
+	}
+}

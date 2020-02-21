@@ -93,6 +93,31 @@ int32 ABPlayerState::GetSaves() const
 	return Saves;
 }
 
+int32 ABPlayerState::GetAssists() const
+{
+	return Assist;
+}
+
+int32 ABPlayerState::GetMatchesPlayed() const
+{
+	return MatchesPlayed;
+}
+
+int32 ABPlayerState::GetMatchesWon() const
+{
+	return MatchesWon;
+}
+
+int32 ABPlayerState::GetMatchesLost() const
+{
+	return MatchesLost;
+}
+
+int32 ABPlayerState::GetMatchesDrawn() const
+{
+	return MatchesDraw;
+}
+
 float ABPlayerState::GetScore() const
 {
 	return Score;

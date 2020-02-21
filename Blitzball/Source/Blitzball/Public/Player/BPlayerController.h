@@ -25,6 +25,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category=HUD)
 	void OnScored();
 
+	UFUNCTION(BlueprintCallable, Category=Controller)
+	void OnEndMatch();
+
 private:
 	UPROPERTY()
 	ABCharacter* BCharacter;
@@ -81,6 +84,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=HUD)
 	TSubclassOf<UUserWidget> PauseMenuWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GameMode)
+	TSubclassOf<UUserWidget> EndMatchWidget;
 
 	UPROPERTY(BlueprintReadOnly, Category=HUD)
 	UUserWidget* CurrentWidget;

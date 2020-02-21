@@ -77,6 +77,7 @@ void ABBlitzball::Score(int32 TeamNumber)
 
 			Player->ScoreGoal(Player, BGameMode->GetGoalScore());
 			PlayerController->OnScored();
+			BGameMode->RestartMatch();
 		}
 		else
 		{

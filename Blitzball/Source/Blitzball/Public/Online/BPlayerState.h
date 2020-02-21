@@ -58,6 +58,21 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = PlayerState)
 	int32 GetSaves() const;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category=PlayerState)
+	int32 GetAssists() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category=PlayerState)
+	int32 GetMatchesPlayed() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category=PlayerState)
+	int32 GetMatchesWon() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category=PlayerState)
+	int32 GetMatchesLost() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category=PlayerState)
+	int32 GetMatchesDrawn() const;
+
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = PlayerState)
 	float GetScore() const;
 

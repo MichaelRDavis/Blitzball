@@ -56,4 +56,5 @@ FString UFCPlayerProfileSave::GetPlayerProfileName() const
 void UFCPlayerProfileSave::AddMatchResult(ABPlayerState* PlayerState)
 {
 	Goals += PlayerState->GetGoals();
+	Saves += PlayerState->GetSaves();
 }
