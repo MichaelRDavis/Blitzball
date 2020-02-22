@@ -21,7 +21,7 @@ ABBlitzball::ABBlitzball()
 	CollisionComp->SetupAttachment(GetRootComponent());
 	CollisionComp->SetSimulatePhysics(true);
 	CollisionComp->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	//CollisionComp->OnComponentHit.AddDynamic(this, &ABBlitzball::OnHit);
+	CollisionComp->OnComponentHit.AddDynamic(this, &ABBlitzball::OnHit);
 
 	BlitzballMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	BlitzballMesh->SetupAttachment(CollisionComp);
@@ -42,7 +42,12 @@ void ABBlitzball::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	DOREPLIFETIME_CONDITION(ABBlitzball, Player, COND_None);
 }
 
-void ABBlitzball::OnHit(UPrimitiveComponent* MyComp, UPrimitiveComponent* OtherComp, AActor* OtherActor, UPrimitiveComponent* HitComp, FVector NormalImpulse, const FHitResult& Hit)
+void ABBlitzball::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void ABBlitzball::OnHit(UPrimitiveComponent* MyComp, AActor* OtherActor, UPrimitiveComponent* HitComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor != nullptr)
 	{
@@ -115,8 +120,8 @@ void ABBlitzball::HeaderBall(AActor* OtherActor, FVector HitLocation)
 			CharacterPhysicsAssest.Normal = HitLocation.GetSafeNormal();
 
 			bool bIsGrounded = Character->GetCharacterMovement()->IsMovingOnGround();
-			bool bFoundPoint = Character->GetMesh()->GetClosestPointOnPhysicsAsset(HitLocation, CharacterPhysicsAssest, true);
-			if (bIsGrounded && bFoundPoint)
+			bool bFoundPoint = Character->GetMesh()->GetClosestPointOnPhysicsAsset(HitLocation, CharacterPhysicsAssest, false);
+			if (!bIsGrounded && bFoundPoint)
 			{
 				const FVector PlayerDirection = Character->GetControlRotation().Vector();
 				CollisionComp->AddImpulse(PlayerDirection * HeaderImpulse);

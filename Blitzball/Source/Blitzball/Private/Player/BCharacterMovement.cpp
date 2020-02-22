@@ -58,6 +58,14 @@ FNetworkPredictionData_Client* UBCharacterMovement::GetPredictionData_Client() c
 	return ClientPredictionData;
 }
 
+void UBCharacterMovement::PerformSlide(const FVector& SlideDir, const FVector& FloorNormal)
+{
+	if (CharacterOwner)
+	{
+		
+	}
+}
+
 float UBCharacterMovement::GetMaxSpeed() const
 {
 	return bIsSprinting ? SprintSpeed : Super::GetMaxSpeed();

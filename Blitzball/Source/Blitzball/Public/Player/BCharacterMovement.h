@@ -53,9 +53,30 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Sprint")
 	bool bIsSprinting;
 
+	/** Acceleration during slide movement */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Slide")
+	float SlideAcceleration;
+
+	/** Max speed while sliding */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Slide")
+	float MaxSlideSpeed;
+
+	/** Slide input time */
+	float SlideInputTime;
+
 	/** True if player pressed floor slide action */
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="FlooSlide")
-	bool bWantsToFloorSlide;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Slide")
+	bool bWantsToSlide;
+
+	/** True if player currently sliding */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Slide")
+	bool bIsSliding;
+
+	/** True if sliding in a last movement update */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Slide")
+	bool bWasSliding;
+
+	virtual void PerformSlide(const FVector& SlideDir, const FVector& FloorNormal);
 
 	virtual float GetMaxSpeed() const override;
 	virtual float GetMaxAcceleration() const override;

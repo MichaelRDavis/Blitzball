@@ -43,7 +43,7 @@ private:
 	UCapsuleComponent* CollisionComp;
 
 	/** Cached FCCharacterMovement casted CharacterMovement */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Character, meta = (AllowPrivateAccess = "true"))
 	UBCharacterMovement* BCharacterMovement;
 
 public:

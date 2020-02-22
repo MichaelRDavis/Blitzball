@@ -23,8 +23,10 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	virtual void BeginPlay() override;
+
 	UFUNCTION()
-	virtual void OnHit(UPrimitiveComponent* MyComp, UPrimitiveComponent* OtherComp, AActor* OtherActor, UPrimitiveComponent* HitComp, FVector NormalImpulse, const FHitResult& Hit);
+	virtual void OnHit(UPrimitiveComponent* OtherComp, AActor* OtherActor, UPrimitiveComponent* HitComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION(BlueprintCallable, Category=GameObject)
 	void SetLastPlayer(ABCharacter* NewPlayer);

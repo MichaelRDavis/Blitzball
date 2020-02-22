@@ -21,7 +21,7 @@ ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBCharacterMovement>(ACharacter::CharacterMovementComponentName))
 {
 	//
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom = ObjectInitializer.CreateDefaultSubobject<USpringArmComponent>(this, TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
 	CameraBoom->CameraLagSpeed = 15.0f;
 	CameraBoom->CameraRotationLagSpeed = 15.0f;
@@ -31,7 +31,7 @@ ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 	CameraBoom->bUsePawnControlRotation = true;
 
 	// Create a CameraComponent
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	FollowCamera = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("FirstPersonCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
 	FollowCamera->SetRelativeRotation(FRotator(-10.0f, 0.0f, 0.0f));
@@ -39,7 +39,7 @@ ABCharacter::ABCharacter(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->bUsePawnControlRotation = false;
 
 	//
-	CollisionComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionComp"));
+	CollisionComp = ObjectInitializer.CreateDefaultSubobject<UCapsuleComponent>(this, TEXT("CollisionComp"));
 	CollisionComp->SetupAttachment(GetMesh());
 	CollisionComp->SetRelativeLocation(FVector(0.0f, 80.0f, 45.0f));
 	CollisionComp->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
@@ -203,7 +203,7 @@ void ABCharacter::Kick()
 		UPrimitiveComponent* HitComp = Cast<UPrimitiveComponent>(PossesedBall->GetCollisionComp());
 		if (HitComp)
 		{
-			const FVector KickDirection = GetControlRotation().Vector();
+			const FVector KickDirection = GetActorForwardVector();
 			HitComp->AddImpulseAtLocation(KickDirection * KickImpulse, PossesedBall->GetActorLocation());
 			PlayKick();
 		}
