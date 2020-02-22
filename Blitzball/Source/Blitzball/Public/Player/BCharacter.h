@@ -29,6 +29,10 @@ public:
 	virtual void OnRep_PlayerState() override;
 	// End ACharacter interface
 
+	/** Cached FCCharacterMovement casted CharacterMovement */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Character)
+	UBCharacterMovement* BCharacterMovement;
+
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -41,10 +45,6 @@ private:
 	/** Collision capsule for ball collision */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* CollisionComp;
-
-	/** Cached FCCharacterMovement casted CharacterMovement */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Character, meta = (AllowPrivateAccess = "true"))
-	UBCharacterMovement* BCharacterMovement;
 
 public:
 	/** Handles moving forward */
