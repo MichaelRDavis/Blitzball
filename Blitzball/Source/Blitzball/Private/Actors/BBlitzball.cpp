@@ -58,8 +58,13 @@ void ABBlitzball::OnHit(UPrimitiveComponent* MyComp, AActor* OtherActor, UPrimit
 void ABBlitzball::SetLastPlayer(ABCharacter* NewPlayer)
 {
 	Pawn = NewPlayer;
-	PlayerController = Cast<ABPlayerController>(NewPlayer->GetController());
 	Player = Cast<ABPlayerState>(NewPlayer->GetPlayerState());
+	if (Player != LastPlayer)
+	{
+		LastPlayer = Player;
+	}
+
+	PlayerController = Cast<ABPlayerController>(NewPlayer->GetController());
 	HitTime = GetWorld()->GetTimeSeconds();
 }
 
@@ -123,7 +128,7 @@ void ABBlitzball::HeaderBall(AActor* OtherActor, FVector HitLocation)
 			bool bFoundPoint = Character->GetMesh()->GetClosestPointOnPhysicsAsset(HitLocation, CharacterPhysicsAssest, false);
 			if (!bIsGrounded && bFoundPoint)
 			{
-				const FVector PlayerDirection = Character->GetControlRotation().Vector();
+				const FVector PlayerDirection = Character->GetActorUpVector();
 				CollisionComp->AddImpulse(PlayerDirection * HeaderImpulse);
 				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HeaderSound, GetActorLocation());
 			}
