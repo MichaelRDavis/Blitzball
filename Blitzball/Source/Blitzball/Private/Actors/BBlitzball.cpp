@@ -86,6 +86,7 @@ void ABBlitzball::Score(int32 TeamNumber)
 			}
 
 			Player->ScoreGoal(Player, BGameMode->GetGoalScore());
+			Player->ScoreAssist(Player, LastPlayer, BGameMode->GetAssistScore());
 			PlayerController->OnScored();
 			BGameMode->RestartMatch();
 		}
@@ -101,6 +102,7 @@ void ABBlitzball::Score(int32 TeamNumber)
 			}
 
 			Player->ScoreOwnGoal(Player, BGameMode->GetGoalScore());
+			BGameMode->RestartMatch();
 		}
 	}
 }

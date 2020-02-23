@@ -49,6 +49,11 @@ public:
 		return SaveScore;
 	}
 
+	inline int32 GetAssistScore() const
+	{
+		return AssistScore;
+	}
+
 protected:
 	int32 ChooseTeam(ABPlayerState* PlayerState) const;
 	void DetermineMatchWinner();
@@ -87,6 +92,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=GameMode)
 	int32 DrawScore;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=GameMode)
+	int32 AssistScore;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Sounds)
 	USoundBase* StartMatchSound;
