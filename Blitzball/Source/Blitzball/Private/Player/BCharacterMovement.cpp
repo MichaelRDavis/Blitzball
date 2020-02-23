@@ -21,9 +21,9 @@ UBCharacterMovement::UBCharacterMovement()
 	NetworkSmoothingMode = ENetworkSmoothingMode::Exponential;
 }
 
-void UBCharacterMovement::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UBCharacterMovement::OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Super::OnMovementUpdated(DeltaSeconds, OldLocation, OldVelocity);
 
 	if (bIsSprinting && SprintDuration <= 0.0f)
 	{
@@ -33,8 +33,13 @@ void UBCharacterMovement::TickComponent(float DeltaTime, enum ELevelTick TickTyp
 
 	if (SprintDuration > 0.0f)
 	{
-		SprintDuration -= DeltaTime;
+		SprintDuration -= DeltaSeconds;
 	}
+}
+
+void UBCharacterMovement::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 void UBCharacterMovement::UpdateFromCompressedFlags(uint8 Flags)
@@ -75,6 +80,12 @@ float UBCharacterMovement::GetMaxAcceleration() const
 {
 	return bIsSprinting ? SprintAcceleration : Super::GetMaxAcceleration();
 }
+
+float UBCharacterMovement::GetCurrentMovementTime() const
+{
+	return CharacterOwner->GetWorld()->GetTimeSeconds();
+}
+
 void FSavedMove_BCharacter::Clear()
 {
 	Super::Clear();

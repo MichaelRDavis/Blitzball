@@ -4,6 +4,7 @@
 #include "BCharacter.h"
 #include "BPlayerCameraManager.h"
 #include "BPlayerState.h"
+#include "BHUD.h"
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Engine/Engine.h"
@@ -184,7 +185,12 @@ void ABPlayerController::OnShowPauseMenu()
 
 void ABPlayerController::OnScored()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, (TEXT("Player: %s scored"), PlayerState->GetPlayerName()));
+	ABHUD* HUD = Cast<ABHUD>(GetHUD());
+	if (HUD)
+	{
+		HUD->NotifyPlayerScored();
+	}
+
 	PlayerScoredDelegate.Broadcast();
 }
 

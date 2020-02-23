@@ -15,6 +15,10 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void NotifyPlayerScored();
+	void NotifyPlayerScored_Implementation();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
 	TSubclassOf<UUserWidget> HUDWidgetClass;
 

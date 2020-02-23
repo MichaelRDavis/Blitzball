@@ -98,7 +98,7 @@ AActor* ABGameMode::ChoosePlayerStart_Implementation(AController* Player)
 		}
 	}
 
-	return BestStart;
+	return BestStart ? BestStart : Super::ChoosePlayerStart_Implementation(Player);
 }
 
 void ABGameMode::HandleMatchIsWaitingToStart()
@@ -270,7 +270,7 @@ void ABGameMode::DetermineMatchWinner()
 	}
 	else if (BGameState->BlueTeamGoals == BGameState->RedTeamGoals)
 	{
-		WinningTeam = 0;
+		WinningTeam = -1;
 		bIsMatchDraw = true;
 	}
 }
@@ -292,15 +292,16 @@ void ABGameMode::RewardEndMatchScore()
 
 bool ABGameMode::IsSpawnPointAllowed(APlayerStart* Start, AController* Player) const
 {
-	if (Player)
+	ABTeamPlayerStart* TeamStart = Cast<ABTeamPlayerStart>(Start);
+	if (TeamStart)
 	{
-		ABTeamPlayerStart* TeamStart = Cast<ABTeamPlayerStart>(Start);
 		ABPlayerState* PlayerState = Cast<ABPlayerState>(Player->PlayerState);
-
 		if (PlayerState && TeamStart && TeamStart->SpawnTeam == PlayerState->GetTeamNumber())
 		{
 			return true;
 		}
+
+		return false;
 	}
 
 	return false;

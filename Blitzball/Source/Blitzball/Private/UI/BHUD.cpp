@@ -22,6 +22,11 @@ void ABHUD::BeginPlay()
 	}
 }
 
+void ABHUD::NotifyPlayerScored_Implementation()
+{
+
+}
+
 FString ABHUD::GetTime(int32 Time)
 {
 	const int32 TotalSeononds = FMath::Max(0, FMath::TruncToInt(Time) % 3600);

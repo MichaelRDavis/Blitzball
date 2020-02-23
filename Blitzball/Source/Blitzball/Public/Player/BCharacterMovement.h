@@ -21,6 +21,7 @@ class BLITZBALL_API UBCharacterMovement : public UCharacterMovementComponent
 public:
 	UBCharacterMovement();
 
+	virtual void OnMovementUpdated(float DeltaSeconds, const FVector& OldLocation, const FVector& OldVelocity) override;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void UpdateFromCompressedFlags(uint8 Flags) override;
@@ -80,6 +81,8 @@ public:
 
 	virtual float GetMaxSpeed() const override;
 	virtual float GetMaxAcceleration() const override;
+
+	float GetCurrentMovementTime() const;
 };
 
 class FSavedMove_BCharacter : public FSavedMove_Character
