@@ -17,6 +17,7 @@ public class Blitzball : ModuleRules
             "InputCore",
             "UMG",
             "OnlineSubsystem",
+            "OnlineSubsystemSteam",
             "OnlineSubsystemUtils",
             "Steamworks"
         });

@@ -125,6 +125,8 @@ void ABBlitzball::HeaderBall(AActor* OtherActor, FVector HitLocation)
 			FClosestPointOnPhysicsAsset CharacterPhysicsAssest;
 			CharacterPhysicsAssest.BoneName = "head";
 			CharacterPhysicsAssest.Normal = HitLocation.GetSafeNormal();
+			CharacterPhysicsAssest.ClosestWorldPosition = HitLocation;
+			CharacterPhysicsAssest.Distance = 0.0f;
 
 			bool bIsGrounded = Character->GetCharacterMovement()->IsMovingOnGround();
 			bool bFoundPoint = Character->GetMesh()->GetClosestPointOnPhysicsAsset(HitLocation, CharacterPhysicsAssest, false);

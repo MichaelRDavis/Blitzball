@@ -26,9 +26,6 @@ public:
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION(BlueprintCallable, Category = PlayerState)
-	void K2_SetPlayerName(const FString& NewPlayerName);
-
-	UFUNCTION(BlueprintCallable, Category = PlayerState)
 	void SetTeamNumber(int32 NewTeamNumber);
 
 	UFUNCTION(BlueprintCallable, Category = PlayerState)
