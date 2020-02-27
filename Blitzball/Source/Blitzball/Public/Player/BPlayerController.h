@@ -76,6 +76,14 @@ protected:
 	/** Shows pause menu */
 	void OnShowPauseMenu();
 
+	/** Set state of game input flag */
+	UFUNCTION(BlueprintCallable, Category = Controller)
+	void SetGameInputAllowed(bool bNewGameInput);
+
+	/** Returns true if game input is allowed */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Controller)
+	bool IsInputAllowed() const;
+
 	UPROPERTY(BlueprintAssignable)
 	FPlayerScored PlayerScoredDelegate;
 
@@ -98,4 +106,8 @@ protected:
 	/** Base look up rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseLookUpRate;
+
+	/** True if game input is currently allowed */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Controller)
+	bool bIsInputAllowed;
 };
