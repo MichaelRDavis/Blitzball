@@ -14,6 +14,7 @@ ABPlayerController::ABPlayerController()
 	PlayerCameraManagerClass = ABPlayerCameraManager::StaticClass();
 	BaseTurnRate = 45.0f;
 	BaseLookUpRate = 45.0f;
+	bIsInputAllowed = true;
 }
 
 void ABPlayerController::SetPawn(APawn* InPawn)
@@ -51,7 +52,7 @@ void ABPlayerController::SetupInputComponent()
 
 void ABPlayerController::MoveForward(float Value)
 {
-	if (BCharacter != nullptr && Value != 0.0f)
+	if (BCharacter != nullptr && Value != 0.0f && IsInputAllowed())
 	{
 		BCharacter->MoveForward(Value);
 	}
@@ -64,7 +65,7 @@ void ABPlayerController::MoveBackward(float Value)
 
 void ABPlayerController::MoveRight(float Value)
 {
-	if (BCharacter != nullptr && Value != 0.0f)
+	if (BCharacter != nullptr && Value != 0.0f && IsInputAllowed())
 	{
 		BCharacter->MoveRight(Value);
 	}
@@ -87,7 +88,7 @@ void ABPlayerController::LookUpAtRate(float Rate)
 
 void ABPlayerController::OnJump()
 {
-	if (BCharacter)
+	if (BCharacter && IsInputAllowed())
 	{
 		BCharacter->Jump();
 	}
@@ -95,7 +96,7 @@ void ABPlayerController::OnJump()
 
 void ABPlayerController::OnStopJumping()
 {
-	if (BCharacter)
+	if (BCharacter && IsInputAllowed())
 	{
 		BCharacter->StopJumping();
 	}
@@ -103,7 +104,7 @@ void ABPlayerController::OnStopJumping()
 
 void ABPlayerController::OnCrouch()
 {
-	if (BCharacter)
+	if (BCharacter && IsInputAllowed())
 	{
 		BCharacter->Crouch();
 	}
@@ -111,7 +112,7 @@ void ABPlayerController::OnCrouch()
 
 void ABPlayerController::OnUnCrouch()
 {
-	if (BCharacter)
+	if (BCharacter && IsInputAllowed())
 	{
 		BCharacter->UnCrouch();
 	}
@@ -119,7 +120,7 @@ void ABPlayerController::OnUnCrouch()
 
 void ABPlayerController::OnToggleCrouch()
 {
-	if (GetCharacter())
+	if (GetCharacter() && IsInputAllowed())
 	{
 		GetCharacter()->bIsCrouched ? OnUnCrouch() : OnCrouch();
 	}
@@ -127,7 +128,7 @@ void ABPlayerController::OnToggleCrouch()
 
 void ABPlayerController::OnSprint()
 {
-	if (BCharacter)
+	if (BCharacter && IsInputAllowed())
 	{
 		BCharacter->StartSprinting();
 	}
@@ -135,7 +136,7 @@ void ABPlayerController::OnSprint()
 
 void ABPlayerController::OnStopSprinting()
 {
-	if (BCharacter)
+	if (BCharacter && IsInputAllowed())
 	{
 		BCharacter->StopSprinting();
 	}
@@ -143,7 +144,7 @@ void ABPlayerController::OnStopSprinting()
 
 void ABPlayerController::OnKick()
 {
-	if (BCharacter)
+	if (BCharacter && IsInputAllowed())
 	{
 		BCharacter->Kick();
 	}
@@ -181,6 +182,16 @@ void ABPlayerController::OnShowPauseMenu()
 			bShowMouseCursor = true;
 		}
 	}
+}
+
+void ABPlayerController::SetGameInputAllowed(bool bNewGameInput)
+{
+	bIsInputAllowed = bNewGameInput;
+}
+
+bool ABPlayerController::IsInputAllowed() const
+{
+	return bIsInputAllowed;
 }
 
 void ABPlayerController::OnScored()
